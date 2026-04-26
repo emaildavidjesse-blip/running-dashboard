@@ -1,0 +1,4 @@
+.env
+garth_tokens/
+__pycache__/
+*.pyc

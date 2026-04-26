@@ -1,0 +1,62 @@
+name: Sync Garmin & Deploy Dashboard
+
+on:
+  schedule:
+    # 6:00 AM Chicago time — UTC-5 (CST) / UTC-6 (CDT)
+    # Use 11:00 UTC to cover CST (Chicago standard time = UTC-5)
+    # In CDT (summer, UTC-6) this fires at 5:00 AM Chicago — acceptable
+    - cron: '0 11 * * *'
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # needed to push the updated index.html
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install garth python-dotenv
+
+      - name: Write .env from secrets
+        run: |
+          echo "GARMIN_EMAIL=${{ secrets.GARMIN_EMAIL }}" >> .env
+          echo "GARMIN_PASSWORD=${{ secrets.GARMIN_PASSWORD }}" >> .env
+
+      - name: Restore cached Garmin tokens
+        id: token-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.garth
+          key: garmin-tokens-${{ github.repository_owner }}
+
+      - name: Sync Garmin data
+        run: python sync_garmin.py
+
+      - name: Save Garmin tokens
+        uses: actions/cache/save@v4
+        if: steps.token-cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/.garth
+          key: garmin-tokens-${{ github.repository_owner }}
+
+      - name: Build dashboard
+        run: python build_dashboard.py
+
+      - name: Commit & push updated dashboard
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html runs_data.json
+          # only commit if something changed
+          git diff --cached --quiet || git commit -m "chore: sync Garmin data $(date -u '+%Y-%m-%d')"
+          git push

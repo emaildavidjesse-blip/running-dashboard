@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid #1e2535;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+    header p  { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+
+    .year-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 20px 32px 0;
+    }
+    .year-tabs button {
+      padding: 6px 20px;
+      border-radius: 6px;
+      border: 1px solid #2a3347;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .year-tabs button.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #fff;
+      font-weight: 600;
+    }
+    .year-tabs button:hover:not(.active) { border-color: #3b82f6; color: #93c5fd; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 20px 32px;
+    }
+    .stat-card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .stat-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
+    .stat-card .sub   { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 0 32px;
+    }
+    @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .chart-card h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
+    .chart-card canvas { width: 100% !important; }
+
+    .runs-section { padding: 14px 32px 40px; }
+    .runs-section h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 8px 12px;
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #1e2535;
+    }
+    tbody tr { border-bottom: 1px solid #1a2030; transition: background 0.1s; }
+    tbody tr:hover { background: #161b27; }
+    tbody td { padding: 9px 12px; }
+    .badge-soccer {
+      display: inline-block;
+      background: #f59e0b22;
+      color: #f59e0b;
+      border: 1px solid #f59e0b44;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .pace-cell { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+<script>
+  const RUNS = {"2026": [{"date": "2026-04-26", "miles": 2.73, "pace": 16.73, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-25", "miles": 5.01, "pace": 9.04, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-24", "miles": 9.08, "pace": 8.7, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-22", "miles": 3.79, "pace": 19.19, "hr": 109, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-22", "miles": 4.86, "pace": 8.65, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-21", "miles": 4.79, "pace": 8.76, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-20", "miles": 6.24, "pace": 8.66, "hr": 147, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2026-04-19", "miles": 2.11, "pace": 23.12, "hr": 135, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-19", "miles": 2.14, "pace": 21.37, "hr": 136, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-16", "miles": 7.39, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-15", "miles": 4.74, "pace": 8.87, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-14", "miles": 5.81, "pace": 8.27, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-13", "miles": 4.78, "pace": 8.79, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-12", "miles": 2.35, "pace": 19.56, "hr": 136, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-12", "miles": 1.96, "pace": 20.74, "hr": 135, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-09", "miles": 4.76, "pace": 8.83, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-08", "miles": 2.8, "pace": 18.76, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-08", "miles": 4.67, "pace": 9.0, "hr": 129, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-07", "miles": 5.01, "pace": 8.38, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-06", "miles": 5.74, "pace": 8.37, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-05", "miles": 3.01, "pace": 20.52, "hr": 123, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-03", "miles": 3.05, "pace": 9.85, "hr": 124, "title": "Recovery", "soccer": false}, {"date": "2026-04-02", "miles": 4.73, "pace": 8.88, "hr": 136, "title": "Base", "soccer": false}, {"date": "2026-04-01", "miles": 5.02, "pace": 8.37, "hr": 149, "title": "Base", "soccer": false}, {"date": "2026-03-31", "miles": 6.32, "pace": 8.82, "hr": 139, "title": "Base", "soccer": false}, {"date": "2026-03-30", "miles": 4.36, "pace": 8.96, "hr": 134, "title": "Base", "soccer": false}, {"date": "2026-03-29", "miles": 4.74, "pace": 8.43, "hr": 148, "title": "Threshold", "soccer": false}, {"date": "2026-03-25", "miles": 3.19, "pace": 9.4, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-23", "miles": 5.63, "pace": 8.36, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-22", "miles": 3.11, "pace": 8.99, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-21", "miles": 4.69, "pace": 8.32, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-20", "miles": 2.03, "pace": 8.01, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-18", "miles": 4.45, "pace": 8.78, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-17", "miles": 4.65, "pace": 8.39, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-14", "miles": 5.24, "pace": 8.01, "hr": 158, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-03-11", "miles": 3.01, "pace": 10.04, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-09", "miles": 5.79, "pace": 8.46, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-06", "miles": 5.45, "pace": 8.26, "hr": 144, "title": "Chicago - Threshold", "soccer": false}, {"date": "2026-03-03", "miles": 2.92, "pace": 9.59, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-02", "miles": 5.42, "pace": 8.49, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-28", "miles": 4.66, "pace": 8.36, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-27", "miles": 4.43, "pace": 8.81, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-23", "miles": 3.25, "pace": 9.44, "hr": 137, "title": "Wilmette Running", "soccer": false}, {"date": "2026-02-21", "miles": 4.64, "pace": 8.41, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-20", "miles": 4.15, "pace": 8.67, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-18", "miles": 2.87, "pace": 9.06, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-14", "miles": 4.27, "pace": 8.43, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-13", "miles": 3.0, "pace": 8.83, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-10", "miles": 3.83, "pace": 8.62, "hr": 151, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-09", "miles": 3.73, "pace": 8.85, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-04", "miles": 2.47, "pace": 9.73, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-03", "miles": 3.69, "pace": 8.95, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-02", "miles": 6.17, "pace": 9.08, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-31", "miles": 3.58, "pace": 9.23, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-22", "miles": 3.89, "pace": 9.26, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-11", "miles": 2.95, "pace": 9.5, "hr": 137, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-01-10", "miles": 4.12, "pace": 8.74, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-09", "miles": 4.15, "pace": 8.67, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-07", "miles": 4.12, "pace": 8.74, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-06", "miles": 3.82, "pace": 8.63, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-03", "miles": 3.75, "pace": 8.8, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-02", "miles": 3.7, "pace": 8.93, "hr": 145, "title": "Wilmette - Base", "soccer": false}], "2025": [{"date": "2025-12-31", "miles": 5.01, "pace": 8.43, "hr": 150, "title": "Wilmette Running", "soccer": false}, {"date": "2025-12-24", "miles": 6.33, "pace": 8.37, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-20", "miles": 3.55, "pace": 8.47, "hr": 153, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-08", "miles": 3.54, "pace": 8.47, "hr": 139, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-11-27", "miles": 3.18, "pace": 8.34, "hr": 151, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-11-24", "miles": 6.84, "pace": 8.63, "hr": 147, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-11-22", "miles": 2.47, "pace": 8.93, "hr": 134, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-15", "miles": 2.85, "pace": 8.45, "hr": 144, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-09", "miles": 1.53, "pace": 25.28, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-09", "miles": 1.51, "pace": 19.99, "hr": 111, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-05", "miles": 3.14, "pace": 17.81, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-04", "miles": 4.01, "pace": 8.25, "hr": 154, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-03", "miles": 4.01, "pace": 8.32, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-02", "miles": 1.87, "pace": 17.74, "hr": 139, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-02", "miles": 1.56, "pace": 24.1, "hr": 127, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-28", "miles": 3.42, "pace": 8.78, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-22", "miles": 3.0, "pace": 21.9, "hr": 113, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-21", "miles": 2.72, "pace": 9.24, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-20", "miles": 2.76, "pace": 8.71, "hr": 135, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-19", "miles": 3.41, "pace": 8.37, "hr": 147, "title": "Wilmette Running", "soccer": false}, {"date": "2025-10-18", "miles": 3.75, "pace": 8.79, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-09", "miles": 4.25, "pace": 8.6, "hr": 140, "title": "Palo Alto - Base", "soccer": false}, {"date": "2025-10-08", "miles": 7.61, "pace": 9.56, "hr": 136, "title": "Palo Alto Running", "soccer": false}, {"date": "2025-10-06", "miles": 3.36, "pace": 8.77, "hr": 133, "title": "Palo Alto - Recovery", "soccer": false}, {"date": "2025-10-01", "miles": 2.79, "pace": 9.33, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-29", "miles": 2.76, "pace": 9.42, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-28", "miles": 7.65, "pace": 8.64, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-27", "miles": 2.62, "pace": 9.92, "hr": 122, "title": "Kenilworth - Recovery", "soccer": false}, {"date": "2025-09-24", "miles": 3.62, "pace": 19.58, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-23", "miles": 4.05, "pace": 8.9, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-22", "miles": 5.97, "pace": 8.38, "hr": 157, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-09-17", "miles": 2.86, "pace": 9.1, "hr": 131, "title": "Frisco - Recovery", "soccer": false}, {"date": "2025-09-15", "miles": 2.77, "pace": 9.38, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-14", "miles": 1.91, "pace": 23.76, "hr": 141, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-14", "miles": 2.28, "pace": 19.77, "hr": 143, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-13", "miles": 4.19, "pace": 8.6, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-11", "miles": 4.25, "pace": 8.47, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-10", "miles": 3.82, "pace": 17.99, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-03", "miles": 3.35, "pace": 8.38, "hr": 133, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-02", "miles": 3.01, "pace": 9.39, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-01", "miles": 4.98, "pace": 8.44, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-31", "miles": 4.38, "pace": 17.61, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-08-30", "miles": 3.15, "pace": 8.9, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-26", "miles": 0.95, "pace": 22.52, "hr": 142, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-26", "miles": 0.69, "pace": 30.72, "hr": 121, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-22", "miles": 4.7, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-21", "miles": 0.0, "pace": 7.58, "hr": 127, "title": "Wilmette Running", "soccer": false}, {"date": "2025-08-21", "miles": 9.2, "pace": 8.69, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-18", "miles": 4.66, "pace": 9.02, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-17", "miles": 2.07, "pace": 20.99, "hr": 139, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-17", "miles": 2.36, "pace": 19.3, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-16", "miles": 3.14, "pace": 9.55, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-15", "miles": 3.19, "pace": 9.4, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-14", "miles": 3.2, "pace": 9.39, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-13", "miles": 4.46, "pace": 18.76, "hr": 118, "title": "Wilmette Running", "soccer": true}, {"date": "2025-08-12", "miles": 5.88, "pace": 8.5, "hr": 142, "title": "Washington - VO2 Max", "soccer": false}, {"date": "2025-08-11", "miles": 4.73, "pace": 8.88, "hr": 132, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-10", "miles": 5.01, "pace": 8.37, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-09", "miles": 7.1, "pace": 8.31, "hr": 147, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-07", "miles": 9.12, "pace": 8.67, "hr": 137, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-06", "miles": 3.09, "pace": 8.77, "hr": 131, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-05", "miles": 8.61, "pace": 8.13, "hr": 144, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-03", "miles": 5.01, "pace": 8.67, "hr": 134, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-08-02", "miles": 8.58, "pace": 8.51, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-29", "miles": 5.72, "pace": 8.4, "hr": 145, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2025-07-27", "miles": 3.16, "pace": 18.32, "hr": 115, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-26", "miles": 4.93, "pace": 8.53, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-25", "miles": 4.89, "pace": 8.6, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-24", "miles": 10.07, "pace": 8.93, "hr": 134, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-07-22", "miles": 10.12, "pace": 8.59, "hr": 149, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-20", "miles": 4.88, "pace": 17.75, "hr": 114, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-19", "miles": 5.73, "pace": 8.38, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-17", "miles": 5.23, "pace": 8.6, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-16", "miles": 4.86, "pace": 8.65, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-15", "miles": 4.93, "pace": 8.52, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-14", "miles": 4.84, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-13", "miles": 9.29, "pace": 8.83, "hr": 137, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-12", "miles": 0.95, "pace": 23.76, "hr": 114, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.76, "pace": 35.25, "hr": 100, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.55, "pace": 30.55, "hr": 106, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-11", "miles": 5.72, "pace": 8.4, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-10", "miles": 3.23, "pace": 9.29, "hr": 117, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-09", "miles": 4.65, "pace": 17.66, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-07-08", "miles": 2.01, "pace": 8.39, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-07-07", "miles": 2.81, "pace": 9.3, "hr": 115, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-06", "miles": 10.01, "pace": 8.87, "hr": 130, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-05", "miles": 5.01, "pace": 8.61, "hr": 133, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-04", "miles": 5.07, "pace": 8.3, "hr": 138, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-03", "miles": 5.06, "pace": 8.3, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-02", "miles": 6.8, "pace": 8.38, "hr": 143, "title": "Washington - Threshold", "soccer": false}, {"date": "2025-07-01", "miles": 3.23, "pace": 9.31, "hr": 121, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-30", "miles": 3.47, "pace": 9.27, "hr": 125, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-29", "miles": 1.88, "pace": 20.49, "hr": 135, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-29", "miles": 1.82, "pace": 21.54, "hr": 130, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-28", "miles": 3.23, "pace": 9.29, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-27", "miles": 3.2, "pace": 9.39, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-26", "miles": 8.98, "pace": 8.8, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-25", "miles": 5.25, "pace": 8.6, "hr": 127, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-24", "miles": 5.01, "pace": 8.83, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-23", "miles": 5.01, "pace": 8.79, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-22", "miles": 5.01, "pace": 8.52, "hr": 155, "title": "Washington - Base", "soccer": false}, {"date": "2025-06-20", "miles": 0.26, "pace": 9.61, "hr": 140, "title": "Washington Running", "soccer": false}, {"date": "2025-06-20", "miles": 2.74, "pace": 7.29, "hr": 157, "title": "Washington Running", "soccer": false}, {"date": "2025-06-15", "miles": 2.13, "pace": 18.77, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-15", "miles": 2.12, "pace": 19.8, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-14", "miles": 5.01, "pace": 8.32, "hr": 135, "title": "Kenilworth Running", "soccer": false}, {"date": "2025-06-13", "miles": 5.12, "pace": 8.8, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-12", "miles": 3.42, "pace": 9.35, "hr": 119, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-11", "miles": 4.84, "pace": 8.68, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-10", "miles": 6.98, "pace": 8.17, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-09", "miles": 5.03, "pace": 8.61, "hr": 132, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-06-08", "miles": 1.92, "pace": 25.09, "hr": 132, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-08", "miles": 2.91, "pace": 15.82, "hr": 144, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-07", "miles": 3.72, "pace": 8.97, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-05", "miles": 7.04, "pace": 8.1, "hr": 146, "title": "Wilmette - Tempo", "soccer": false}, {"date": "2025-06-04", "miles": 3.31, "pace": 19.78, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-06-04", "miles": 2.32, "pace": 8.43, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-03", "miles": 5.79, "pace": 8.3, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-01", "miles": 3.21, "pace": 9.35, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-29", "miles": 2.0, "pace": 8.65, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-05-28", "miles": 3.66, "pace": 17.61, "hr": 121, "title": "Wilmette Running", "soccer": true}, {"date": "2025-05-27", "miles": 3.22, "pace": 9.32, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-26", "miles": 4.95, "pace": 8.5, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-25", "miles": 7.02, "pace": 8.12, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-24", "miles": 3.22, "pace": 9.32, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-23", "miles": 3.17, "pace": 9.46, "hr": 123, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-22", "miles": 3.19, "pace": 9.42, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-21", "miles": 5.83, "pace": 8.34, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-20", "miles": 4.86, "pace": 8.65, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-19", "miles": 6.95, "pace": 8.2, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-18", "miles": 1.97, "pace": 23.32, "hr": 129, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-18", "miles": 2.33, "pace": 16.6, "hr": 136, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-17", "miles": 5.53, "pace": 8.13, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-15", "miles": 2.98, "pace": 9.41, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-14", "miles": 4.54, "pace": 8.59, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-13", "miles": 6.92, "pace": 8.52, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-12", "miles": 2.01, "pace": 8.43, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-11", "miles": 6.78, "pace": 8.12, "hr": 151, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-10", "miles": 3.0, "pace": 9.33, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-07", "miles": 7.18, "pace": 8.5, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-05", "miles": 4.65, "pace": 8.4, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-04", "miles": 2.32, "pace": 16.74, "hr": 146, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-05-04", "miles": 2.6, "pace": 16.85, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.96, "pace": 23.06, "hr": 140, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.98, "pace": 22.79, "hr": 134, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-26", "miles": 3.02, "pace": 9.28, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-24", "miles": 3.24, "pace": 9.27, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-23", "miles": 4.03, "pace": 17.94, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-23", "miles": 4.68, "pace": 8.33, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-22", "miles": 4.49, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-20", "miles": 2.0, "pace": 9.04, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-19", "miles": 1.74, "pace": 17.18, "hr": 134, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-19", "miles": 2.37, "pace": 17.06, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-18", "miles": 3.02, "pace": 9.29, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-17", "miles": 4.69, "pace": 8.33, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-16", "miles": 2.44, "pace": 18.52, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-16", "miles": 4.68, "pace": 8.13, "hr": 142, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-15", "miles": 4.55, "pace": 8.58, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-14", "miles": 5.48, "pace": 8.21, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-13", "miles": 3.67, "pace": 21.09, "hr": 123, "title": "Evanston Running", "soccer": true}, {"date": "2025-04-09", "miles": 5.62, "pace": 8.36, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-07", "miles": 4.54, "pace": 8.16, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-06", "miles": 2.22, "pace": 17.86, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-06", "miles": 2.17, "pace": 19.32, "hr": 127, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-05", "miles": 4.7, "pace": 8.31, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-04", "miles": 0.53, "pace": 8.36, "hr": 110, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-02", "miles": 4.61, "pace": 17.35, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-03-31", "miles": 2.01, "pace": 8.13, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-29", "miles": 4.61, "pace": 8.47, "hr": 142, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-28", "miles": 4.63, "pace": 8.43, "hr": 141, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-26", "miles": 4.62, "pace": 8.45, "hr": 144, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-25", "miles": 4.14, "pace": 8.71, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-24", "miles": 4.34, "pace": 8.3, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-22", "miles": 3.05, "pace": 8.54, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-20", "miles": 2.89, "pace": 9.03, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-19", "miles": 2.94, "pace": 8.85, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-17", "miles": 5.85, "pace": 8.21, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-03-15", "miles": 2.9, "pace": 9.02, "hr": 128, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-12", "miles": 2.91, "pace": 8.94, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-10", "miles": 4.01, "pace": 8.25, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-03-03", "miles": 2.11, "pace": 8.45, "hr": 128, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-01", "miles": 2.77, "pace": 8.67, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-27", "miles": 2.53, "pace": 9.5, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-24", "miles": 4.27, "pace": 8.02, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-22", "miles": 2.75, "pace": 8.47, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-17", "miles": 2.0, "pace": 8.16, "hr": 138, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-15", "miles": 4.01, "pace": 8.08, "hr": 147, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-10", "miles": 3.42, "pace": 8.78, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-02-01", "miles": 2.25, "pace": 8.62, "hr": 132, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-31", "miles": 1.81, "pace": 8.15, "hr": 139, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-18", "miles": 2.8, "pace": 9.28, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-01-16", "miles": 2.01, "pace": 8.16, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-15", "miles": 2.72, "pace": 8.12, "hr": 135, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-13", "miles": 2.69, "pace": 8.0, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-11", "miles": 2.65, "pace": 8.45, "hr": 136, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-06", "miles": 2.08, "pace": 8.21, "hr": 134, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-02", "miles": 2.01, "pace": 7.75, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-01", "miles": 2.25, "pace": 7.91, "hr": 135, "title": "Wilmette Running", "soccer": false}]};
+</script>
+
+<header>
+  <h1>Running Dashboard</h1>
+  <p id="subtitle">Loading…</p>
+</header>
+
+<div class="year-tabs" id="yearTabs"></div>
+<div class="stats-grid" id="statsGrid"></div>
+
+<div class="charts-row">
+  <div class="chart-card">
+    <h2>Monthly Mileage</h2>
+    <canvas id="milesChart" height="200"></canvas>
+  </div>
+  <div class="chart-card">
+    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.78rem">(running only)</span></h2>
+    <canvas id="paceChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="runs-section">
+  <h2>All Runs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Title</th>
+        <th>Miles</th>
+        <th>Pace (min/mi)</th>
+        <th>Avg HR</th>
+      </tr>
+    </thead>
+    <tbody id="runsTableBody"></tbody>
+  </table>
+</div>
+
+<script>
+(function () {
+  if (!RUNS) { document.getElementById('subtitle').textContent = 'No data loaded.'; return; }
+
+  const years = Object.keys(RUNS).sort((a, b) => b - a);
+  let activeYear = years[0];
+
+  // ── Year tabs ──────────────────────────────────────────────
+  const tabsEl = document.getElementById('yearTabs');
+  years.forEach(y => {
+    const btn = document.createElement('button');
+    btn.textContent = y;
+    btn.dataset.year = y;
+    if (y === activeYear) btn.classList.add('active');
+    btn.addEventListener('click', () => { activeYear = y; render(); });
+    tabsEl.appendChild(btn);
+  });
+
+  // ── Chart instances ────────────────────────────────────────
+  const chartDefaults = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+      y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+    },
+  };
+
+  const milesChart = new Chart(document.getElementById('milesChart'), {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 }] },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
+  });
+
+  const paceChart = new Chart(document.getElementById('paceChart'), {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122', tension: 0.3, pointRadius: 3, fill: true }] },
+    options: {
+      ...chartDefaults,
+      scales: {
+        ...chartDefaults.scales,
+        y: {
+          ...chartDefaults.scales.y,
+          reverse: true,
+          title: { display: true, text: 'min/mi', color: '#64748b' },
+        },
+      },
+    },
+  });
+
+  // ── Helpers ────────────────────────────────────────────────
+  function fmtPace(p) {
+    if (!p) return '—';
+    const m = Math.floor(p);
+    const s = Math.round((p - m) * 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // ── Main render ────────────────────────────────────────────
+  function render() {
+    // Update tab active state
+    tabsEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.year === activeYear));
+
+    const runs = RUNS[activeYear] || [];
+    const realRuns = runs.filter(r => !r.soccer);
+
+    // ── Stats cards ──────────────────────────────────────────
+    const totalMiles = runs.reduce((s, r) => s + r.miles, 0);
+    const validPaces = realRuns.map(r => r.pace).filter(Boolean);
+    const avgPace   = validPaces.length ? validPaces.reduce((a, b) => a + b, 0) / validPaces.length : null;
+    const validHRs  = runs.map(r => r.hr).filter(Boolean);
+    const avgHR     = validHRs.length ? Math.round(validHRs.reduce((a, b) => a + b, 0) / validHRs.length) : null;
+    const soccerCt  = runs.filter(r => r.soccer).length;
+
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card"><div class="label">Total Miles</div><div class="value">${totalMiles.toFixed(1)}</div><div class="sub">${runs.length} runs</div></div>
+      <div class="stat-card"><div class="label">Avg Pace</div><div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div><div class="sub">min/mi (runs only)</div></div>
+      <div class="stat-card"><div class="label">Avg HR</div><div class="value">${avgHR ?? '—'}</div><div class="sub">bpm</div></div>
+      <div class="stat-card"><div class="label">Soccer</div><div class="value">${soccerCt}</div><div class="sub">sessions flagged</div></div>
+    `;
+
+    // Subtitle
+    document.getElementById('subtitle').textContent =
+      `${activeYear} · ${runs.length} runs · ${totalMiles.toFixed(1)} miles`;
+
+    // ── Monthly mileage ──────────────────────────────────────
+    const byMonth = Array(12).fill(0);
+    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5, 7)) - 1] += r.miles; });
+    const nonZeroMonths = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
+    milesChart.data.labels   = nonZeroMonths.map(x => MONTH_ABBR[x.i]);
+    milesChart.data.datasets[0].data = nonZeroMonths.map(x => +x.m.toFixed(1));
+    milesChart.update();
+
+    // ── Pace trend ───────────────────────────────────────────
+    const paceSeries = realRuns
+      .filter(r => r.pace && r.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));   // MM-DD
+    paceChart.data.datasets[0].data = paceSeries.map(r => +r.pace.toFixed(2));
+    paceChart.update();
+
+    // ── Runs table ───────────────────────────────────────────
+    const tbody = document.getElementById('runsTableBody');
+    tbody.innerHTML = runs
+      .slice()
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .map(r => `
+        <tr>
+          <td>${r.date ?? '—'}</td>
+          <td>${r.title ?? ''}${r.soccer ? '<span class="badge-soccer">soccer</span>' : ''}</td>
+          <td>${r.miles.toFixed(2)}</td>
+          <td class="pace-cell">${fmtPace(r.pace)}</td>
+          <td>${r.hr ?? '—'}</td>
+        </tr>`)
+      .join('');
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

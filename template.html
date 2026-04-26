@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid #1e2535;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+    header p  { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+
+    .year-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 20px 32px 0;
+    }
+    .year-tabs button {
+      padding: 6px 20px;
+      border-radius: 6px;
+      border: 1px solid #2a3347;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .year-tabs button.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #fff;
+      font-weight: 600;
+    }
+    .year-tabs button:hover:not(.active) { border-color: #3b82f6; color: #93c5fd; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 20px 32px;
+    }
+    .stat-card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .stat-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
+    .stat-card .sub   { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 0 32px;
+    }
+    @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .chart-card h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
+    .chart-card canvas { width: 100% !important; }
+
+    .runs-section { padding: 14px 32px 40px; }
+    .runs-section h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 8px 12px;
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #1e2535;
+    }
+    tbody tr { border-bottom: 1px solid #1a2030; transition: background 0.1s; }
+    tbody tr:hover { background: #161b27; }
+    tbody td { padding: 9px 12px; }
+    .badge-soccer {
+      display: inline-block;
+      background: #f59e0b22;
+      color: #f59e0b;
+      border: 1px solid #f59e0b44;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-left: 6px;
+    }
+    .pace-cell { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+<script>
+  const RUNS_DATA_PLACEHOLDER = null;
+</script>
+
+<header>
+  <h1>Running Dashboard</h1>
+  <p id="subtitle">Loading…</p>
+</header>
+
+<div class="year-tabs" id="yearTabs"></div>
+<div class="stats-grid" id="statsGrid"></div>
+
+<div class="charts-row">
+  <div class="chart-card">
+    <h2>Monthly Mileage</h2>
+    <canvas id="milesChart" height="200"></canvas>
+  </div>
+  <div class="chart-card">
+    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.78rem">(running only)</span></h2>
+    <canvas id="paceChart" height="200"></canvas>
+  </div>
+</div>
+
+<div class="runs-section">
+  <h2>All Runs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Title</th>
+        <th>Miles</th>
+        <th>Pace (min/mi)</th>
+        <th>Avg HR</th>
+      </tr>
+    </thead>
+    <tbody id="runsTableBody"></tbody>
+  </table>
+</div>
+
+<script>
+(function () {
+  if (!RUNS) { document.getElementById('subtitle').textContent = 'No data loaded.'; return; }
+
+  const years = Object.keys(RUNS).sort((a, b) => b - a);
+  let activeYear = years[0];
+
+  // ── Year tabs ──────────────────────────────────────────────
+  const tabsEl = document.getElementById('yearTabs');
+  years.forEach(y => {
+    const btn = document.createElement('button');
+    btn.textContent = y;
+    btn.dataset.year = y;
+    if (y === activeYear) btn.classList.add('active');
+    btn.addEventListener('click', () => { activeYear = y; render(); });
+    tabsEl.appendChild(btn);
+  });
+
+  // ── Chart instances ────────────────────────────────────────
+  const chartDefaults = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+      y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+    },
+  };
+
+  const milesChart = new Chart(document.getElementById('milesChart'), {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 }] },
+    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
+  });
+
+  const paceChart = new Chart(document.getElementById('paceChart'), {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122', tension: 0.3, pointRadius: 3, fill: true }] },
+    options: {
+      ...chartDefaults,
+      scales: {
+        ...chartDefaults.scales,
+        y: {
+          ...chartDefaults.scales.y,
+          reverse: true,
+          title: { display: true, text: 'min/mi', color: '#64748b' },
+        },
+      },
+    },
+  });
+
+  // ── Helpers ────────────────────────────────────────────────
+  function fmtPace(p) {
+    if (!p) return '—';
+    const m = Math.floor(p);
+    const s = Math.round((p - m) * 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  // ── Main render ────────────────────────────────────────────
+  function render() {
+    // Update tab active state
+    tabsEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.year === activeYear));
+
+    const runs = RUNS[activeYear] || [];
+    const realRuns = runs.filter(r => !r.soccer);
+
+    // ── Stats cards ──────────────────────────────────────────
+    const totalMiles = runs.reduce((s, r) => s + r.miles, 0);
+    const validPaces = realRuns.map(r => r.pace).filter(Boolean);
+    const avgPace   = validPaces.length ? validPaces.reduce((a, b) => a + b, 0) / validPaces.length : null;
+    const validHRs  = runs.map(r => r.hr).filter(Boolean);
+    const avgHR     = validHRs.length ? Math.round(validHRs.reduce((a, b) => a + b, 0) / validHRs.length) : null;
+    const soccerCt  = runs.filter(r => r.soccer).length;
+
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card"><div class="label">Total Miles</div><div class="value">${totalMiles.toFixed(1)}</div><div class="sub">${runs.length} runs</div></div>
+      <div class="stat-card"><div class="label">Avg Pace</div><div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div><div class="sub">min/mi (runs only)</div></div>
+      <div class="stat-card"><div class="label">Avg HR</div><div class="value">${avgHR ?? '—'}</div><div class="sub">bpm</div></div>
+      <div class="stat-card"><div class="label">Soccer</div><div class="value">${soccerCt}</div><div class="sub">sessions flagged</div></div>
+    `;
+
+    // Subtitle
+    document.getElementById('subtitle').textContent =
+      `${activeYear} · ${runs.length} runs · ${totalMiles.toFixed(1)} miles`;
+
+    // ── Monthly mileage ──────────────────────────────────────
+    const byMonth = Array(12).fill(0);
+    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5, 7)) - 1] += r.miles; });
+    const nonZeroMonths = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
+    milesChart.data.labels   = nonZeroMonths.map(x => MONTH_ABBR[x.i]);
+    milesChart.data.datasets[0].data = nonZeroMonths.map(x => +x.m.toFixed(1));
+    milesChart.update();
+
+    // ── Pace trend ───────────────────────────────────────────
+    const paceSeries = realRuns
+      .filter(r => r.pace && r.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));   // MM-DD
+    paceChart.data.datasets[0].data = paceSeries.map(r => +r.pace.toFixed(2));
+    paceChart.update();
+
+    // ── Runs table ───────────────────────────────────────────
+    const tbody = document.getElementById('runsTableBody');
+    tbody.innerHTML = runs
+      .slice()
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .map(r => `
+        <tr>
+          <td>${r.date ?? '—'}</td>
+          <td>${r.title ?? ''}${r.soccer ? '<span class="badge-soccer">soccer</span>' : ''}</td>
+          <td>${r.miles.toFixed(2)}</td>
+          <td class="pace-cell">${fmtPace(r.pace)}</td>
+          <td>${r.hr ?? '—'}</td>
+        </tr>`)
+      .join('');
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
