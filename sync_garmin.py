@@ -3,9 +3,11 @@ import os
 import json
 import time
 from dotenv import load_dotenv
-import garth
+from garminconnect import Garmin
 
 load_dotenv()
+
+TOKEN_DIR = os.path.expanduser('~/.garth')
 
 RUNNING_TYPE_KEYS = {
     'running', 'indoor_running', 'trail_running',
@@ -13,41 +15,74 @@ RUNNING_TYPE_KEYS = {
     'track_running', 'road_running',
 }
 
+
+def authenticate():
+    """Return an authenticated Garmin client.
+
+    Auth order:
+      1. GARMIN_TOKENSTORE env var — either a directory path containing
+         garth token files, or the base64 string produced by garth.client.dumps()
+      2. Cached token directory at ~/.garth
+      3. Fresh email/password login with 429 backoff, then save tokens
+    """
+    email = os.getenv('GARMIN_EMAIL')
+    password = os.getenv('GARMIN_PASSWORD')
+    tokenstore_env = os.getenv('GARMIN_TOKENSTORE', '').strip()
+
+    client = Garmin(email, password)
+
+    # 1. Try GARMIN_TOKENSTORE
+    if tokenstore_env:
+        try:
+            if os.path.isdir(tokenstore_env):
+                client.login(tokenstore=tokenstore_env)
+            else:
+                # Treat as base64-encoded token string from garth.client.dumps()
+                client.garth.loads(tokenstore_env)
+                client.display_name = client.garth.profile.get('displayName', '')
+                client.full_name = client.garth.profile.get('fullName', '')
+            print('Authenticated via GARMIN_TOKENSTORE')
+            return client
+        except Exception as exc:
+            print(f'GARMIN_TOKENSTORE auth failed ({exc}), trying cached tokens...')
+
+    # 2. Try cached directory
+    if os.path.isdir(TOKEN_DIR):
+        try:
+            client.login(tokenstore=TOKEN_DIR)
+            print(f'Authenticated via cached tokens at {TOKEN_DIR}')
+            return client
+        except Exception as exc:
+            print(f'Cached token auth failed ({exc}), falling back to password...')
+
+    # 3. Fresh login with 429 backoff
+    for attempt in range(1, 5):
+        try:
+            print(f'Logging in as {email} (attempt {attempt})...')
+            client.login()
+            client.garth.dump(TOKEN_DIR)
+            print(f'Login successful; tokens saved to {TOKEN_DIR}')
+            return client
+        except Exception as exc:
+            if '429' in str(exc) and attempt < 4:
+                wait = 30 * attempt
+                print(f'Rate-limited by Garmin SSO, waiting {wait}s...')
+                time.sleep(wait)
+            else:
+                raise
+
+
 def pace_spm_to_decimal(seconds_per_meter):
-    """Convert seconds/meter to decimal min/mile."""
     if not seconds_per_meter or seconds_per_meter <= 0:
         return None
     return round(seconds_per_meter * 1609.344 / 60, 2)
 
+
 def speed_to_pace(speed_ms):
-    """Convert m/s to decimal min/mile."""
     if not speed_ms or speed_ms <= 0:
         return None
     return round((1609.344 / speed_ms) / 60, 2)
 
-def fetch_activities_for_year(year):
-    start = 0
-    limit = 100
-    all_activities = []
-
-    while True:
-        result = garth.connectapi(
-            '/activitylist-service/activities/search/activities',
-            params={
-                'startDate': f'{year}-01-01',
-                'endDate': f'{year}-12-31',
-                'start': start,
-                'limit': limit,
-            },
-        )
-        if not result:
-            break
-        all_activities.extend(result)
-        if len(result) < limit:
-            break
-        start += limit
-
-    return all_activities
 
 def parse_activity(act):
     type_key = (act.get('activityType') or {}).get('typeKey', '').lower()
@@ -60,7 +95,6 @@ def parse_activity(act):
     dist_m = act.get('distance') or 0
     miles = round(dist_m / 1609.344, 2)
 
-    # avgPace is seconds/meter when present; fall back to averageSpeed (m/s)
     avg_pace_raw = act.get('avgPace')
     if avg_pace_raw and avg_pace_raw > 0:
         pace = pace_spm_to_decimal(avg_pace_raw)
@@ -83,43 +117,23 @@ def parse_activity(act):
         'soccer': soccer,
     }
 
-TOKEN_DIR = os.path.expanduser('~/.garth')
 
-def authenticate():
-    email = os.getenv('GARMIN_EMAIL')
-    password = os.getenv('GARMIN_PASSWORD')
+def fetch_year(client, year):
+    activities = client.get_activities_by_date(
+        f'{year}-01-01', f'{year}-12-31', activitytype='running'
+    )
+    print(f'  {year}: fetched {len(activities)} activities from Garmin')
+    return activities
 
-    try:
-        garth.resume(TOKEN_DIR)
-        print('Resumed session from cached tokens')
-        return
-    except Exception:
-        pass
-
-    for attempt in range(1, 5):
-        try:
-            print(f'Logging in as {email} (attempt {attempt})...')
-            garth.login(email, password)
-            garth.save(TOKEN_DIR)
-            print('Login successful, tokens saved')
-            return
-        except Exception as exc:
-            if '429' in str(exc) and attempt < 4:
-                wait = 30 * attempt
-                print(f'Rate-limited by Garmin SSO, waiting {wait}s...')
-                time.sleep(wait)
-            else:
-                raise
 
 def main():
-    authenticate()
+    client = authenticate()
 
     result = {'2026': [], '2025': []}
     seen_ids = set()
 
     for year in ['2025', '2026']:
-        activities = fetch_activities_for_year(year)
-        print(f'  {year}: fetched {len(activities)} total activities')
+        activities = fetch_year(client, year)
 
         runs = []
         for act in activities:
@@ -133,7 +147,7 @@ def main():
             runs.append(parsed)
 
         result[year] = runs
-        print(f'  {year}: {len(runs)} running activities')
+        print(f'  {year}: {len(runs)} running activities kept')
 
     with open('runs_data.json', 'w') as f:
         json.dump(result, f, indent=2)
@@ -141,15 +155,15 @@ def main():
     total = sum(len(v) for v in result.values())
     print(f'\nSaved {total} runs to runs_data.json')
 
-    # Preview first few runs from most recent year
     for year in ['2026', '2025']:
         runs = result[year]
         if runs:
             print(f'\nFirst 5 runs from {year}:')
             for r in runs[:5]:
-                soccer_tag = ' [SOCCER]' if r['soccer'] else ''
-                print(f"  {r['date']}  {r['miles']:.2f} mi  pace {r['pace']}  HR {r['hr']}  {r['title']}{soccer_tag}")
+                tag = ' [SOCCER]' if r['soccer'] else ''
+                print(f"  {r['date']}  {r['miles']:.2f} mi  pace {r['pace']}  HR {r['hr']}  {r['title']}{tag}")
             break
+
 
 if __name__ == '__main__':
     main()

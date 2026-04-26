@@ -24,12 +24,18 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install garth python-dotenv
+        run: pip install -r requirements.txt
 
       - name: Write .env from secrets
         run: |
           echo "GARMIN_EMAIL=${{ secrets.GARMIN_EMAIL }}" >> .env
           echo "GARMIN_PASSWORD=${{ secrets.GARMIN_PASSWORD }}" >> .env
+          # Optional: pre-saved tokens bypass the SSO login entirely.
+          # Generate locally with: python3 -c "import garth; print(garth.client.dumps())"
+          # then store the output as the GARMIN_TOKENSTORE repository secret.
+          if [ -n "${{ secrets.GARMIN_TOKENSTORE }}" ]; then
+            echo "GARMIN_TOKENSTORE=${{ secrets.GARMIN_TOKENSTORE }}" >> .env
+          fi
 
       - name: Restore cached Garmin tokens
         id: token-cache
