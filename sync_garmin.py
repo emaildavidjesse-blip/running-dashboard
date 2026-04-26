@@ -20,53 +20,48 @@ def authenticate():
     """Return an authenticated Garmin client.
 
     Auth order:
-      1. GARMIN_TOKENSTORE env var — either a directory path containing
-         garth token files, or the base64 string produced by garth.client.dumps()
+      1. GARMIN_TOKENSTORE env var (base64 string from export_tokens.py)
+         — configures tokens directly, no HTTP call, no SSO login at all.
       2. Cached token directory at ~/.garth
-      3. Fresh email/password login with 429 backoff, then save tokens
+         — same: loads files, no SSO login.
+      3. Fresh email/password login with 429 backoff, saves tokens for next run.
     """
     email = os.getenv('GARMIN_EMAIL')
     password = os.getenv('GARMIN_PASSWORD')
-    tokenstore_env = os.getenv('GARMIN_TOKENSTORE', '').strip()
+    tokenstore_b64 = os.getenv('GARMIN_TOKENSTORE', '').strip()
 
     client = Garmin(email, password)
 
-    # 1. Try GARMIN_TOKENSTORE
-    if tokenstore_env:
+    # 1. Base64 token string — configure directly, skip login() entirely
+    if tokenstore_b64:
         try:
-            if os.path.isdir(tokenstore_env):
-                client.login(tokenstore=tokenstore_env)
-            else:
-                # Treat as base64-encoded token string from garth.client.dumps()
-                client.garth.loads(tokenstore_env)
-                client.display_name = client.garth.profile.get('displayName', '')
-                client.full_name = client.garth.profile.get('fullName', '')
-            print('Authenticated via GARMIN_TOKENSTORE')
+            client.garth.loads(tokenstore_b64)
+            print('Authenticated via GARMIN_TOKENSTORE (no SSO login)')
             return client
         except Exception as exc:
-            print(f'GARMIN_TOKENSTORE auth failed ({exc}), trying cached tokens...')
+            print(f'GARMIN_TOKENSTORE load failed: {exc}')
 
-    # 2. Try cached directory
+    # 2. Cached directory — load files, skip login() entirely
     if os.path.isdir(TOKEN_DIR):
         try:
-            client.login(tokenstore=TOKEN_DIR)
+            client.garth.load(TOKEN_DIR)
             print(f'Authenticated via cached tokens at {TOKEN_DIR}')
             return client
         except Exception as exc:
-            print(f'Cached token auth failed ({exc}), falling back to password...')
+            print(f'Cached token load failed: {exc}')
 
-    # 3. Fresh login with 429 backoff
+    # 3. Fresh SSO login with backoff
     for attempt in range(1, 5):
         try:
             print(f'Logging in as {email} (attempt {attempt})...')
-            client.login()
+            client.garth.login(email, password)
             client.garth.dump(TOKEN_DIR)
             print(f'Login successful; tokens saved to {TOKEN_DIR}')
             return client
         except Exception as exc:
             if '429' in str(exc) and attempt < 4:
                 wait = 30 * attempt
-                print(f'Rate-limited by Garmin SSO, waiting {wait}s...')
+                print(f'Rate-limited, waiting {wait}s...')
                 time.sleep(wait)
             else:
                 raise
@@ -134,7 +129,6 @@ def main():
 
     for year in ['2025', '2026']:
         activities = fetch_year(client, year)
-
         runs = []
         for act in activities:
             parsed = parse_activity(act)
@@ -145,7 +139,6 @@ def main():
                 continue
             seen_ids.add(act_id)
             runs.append(parsed)
-
         result[year] = runs
         print(f'  {year}: {len(runs)} running activities kept')
 
