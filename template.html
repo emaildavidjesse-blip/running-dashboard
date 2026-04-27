@@ -15,6 +15,11 @@
       min-height: 100vh;
     }
 
+    /* ── Layout primitives ─────────────────────────────────── */
+    .pad { padding-left: 32px; padding-right: 32px; }
+    @media (max-width: 600px) { .pad { padding-left: 16px; padding-right: 16px; } }
+
+    /* ── Header ────────────────────────────────────────────── */
     header {
       padding: 24px 32px 16px;
       border-bottom: 1px solid #1e2535;
@@ -22,6 +27,50 @@
     header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
     header p  { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
 
+    /* ── Fitness strip ─────────────────────────────────────── */
+    .fitness-strip {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 14px;
+      padding: 20px 32px 0;
+    }
+    @media (max-width: 700px) { .fitness-strip { grid-template-columns: 1fr; } }
+
+    .fcard {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .fcard .flabel {
+      font-size: 0.72rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .fcard .fvalue {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: -0.02em;
+    }
+    .fcard .fsub { font-size: 0.78rem; color: #64748b; margin-top: 3px; }
+    .fcard .ftrend { font-size: 0.82rem; margin-left: 6px; }
+    .fcard .ftrend.up   { color: #10b981; }
+    .fcard .ftrend.down { color: #f59e0b; }
+    .fcard .ftrend.flat { color: #64748b; }
+
+    .race-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 500px) { .race-grid { grid-template-columns: repeat(2, 1fr); } }
+    .race-item .rlabel { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .race-item .rvalue { font-size: 1.15rem; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+    /* ── Year tabs ─────────────────────────────────────────── */
     .year-tabs {
       display: flex;
       gap: 8px;
@@ -45,11 +94,12 @@
     }
     .year-tabs button:hover:not(.active) { border-color: #3b82f6; color: #93c5fd; }
 
+    /* ── Stats grid ────────────────────────────────────────── */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 14px;
-      padding: 20px 32px;
+      padding: 16px 32px 0;
     }
     .stat-card {
       background: #161b27;
@@ -57,15 +107,64 @@
       border-radius: 10px;
       padding: 16px 20px;
     }
-    .stat-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
     .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
     .stat-card .sub   { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+    .stat-card .sub.ahead  { color: #10b981; }
+    .stat-card .sub.behind { color: #f59e0b; }
 
+    /* ── Goal bar ──────────────────────────────────────────── */
+    .goal-section {
+      padding: 14px 32px 0;
+    }
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .goal-header .goal-title { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .goal-header .goal-nums  { font-size: 0.82rem; color: #94a3b8; }
+    .goal-bar-outer {
+      position: relative;
+      height: 8px;
+      background: #1e2535;
+      border-radius: 4px;
+      overflow: visible;
+    }
+    .goal-bar-fill {
+      height: 100%;
+      background: #3b82f6;
+      border-radius: 4px;
+      max-width: 100%;
+      transition: width 0.4s ease;
+    }
+    .goal-bar-pace-marker {
+      position: absolute;
+      top: -5px;
+      width: 2px;
+      height: 18px;
+      background: #475569;
+      border-radius: 1px;
+    }
+    .goal-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 0.76rem;
+      color: #475569;
+    }
+    .goal-footer .on-pace-label { color: #475569; }
+    .goal-footer .delta         { font-weight: 600; }
+    .goal-footer .delta.ahead   { color: #10b981; }
+    .goal-footer .delta.behind  { color: #f59e0b; }
+
+    /* ── Charts ────────────────────────────────────────────── */
     .charts-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
-      padding: 0 32px;
+      padding: 14px 32px 0;
     }
     @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
 
@@ -75,17 +174,23 @@
       border-radius: 10px;
       padding: 20px;
     }
-    .chart-card h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
+    .chart-card h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
     .chart-card canvas { width: 100% !important; }
 
-    .runs-section { padding: 14px 32px 40px; }
-    .runs-section h2 { font-size: 0.9rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
+    .chart-full {
+      background: #161b27;
+      border: 1px solid #1e2535;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 14px 32px 0;
     }
+    .chart-full h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
+
+    /* ── Runs table ────────────────────────────────────────── */
+    .runs-section { padding: 14px 32px 40px; }
+    .runs-section h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     thead th {
       text-align: left;
       padding: 8px 12px;
@@ -111,6 +216,7 @@
   </style>
 </head>
 <body>
+
 <script>
   const RUNS_DATA_PLACEHOLDER = null;
 </script>
@@ -120,30 +226,58 @@
   <p id="subtitle">Loading…</p>
 </header>
 
+<!-- Fitness strip: VO2 max + Race predictions (year-independent) -->
+<div class="fitness-strip" id="fitnessStrip" style="display:none">
+  <div class="fcard" id="vo2Card">
+    <div class="flabel">VO2 Max</div>
+    <div style="display:flex;align-items:baseline">
+      <div class="fvalue" id="vo2Value">—</div>
+      <div class="ftrend" id="vo2Trend"></div>
+    </div>
+    <div class="fsub" id="vo2Sub">—</div>
+  </div>
+  <div class="fcard">
+    <div class="flabel">Race Predictions</div>
+    <div class="race-grid" id="raceGrid"></div>
+  </div>
+</div>
+
+<!-- Year tabs -->
 <div class="year-tabs" id="yearTabs"></div>
+
+<!-- Per-year stats -->
 <div class="stats-grid" id="statsGrid"></div>
 
+<!-- 1000-mile goal bar -->
+<div class="goal-section" id="goalSection"></div>
+
+<!-- Monthly mileage + pace trend -->
 <div class="charts-row">
   <div class="chart-card">
     <h2>Monthly Mileage</h2>
     <canvas id="milesChart" height="200"></canvas>
   </div>
   <div class="chart-card">
-    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.78rem">(running only)</span></h2>
+    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.75rem">(running only)</span></h2>
     <canvas id="paceChart" height="200"></canvas>
   </div>
 </div>
 
+<!-- VO2 max trend (all time) -->
+<div class="chart-full" id="vo2Section" style="display:none">
+  <h2>VO2 Max Trend
+    <span style="color:#64748b;font-weight:400;font-size:0.75rem"> — weekly Garmin estimate</span>
+  </h2>
+  <canvas id="vo2Chart" height="120"></canvas>
+</div>
+
+<!-- Runs table -->
 <div class="runs-section">
   <h2>All Runs</h2>
   <table>
     <thead>
       <tr>
-        <th>Date</th>
-        <th>Title</th>
-        <th>Miles</th>
-        <th>Pace (min/mi)</th>
-        <th>Avg HR</th>
+        <th>Date</th><th>Title</th><th>Miles</th><th>Pace (min/mi)</th><th>Avg HR</th>
       </tr>
     </thead>
     <tbody id="runsTableBody"></tbody>
@@ -152,14 +286,54 @@
 
 <script>
 (function () {
-  if (!RUNS) { document.getElementById('subtitle').textContent = 'No data loaded.'; return; }
+  if (!RUNS) {
+    document.getElementById('subtitle').textContent = 'No data loaded.';
+    return;
+  }
 
-  const years = Object.keys(RUNS).sort((a, b) => b - a);
-  let activeYear = years[0];
+  const GOAL   = 1000;
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-  // ── Year tabs ──────────────────────────────────────────────
+  // ── Data extraction ──────────────────────────────────────
+  const yearKeys  = Object.keys(RUNS).filter(k => /^\d{4}$/.test(k)).sort((a, b) => b - a);
+  const vo2Data   = RUNS.vo2max || [];
+  const racePreds = RUNS.racePredictions || {};
+  let   activeYear = yearKeys[0];
+
+  // ── Fitness strip ────────────────────────────────────────
+  if (vo2Data.length || Object.keys(racePreds).length) {
+    document.getElementById('fitnessStrip').style.display = 'grid';
+  }
+
+  // VO2 max card
+  if (vo2Data.length) {
+    const latest = vo2Data[vo2Data.length - 1];
+    const prev   = vo2Data.length > 1 ? vo2Data[vo2Data.length - 2] : null;
+    const delta  = prev ? latest.vo2max - prev.vo2max : 0;
+    document.getElementById('vo2Value').textContent = latest.vo2max.toFixed(1);
+    const trendEl = document.getElementById('vo2Trend');
+    if (Math.abs(delta) < 0.05)      { trendEl.textContent = '→'; trendEl.className = 'ftrend flat'; }
+    else if (delta > 0)              { trendEl.textContent = '↑ +' + delta.toFixed(1); trendEl.className = 'ftrend up'; }
+    else                             { trendEl.textContent = '↓ ' + delta.toFixed(1); trendEl.className = 'ftrend down'; }
+    document.getElementById('vo2Sub').textContent =
+      `Fitness age ${latest.fitnessAge ?? '—'} · as of ${latest.date}`;
+  }
+
+  // Race predictions
+  const raceLabels = { '5k': '5K', '10k': '10K', 'half': 'Half', 'marathon': 'Marathon' };
+  const raceGrid = document.getElementById('raceGrid');
+  for (const [key, label] of Object.entries(raceLabels)) {
+    const t = racePreds[key];
+    raceGrid.innerHTML += `
+      <div class="race-item">
+        <div class="rlabel">${label}</div>
+        <div class="rvalue">${t ?? '—'}</div>
+      </div>`;
+  }
+
+  // ── Year tabs ────────────────────────────────────────────
   const tabsEl = document.getElementById('yearTabs');
-  years.forEach(y => {
+  yearKeys.forEach(y => {
     const btn = document.createElement('button');
     btn.textContent = y;
     btn.dataset.year = y;
@@ -168,12 +342,12 @@
     tabsEl.appendChild(btn);
   });
 
-  // ── Chart instances ────────────────────────────────────────
-  const chartDefaults = {
+  // ── Chart instances ──────────────────────────────────────
+  const chartOpts = {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxRotation: 45 } },
       y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
     },
   };
@@ -181,26 +355,53 @@
   const milesChart = new Chart(document.getElementById('milesChart'), {
     type: 'bar',
     data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 }] },
-    options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
+    options: { ...chartOpts, scales: { ...chartOpts.scales,
+      y: { ...chartOpts.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
   });
 
   const paceChart = new Chart(document.getElementById('paceChart'), {
     type: 'line',
-    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122', tension: 0.3, pointRadius: 3, fill: true }] },
-    options: {
-      ...chartDefaults,
-      scales: {
-        ...chartDefaults.scales,
-        y: {
-          ...chartDefaults.scales.y,
-          reverse: true,
-          title: { display: true, text: 'min/mi', color: '#64748b' },
-        },
-      },
-    },
+    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122',
+        tension: 0.3, pointRadius: 2, fill: true }] },
+    options: { ...chartOpts, scales: { ...chartOpts.scales,
+      y: { ...chartOpts.scales.y, reverse: true, title: { display: true, text: 'min/mi', color: '#64748b' } } } },
   });
 
-  // ── Helpers ────────────────────────────────────────────────
+  // VO2 max trend chart
+  let vo2Chart = null;
+  if (vo2Data.length) {
+    document.getElementById('vo2Section').style.display = 'block';
+    vo2Chart = new Chart(document.getElementById('vo2Chart'), {
+      type: 'line',
+      data: {
+        labels: vo2Data.map(d => d.date.slice(5)),  // MM-DD
+        datasets: [{
+          data: vo2Data.map(d => d.vo2max),
+          borderColor: '#8b5cf6',
+          backgroundColor: '#8b5cf622',
+          tension: 0.4,
+          pointRadius: 2,
+          fill: true,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: {
+            title: (items) => vo2Data[items[0].dataIndex]?.date ?? '',
+            label: (item) => `VO2 Max: ${item.raw}`,
+          }},
+        },
+        scales: {
+          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxTicksLimit: 16, maxRotation: 45 } },
+          y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
+               title: { display: true, text: 'mL/kg/min', color: '#64748b' } },
+        },
+      },
+    });
+  }
+
+  // ── Helpers ──────────────────────────────────────────────
   function fmtPace(p) {
     if (!p) return '—';
     const m = Math.floor(p);
@@ -208,54 +409,118 @@
     return `${m}:${String(s).padStart(2, '0')}`;
   }
 
-  const MONTH_ABBR = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function isLeapYear(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
 
-  // ── Main render ────────────────────────────────────────────
+  // ── Main render (called on year-tab change) ───────────────
   function render() {
-    // Update tab active state
-    tabsEl.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.year === activeYear));
+    tabsEl.querySelectorAll('button').forEach(b =>
+      b.classList.toggle('active', b.dataset.year === activeYear));
 
-    const runs = RUNS[activeYear] || [];
+    const runs     = RUNS[activeYear] || [];
     const realRuns = runs.filter(r => !r.soccer);
+    const now      = new Date();
+    const yearNum  = parseInt(activeYear);
 
-    // ── Stats cards ──────────────────────────────────────────
+    // ── Summary stats ────────────────────────────────────
     const totalMiles = runs.reduce((s, r) => s + r.miles, 0);
-    const validPaces = realRuns.map(r => r.pace).filter(Boolean);
-    const avgPace   = validPaces.length ? validPaces.reduce((a, b) => a + b, 0) / validPaces.length : null;
-    const validHRs  = runs.map(r => r.hr).filter(Boolean);
-    const avgHR     = validHRs.length ? Math.round(validHRs.reduce((a, b) => a + b, 0) / validHRs.length) : null;
-    const soccerCt  = runs.filter(r => r.soccer).length;
+    const paces  = realRuns.map(r => r.pace).filter(Boolean);
+    const avgPace = paces.length ? paces.reduce((a, b) => a + b, 0) / paces.length : null;
+    const hrs    = runs.map(r => r.hr).filter(Boolean);
+    const avgHR  = hrs.length ? Math.round(hrs.reduce((a, b) => a + b, 0) / hrs.length) : null;
+    const soccerCt = runs.filter(r => r.soccer).length;
+
+    // Month over month delta (current month vs previous month)
+    const byMonth = Array(12).fill(0);
+    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5,7)) - 1] += r.miles; });
+    const curMon  = now.getMonth();
+    const prevMon = curMon === 0 ? 11 : curMon - 1;
+    const momDelta = byMonth[curMon] - byMonth[prevMon];
+    const momLabel = yearNum === now.getFullYear()
+      ? (momDelta >= 0
+          ? `+${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`
+          : `${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`)
+      : null;
 
     document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card"><div class="label">Total Miles</div><div class="value">${totalMiles.toFixed(1)}</div><div class="sub">${runs.length} runs</div></div>
-      <div class="stat-card"><div class="label">Avg Pace</div><div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div><div class="sub">min/mi (runs only)</div></div>
-      <div class="stat-card"><div class="label">Avg HR</div><div class="value">${avgHR ?? '—'}</div><div class="sub">bpm</div></div>
-      <div class="stat-card"><div class="label">Soccer</div><div class="value">${soccerCt}</div><div class="sub">sessions flagged</div></div>
+      <div class="stat-card">
+        <div class="label">Total Miles</div>
+        <div class="value">${totalMiles.toFixed(1)}</div>
+        <div class="sub">${runs.length} runs${momLabel ? ' · <span class="' + (momDelta>=0?'ahead':'behind') + '">' + momLabel + '</span>' : ''}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Pace</div>
+        <div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div>
+        <div class="sub">min/mi (runs only)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg HR</div>
+        <div class="value">${avgHR ?? '—'}</div>
+        <div class="sub">bpm</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Soccer</div>
+        <div class="value">${soccerCt}</div>
+        <div class="sub">sessions flagged</div>
+      </div>
     `;
+
+    // ── 1000-mile goal bar ────────────────────────────────
+    const daysInYear = isLeapYear(yearNum) ? 366 : 365;
+    const dayOfYear  = yearNum === now.getFullYear()
+      ? Math.floor((now - new Date(yearNum, 0, 1)) / 86400000)
+      : daysInYear;
+    const pctDone    = Math.min(totalMiles / GOAL * 100, 100);
+    const pctPace    = Math.min(dayOfYear / daysInYear * 100, 100);
+    const onPaceMi   = (dayOfYear / daysInYear) * GOAL;
+    const delta      = totalMiles - onPaceMi;
+    const aheadBehind = delta >= 0
+      ? `<span class="delta ahead">+${delta.toFixed(1)} mi ahead</span>`
+      : `<span class="delta behind">${delta.toFixed(1)} mi behind</span>`;
+    const milesLeft  = Math.max(GOAL - totalMiles, 0);
+    const weeksLeft  = (daysInYear - dayOfYear) / 7;
+    const neededPerWeek = weeksLeft > 0 ? milesLeft / weeksLeft : 0;
+    const projectedMiles = weeksLeft > 0
+      ? (totalMiles + neededPerWeek * weeksLeft).toFixed(0)
+      : totalMiles.toFixed(0);
+
+    const goalHtml = `
+      <div class="goal-header">
+        <span class="goal-title">1,000 Mile Goal</span>
+        <span class="goal-nums">${totalMiles.toFixed(1)} / ${GOAL} mi</span>
+      </div>
+      <div class="goal-bar-outer">
+        <div class="goal-bar-fill" style="width:${pctDone.toFixed(2)}%"></div>
+        <div class="goal-bar-pace-marker" style="left:${pctPace.toFixed(2)}%"></div>
+      </div>
+      <div class="goal-footer">
+        <span class="on-pace-label">On-pace mark: ${onPaceMi.toFixed(1)} mi</span>
+        ${aheadBehind}
+        ${yearNum === now.getFullYear() && milesLeft > 0
+          ? `<span>${neededPerWeek.toFixed(1)} mi/wk needed</span>`
+          : ''}
+      </div>`;
+    document.getElementById('goalSection').innerHTML = goalHtml;
 
     // Subtitle
     document.getElementById('subtitle').textContent =
       `${activeYear} · ${runs.length} runs · ${totalMiles.toFixed(1)} miles`;
 
-    // ── Monthly mileage ──────────────────────────────────────
-    const byMonth = Array(12).fill(0);
-    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5, 7)) - 1] += r.miles; });
-    const nonZeroMonths = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
-    milesChart.data.labels   = nonZeroMonths.map(x => MONTH_ABBR[x.i]);
-    milesChart.data.datasets[0].data = nonZeroMonths.map(x => +x.m.toFixed(1));
+    // ── Monthly mileage chart ─────────────────────────────
+    const nonZero = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
+    milesChart.data.labels = nonZero.map(x => MONTHS[x.i]);
+    milesChart.data.datasets[0].data = nonZero.map(x => +x.m.toFixed(1));
     milesChart.update();
 
-    // ── Pace trend ───────────────────────────────────────────
+    // ── Pace trend chart ──────────────────────────────────
     const paceSeries = realRuns
       .filter(r => r.pace && r.date)
       .sort((a, b) => a.date.localeCompare(b.date));
-    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));   // MM-DD
+    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));
     paceChart.data.datasets[0].data = paceSeries.map(r => +r.pace.toFixed(2));
     paceChart.update();
 
-    // ── Runs table ───────────────────────────────────────────
-    const tbody = document.getElementById('runsTableBody');
-    tbody.innerHTML = runs
+    // ── Runs table ────────────────────────────────────────
+    document.getElementById('runsTableBody').innerHTML = runs
       .slice()
       .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
       .map(r => `

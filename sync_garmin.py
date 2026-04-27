@@ -2,6 +2,7 @@
 import os
 import json
 import time
+from datetime import date
 from dotenv import load_dotenv
 import garth
 
@@ -18,19 +19,10 @@ RUNNING_TYPE_KEYS = {
 
 
 def authenticate():
-    """Load tokens into garth.client — the global garth session.
-
-    Auth order:
-      1. GARMIN_TOKENSTORE env var — base64 string from export_tokens.py.
-         garth.client.loads() configures tokens directly; zero HTTP calls.
-      2. Cached directory at ~/.garth — same, no SSO.
-      3. Fresh SSO login with 429 backoff, then caches tokens for next run.
-    """
     email = os.getenv('GARMIN_EMAIL')
     password = os.getenv('GARMIN_PASSWORD')
     tokenstore_b64 = os.getenv('GARMIN_TOKENSTORE', '').strip()
 
-    # 1. Base64 token string
     if tokenstore_b64:
         try:
             garth.client.loads(tokenstore_b64)
@@ -39,21 +31,19 @@ def authenticate():
         except Exception as exc:
             print(f'GARMIN_TOKENSTORE load failed: {exc}')
 
-    # 2. Cached token directory (~/.garth)
     if os.path.isdir(TOKEN_DIR):
         try:
-            garth.resume(TOKEN_DIR)   # garth.client.load(TOKEN_DIR)
+            garth.resume(TOKEN_DIR)
             print(f'Authenticated via cached tokens at {TOKEN_DIR}')
             return
         except Exception as exc:
             print(f'Cached token load failed: {exc}')
 
-    # 3. Fresh SSO login
     for attempt in range(1, 5):
         try:
             print(f'Logging in as {email} (attempt {attempt})...')
-            garth.login(email, password)   # garth.client.login(email, password)
-            garth.save(TOKEN_DIR)          # garth.client.dump(TOKEN_DIR)
+            garth.login(email, password)
+            garth.save(TOKEN_DIR)
             print(f'Login successful; tokens saved to {TOKEN_DIR}')
             return
         except Exception as exc:
@@ -65,8 +55,9 @@ def authenticate():
                 raise
 
 
+# ── Activities ────────────────────────────────────────────────────────────────
+
 def get_activities_by_date(start_date, end_date):
-    """Fetch all running activities between dates, paginating 20 at a time."""
     activities = []
     start = 0
     limit = 20
@@ -103,7 +94,7 @@ def parse_activity(act):
         return None
 
     start_time = act.get('startTimeLocal', '')
-    date = start_time[:10] if start_time else None
+    date_str = start_time[:10] if start_time else None
 
     dist_m = act.get('distance') or 0
     miles = round(dist_m / 1609.344, 2)
@@ -122,7 +113,7 @@ def parse_activity(act):
 
     return {
         'id': act.get('activityId'),
-        'date': date,
+        'date': date_str,
         'miles': miles,
         'pace': pace,
         'hr': hr,
@@ -130,6 +121,59 @@ def parse_activity(act):
         'soccer': soccer,
     }
 
+
+# ── VO2 Max ───────────────────────────────────────────────────────────────────
+
+def fetch_vo2max():
+    today = date.today().isoformat()
+    data = garth.connectapi(
+        f'/metrics-service/metrics/maxmet/weekly/2025-01-01/{today}'
+    )
+    result = []
+    for entry in (data or []):
+        g = entry.get('generic') or {}
+        d = g.get('calendarDate')
+        v = g.get('vo2MaxPreciseValue')
+        if d and v is not None:
+            result.append({
+                'date': d,
+                'vo2max': v,
+                'fitnessAge': g.get('fitnessAge'),
+            })
+    print(f'  vo2max: {len(result)} weekly readings '
+          f'({result[0]["date"]} → {result[-1]["date"]})')
+    return result
+
+
+# ── Race predictions ──────────────────────────────────────────────────────────
+
+def _secs_to_time(total_seconds):
+    if not total_seconds:
+        return None
+    s = int(total_seconds)
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    return f'{h}:{m:02d}:{sec:02d}' if h else f'{m}:{sec:02d}'
+
+
+def fetch_race_predictions():
+    username = garth.client.username
+    data = garth.connectapi(
+        f'/metrics-service/metrics/racepredictions/latest/{username}'
+    )
+    if not data:
+        return {}
+    preds = {
+        '5k':       _secs_to_time(data.get('time5K')),
+        '10k':      _secs_to_time(data.get('time10K')),
+        'half':     _secs_to_time(data.get('timeHalfMarathon')),
+        'marathon': _secs_to_time(data.get('timeMarathon')),
+    }
+    print(f'  race predictions: {preds}')
+    return preds
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
     authenticate()
@@ -155,11 +199,14 @@ def main():
         result[year] = runs
         print(f'  {year}: {len(runs)} running activities kept')
 
+    result['vo2max'] = fetch_vo2max()
+    result['racePredictions'] = fetch_race_predictions()
+
     with open('runs_data.json', 'w') as f:
         json.dump(result, f, indent=2)
 
-    total = sum(len(v) for v in result.values())
-    print(f'\nSaved {total} runs to runs_data.json')
+    run_total = sum(len(result[y]) for y in ['2025', '2026'])
+    print(f'\nSaved {run_total} runs + {len(result["vo2max"])} VO2max readings to runs_data.json')
 
     for year in ['2026', '2025']:
         runs = result[year]

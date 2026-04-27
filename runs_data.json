@@ -2082,5 +2082,338 @@
       "title": "Wilmette Running",
       "soccer": false
     }
-  ]
+  ],
+  "vo2max": [
+    {
+      "date": "2025-01-06",
+      "vo2max": 51.3,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-01-13",
+      "vo2max": 51.7,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-01-18",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-02-01",
+      "vo2max": 52.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-02-10",
+      "vo2max": 52.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-02-17",
+      "vo2max": 52.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-02-24",
+      "vo2max": 52.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-03-03",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-03-10",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-03-17",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-03-25",
+      "vo2max": 52.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-03-31",
+      "vo2max": 52.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-04-07",
+      "vo2max": 52.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-04-15",
+      "vo2max": 52.8,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-04-22",
+      "vo2max": 53.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-04-26",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-05-05",
+      "vo2max": 53.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-05-13",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-05-20",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-05-27",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-06-03",
+      "vo2max": 53.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-06-10",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-06-14",
+      "vo2max": 53.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-06-24",
+      "vo2max": 53.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-07-01",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-07-08",
+      "vo2max": 53.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-07-15",
+      "vo2max": 53.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-07-22",
+      "vo2max": 53.3,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-07-29",
+      "vo2max": 53.3,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-08-05",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-08-12",
+      "vo2max": 53.5,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-08-18",
+      "vo2max": 53.5,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-08-22",
+      "vo2max": 53.5,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-09-02",
+      "vo2max": 53.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-09-03",
+      "vo2max": 53.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-09-15",
+      "vo2max": 53.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-09-23",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-09-29",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-10-06",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-10-09",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-10-21",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-10-28",
+      "vo2max": 53.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-11-04",
+      "vo2max": 53.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-11-15",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-11-24",
+      "vo2max": 53.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-11-27",
+      "vo2max": 53.0,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-12-08",
+      "vo2max": 52.9,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-12-20",
+      "vo2max": 52.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2025-12-24",
+      "vo2max": 52.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-01-06",
+      "vo2max": 52.3,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-01-11",
+      "vo2max": 52.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-01-22",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-02-03",
+      "vo2max": 51.8,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-02-10",
+      "vo2max": 51.7,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-02-14",
+      "vo2max": 51.7,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-02-23",
+      "vo2max": 51.6,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-03-03",
+      "vo2max": 51.7,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-03-09",
+      "vo2max": 51.8,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-03-17",
+      "vo2max": 51.7,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-03-23",
+      "vo2max": 52.1,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-03-31",
+      "vo2max": 52.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-04-07",
+      "vo2max": 52.2,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-04-14",
+      "vo2max": 52.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-04-21",
+      "vo2max": 52.5,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-04-25",
+      "vo2max": 52.6,
+      "fitnessAge": 20
+    }
+  ],
+  "racePredictions": {
+    "5k": "20:01",
+    "10k": "42:53",
+    "half": "1:40:42",
+    "marathon": "3:53:44"
+  }
 }
