@@ -3,11 +3,12 @@ import os
 import json
 import time
 from dotenv import load_dotenv
-from garminconnect import Garmin
+import garth
 
 load_dotenv()
 
 TOKEN_DIR = os.path.expanduser('~/.garth')
+ACTIVITIES_URL = '/activitylist-service/activities/search/activities'
 
 RUNNING_TYPE_KEYS = {
     'running', 'indoor_running', 'trail_running',
@@ -17,47 +18,44 @@ RUNNING_TYPE_KEYS = {
 
 
 def authenticate():
-    """Return an authenticated Garmin client.
+    """Load tokens into garth.client — the global garth session.
 
     Auth order:
-      1. GARMIN_TOKENSTORE env var (base64 string from export_tokens.py)
-         — configures tokens directly, no HTTP call, no SSO login at all.
-      2. Cached token directory at ~/.garth
-         — same: loads files, no SSO login.
-      3. Fresh email/password login with 429 backoff, saves tokens for next run.
+      1. GARMIN_TOKENSTORE env var — base64 string from export_tokens.py.
+         garth.client.loads() configures tokens directly; zero HTTP calls.
+      2. Cached directory at ~/.garth — same, no SSO.
+      3. Fresh SSO login with 429 backoff, then caches tokens for next run.
     """
     email = os.getenv('GARMIN_EMAIL')
     password = os.getenv('GARMIN_PASSWORD')
     tokenstore_b64 = os.getenv('GARMIN_TOKENSTORE', '').strip()
 
-    client = Garmin(email, password)
-
-    # 1. Base64 token string — configure directly, skip login() entirely
+    # 1. Base64 token string
     if tokenstore_b64:
         try:
-            client.garth.loads(tokenstore_b64)
-            print('Authenticated via GARMIN_TOKENSTORE (no SSO login)')
-            return client
+            garth.client.loads(tokenstore_b64)
+            print('Authenticated via GARMIN_TOKENSTORE (no SSO)')
+            return
         except Exception as exc:
             print(f'GARMIN_TOKENSTORE load failed: {exc}')
 
-    # 2. Cached directory — load files, skip login() entirely
+    # 2. Cached token directory (~/.garth)
     if os.path.isdir(TOKEN_DIR):
         try:
-            client.garth.load(TOKEN_DIR)
+            garth.resume(TOKEN_DIR)   # garth.client.load(TOKEN_DIR)
             print(f'Authenticated via cached tokens at {TOKEN_DIR}')
-            return client
+            return
         except Exception as exc:
             print(f'Cached token load failed: {exc}')
 
-    # 3. Fresh SSO login with backoff
+    # 3. Fresh SSO login
     for attempt in range(1, 5):
         try:
             print(f'Logging in as {email} (attempt {attempt})...')
-            client.garth.login(email, password)
-            client.garth.dump(TOKEN_DIR)
+            garth.login(email, password)   # garth.client.login(email, password)
+            garth.save(TOKEN_DIR)          # garth.client.dump(TOKEN_DIR)
             print(f'Login successful; tokens saved to {TOKEN_DIR}')
-            return client
+            return
         except Exception as exc:
             if '429' in str(exc) and attempt < 4:
                 wait = 30 * attempt
@@ -65,6 +63,26 @@ def authenticate():
                 time.sleep(wait)
             else:
                 raise
+
+
+def get_activities_by_date(start_date, end_date):
+    """Fetch all running activities between dates, paginating 20 at a time."""
+    activities = []
+    start = 0
+    limit = 20
+    while True:
+        page = garth.connectapi(ACTIVITIES_URL, params={
+            'startDate': start_date,
+            'endDate': end_date,
+            'start': str(start),
+            'limit': str(limit),
+            'activityType': 'running',
+        })
+        if not page:
+            break
+        activities.extend(page)
+        start += limit
+    return activities
 
 
 def pace_spm_to_decimal(seconds_per_meter):
@@ -113,22 +131,16 @@ def parse_activity(act):
     }
 
 
-def fetch_year(client, year):
-    activities = client.get_activities_by_date(
-        f'{year}-01-01', f'{year}-12-31', activitytype='running'
-    )
-    print(f'  {year}: fetched {len(activities)} activities from Garmin')
-    return activities
-
-
 def main():
-    client = authenticate()
+    authenticate()
 
     result = {'2026': [], '2025': []}
     seen_ids = set()
 
     for year in ['2025', '2026']:
-        activities = fetch_year(client, year)
+        activities = get_activities_by_date(f'{year}-01-01', f'{year}-12-31')
+        print(f'  {year}: fetched {len(activities)} activities from Garmin')
+
         runs = []
         for act in activities:
             parsed = parse_activity(act)
@@ -139,6 +151,7 @@ def main():
                 continue
             seen_ids.add(act_id)
             runs.append(parsed)
+
         result[year] = runs
         print(f'  {year}: {len(runs)} running activities kept')
 

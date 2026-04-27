@@ -6,7 +6,10 @@
       "Bash(pip install *)",
       "Bash(pip3 install *)",
       "Read(//tmp/**)",
-      "Bash(GARMIN_TOKENSTORE=$\\(cat /tmp/garmin_token.txt\\) python3 sync_garmin.py)"
+      "Bash(GARMIN_TOKENSTORE=$\\(cat /tmp/garmin_token.txt\\) python3 sync_garmin.py)",
+      "Bash(pip3 show *)",
+      "Read(//usr/local/lib/**)",
+      "Read(//Library/**)"
     ]
   }
 }

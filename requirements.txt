@@ -1,2 +1,2 @@
-garminconnect
+garth
 python-dotenv
