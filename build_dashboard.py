@@ -8,18 +8,22 @@ def main():
     with open('template.html') as f:
         template = f.read()
 
-    json_str = json.dumps(data)
     output = template.replace(
         'const RUNS_DATA_PLACEHOLDER = null;',
-        f'const RUNS = {json_str};',
+        f'const RUNS = {json.dumps(data)};',
     )
 
     with open('index.html', 'w') as f:
         f.write(output)
 
     run_total = sum(len(data[y]) for y in data if y.isdigit())
-    vo2_total = len(data.get('vo2max', []))
-    print(f'Built index.html — {run_total} runs, {vo2_total} VO2max readings')
+    print(
+        f'Built index.html — '
+        f'{run_total} runs, '
+        f'{len(data.get("vo2max", []))} VO2max, '
+        f'{len(data.get("rhr", []))} RHR, '
+        f'{len(data.get("bodyBattery", []))} BB readings'
+    )
 
 if __name__ == '__main__':
     main()

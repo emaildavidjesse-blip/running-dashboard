@@ -1,540 +1,641 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Running Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:      #0f1117;
+  --surface: #161b27;
+  --border:  #1e2535;
+  --muted:   #64748b;
+  --text:    #e2e8f0;
+  --blue:    #3b82f6;
+  --grey:    #94a3b8;
+  --orange:  #f59e0b;
+  --green:   #10b981;
+  --red:     #ef4444;
+  --purple:  #8b5cf6;
+  --pink:    #f43f5e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+     background:var(--bg);color:var(--text);min-height:100vh}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f1117;
-      color: #e2e8f0;
-      min-height: 100vh;
-    }
+/* ── Header ─────────────────────────────────────────────── */
+header{padding:20px 28px 14px;border-bottom:1px solid var(--border)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 
-    /* ── Layout primitives ─────────────────────────────────── */
-    .pad { padding-left: 32px; padding-right: 32px; }
-    @media (max-width: 600px) { .pad { padding-left: 16px; padding-right: 16px; } }
+/* ── Tab nav ────────────────────────────────────────────── */
+.tab-nav{display:flex;gap:0;padding:0 28px;border-bottom:1px solid var(--border);
+         overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:12px 18px;border:none;background:transparent;
+         color:var(--muted);font-size:.875rem;cursor:pointer;
+         border-bottom:2px solid transparent;margin-bottom:-1px;
+         transition:color .15s,border-color .15s;white-space:nowrap}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.tab-btn:hover:not(.active){color:var(--grey)}
 
-    /* ── Header ────────────────────────────────────────────── */
-    header {
-      padding: 24px 32px 16px;
-      border-bottom: 1px solid #1e2535;
-    }
-    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
-    header p  { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+/* ── Tab panes ──────────────────────────────────────────── */
+.tab-pane{display:none;padding-bottom:48px}
+.tab-pane.active{display:block}
 
-    /* ── Fitness strip ─────────────────────────────────────── */
-    .fitness-strip {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 14px;
-      padding: 20px 32px 0;
-    }
-    @media (max-width: 700px) { .fitness-strip { grid-template-columns: 1fr; } }
+/* ── Section spacing ─────────────────────────────────────── */
+.sp{padding:16px 28px 0}
 
-    .fcard {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-    .fcard .flabel {
-      font-size: 0.72rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .fcard .fvalue {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-top: 4px;
-      letter-spacing: -0.02em;
-    }
-    .fcard .fsub { font-size: 0.78rem; color: #64748b; margin-top: 3px; }
-    .fcard .ftrend { font-size: 0.82rem; margin-left: 6px; }
-    .fcard .ftrend.up   { color: #10b981; }
-    .fcard .ftrend.down { color: #f59e0b; }
-    .fcard .ftrend.flat { color: #64748b; }
+/* ── Stat cards ─────────────────────────────────────────── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 18px}
+.sc-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sc-value{font-size:1.65rem;font-weight:700;margin:4px 0 2px;letter-spacing:-.02em}
+.sc-sub{font-size:.74rem;color:var(--muted)}
+.sc-value.pos{color:var(--green)}.sc-value.neg{color:var(--red)}
 
-    .race-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-    }
-    @media (max-width: 500px) { .race-grid { grid-template-columns: repeat(2, 1fr); } }
-    .race-item .rlabel { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .race-item .rvalue { font-size: 1.15rem; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+/* ── Goal bar ───────────────────────────────────────────── */
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px}
+.goal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.goal-title{font-size:.8rem;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.05em}
+.goal-pct-label{font-size:.78rem;color:var(--muted)}
+.goal-bar-outer{position:relative;height:10px;background:var(--border);border-radius:5px}
+.goal-bar-fill{height:100%;background:var(--blue);border-radius:5px;max-width:100%;transition:width .4s}
+.goal-bar-tick{position:absolute;top:-5px;width:2px;height:20px;background:var(--orange);
+               border-radius:1px;transform:translateX(-50%)}
+.goal-footer{display:flex;justify-content:space-between;margin-top:6px;font-size:.74rem;color:var(--muted)}
 
-    /* ── Year tabs ─────────────────────────────────────────── */
-    .year-tabs {
-      display: flex;
-      gap: 8px;
-      padding: 20px 32px 0;
-    }
-    .year-tabs button {
-      padding: 6px 20px;
-      border-radius: 6px;
-      border: 1px solid #2a3347;
-      background: transparent;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .year-tabs button.active {
-      background: #3b82f6;
-      border-color: #3b82f6;
-      color: #fff;
-      font-weight: 600;
-    }
-    .year-tabs button:hover:not(.active) { border-color: #3b82f6; color: #93c5fd; }
+/* ── Charts ─────────────────────────────────────────────── */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.chart-card h3{font-size:.8rem;font-weight:600;color:var(--grey);margin-bottom:12px;
+               text-transform:uppercase;letter-spacing:.04em}
+.chart-card canvas{width:100%!important}
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.charts-2col{grid-template-columns:1fr}}
 
-    /* ── Stats grid ────────────────────────────────────────── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 14px;
-      padding: 16px 32px 0;
-    }
-    .stat-card {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 16px 20px;
-    }
-    .stat-card .label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
-    .stat-card .sub   { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
-    .stat-card .sub.ahead  { color: #10b981; }
-    .stat-card .sub.behind { color: #f59e0b; }
+/* ── Month cards ────────────────────────────────────────── */
+.month-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.mc{background:var(--surface);border:1px solid var(--border);border-left:3px solid;
+    border-radius:8px;padding:12px 14px}
+.mc.gain{border-left-color:var(--green)}.mc.loss{border-left-color:var(--red)}
+.mc-name{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.mc-miles{font-size:1.3rem;font-weight:700;margin:4px 0 2px}
+.mc-delta{font-size:.8rem;font-weight:600}
+.mc-delta.pos{color:var(--green)}.mc-delta.neg{color:var(--red)}
+.mc-target{font-size:.68rem;color:var(--muted)}
 
-    /* ── Goal bar ──────────────────────────────────────────── */
-    .goal-section {
-      padding: 14px 32px 0;
-    }
-    .goal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-    .goal-header .goal-title { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .goal-header .goal-nums  { font-size: 0.82rem; color: #94a3b8; }
-    .goal-bar-outer {
-      position: relative;
-      height: 8px;
-      background: #1e2535;
-      border-radius: 4px;
-      overflow: visible;
-    }
-    .goal-bar-fill {
-      height: 100%;
-      background: #3b82f6;
-      border-radius: 4px;
-      max-width: 100%;
-      transition: width 0.4s ease;
-    }
-    .goal-bar-pace-marker {
-      position: absolute;
-      top: -5px;
-      width: 2px;
-      height: 18px;
-      background: #475569;
-      border-radius: 1px;
-    }
-    .goal-footer {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 5px;
-      font-size: 0.76rem;
-      color: #475569;
-    }
-    .goal-footer .on-pace-label { color: #475569; }
-    .goal-footer .delta         { font-weight: 600; }
-    .goal-footer .delta.ahead   { color: #10b981; }
-    .goal-footer .delta.behind  { color: #f59e0b; }
+/* ── Race predictions ───────────────────────────────────── */
+.race-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px}
+.race-card h3{font-size:.8rem;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px}
+.race-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:500px){.race-grid{grid-template-columns:repeat(2,1fr)}}
+.rp-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.rp-value{font-size:1.3rem;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
 
-    /* ── Charts ────────────────────────────────────────────── */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      padding: 14px 32px 0;
-    }
-    @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
-
-    .chart-card {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 20px;
-    }
-    .chart-card h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
-    .chart-card canvas { width: 100% !important; }
-
-    .chart-full {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 14px 32px 0;
-    }
-    .chart-full h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
-
-    /* ── Runs table ────────────────────────────────────────── */
-    .runs-section { padding: 14px 32px 40px; }
-    .runs-section h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    thead th {
-      text-align: left;
-      padding: 8px 12px;
-      color: #64748b;
-      font-weight: 500;
-      border-bottom: 1px solid #1e2535;
-    }
-    tbody tr { border-bottom: 1px solid #1a2030; transition: background 0.1s; }
-    tbody tr:hover { background: #161b27; }
-    tbody td { padding: 9px 12px; }
-    .badge-soccer {
-      display: inline-block;
-      background: #f59e0b22;
-      color: #f59e0b;
-      border: 1px solid #f59e0b44;
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      margin-left: 6px;
-    }
-    .pace-cell { font-variant-numeric: tabular-nums; }
-  </style>
+/* ── Run log table ──────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+thead th{text-align:left;padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid #1a2030;transition:background .1s}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:8px 12px}
+.badge{display:inline-block;background:#f59e0b22;color:var(--orange);border:1px solid #f59e0b44;
+       border-radius:4px;padding:1px 6px;font-size:.7rem;font-weight:600;margin-left:6px}
+.tnums{font-variant-numeric:tabular-nums}
+</style>
 </head>
 <body>
-
-<script>
-  const RUNS = {"2026": [{"date": "2026-04-26", "miles": 2.73, "pace": 16.73, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-25", "miles": 5.01, "pace": 9.04, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-24", "miles": 9.08, "pace": 8.7, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-22", "miles": 3.79, "pace": 19.19, "hr": 109, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-22", "miles": 4.86, "pace": 8.65, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-21", "miles": 4.79, "pace": 8.76, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-20", "miles": 6.24, "pace": 8.66, "hr": 147, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2026-04-19", "miles": 2.11, "pace": 23.12, "hr": 135, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-19", "miles": 2.14, "pace": 21.37, "hr": 136, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-16", "miles": 7.39, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-15", "miles": 4.74, "pace": 8.87, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-14", "miles": 5.81, "pace": 8.27, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-13", "miles": 4.78, "pace": 8.79, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-12", "miles": 2.35, "pace": 19.56, "hr": 136, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-12", "miles": 1.96, "pace": 20.74, "hr": 135, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-09", "miles": 4.76, "pace": 8.83, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-08", "miles": 2.8, "pace": 18.76, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-08", "miles": 4.67, "pace": 9.0, "hr": 129, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-07", "miles": 5.01, "pace": 8.38, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-06", "miles": 5.74, "pace": 8.37, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-05", "miles": 3.01, "pace": 20.52, "hr": 123, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-03", "miles": 3.05, "pace": 9.85, "hr": 124, "title": "Recovery", "soccer": false}, {"date": "2026-04-02", "miles": 4.73, "pace": 8.88, "hr": 136, "title": "Base", "soccer": false}, {"date": "2026-04-01", "miles": 5.02, "pace": 8.37, "hr": 149, "title": "Base", "soccer": false}, {"date": "2026-03-31", "miles": 6.32, "pace": 8.82, "hr": 139, "title": "Base", "soccer": false}, {"date": "2026-03-30", "miles": 4.36, "pace": 8.96, "hr": 134, "title": "Base", "soccer": false}, {"date": "2026-03-29", "miles": 4.74, "pace": 8.43, "hr": 148, "title": "Threshold", "soccer": false}, {"date": "2026-03-25", "miles": 3.19, "pace": 9.4, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-23", "miles": 5.63, "pace": 8.36, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-22", "miles": 3.11, "pace": 8.99, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-21", "miles": 4.69, "pace": 8.32, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-20", "miles": 2.03, "pace": 8.01, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-18", "miles": 4.45, "pace": 8.78, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-17", "miles": 4.65, "pace": 8.39, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-14", "miles": 5.24, "pace": 8.01, "hr": 158, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-03-11", "miles": 3.01, "pace": 10.04, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-09", "miles": 5.79, "pace": 8.46, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-06", "miles": 5.45, "pace": 8.26, "hr": 144, "title": "Chicago - Threshold", "soccer": false}, {"date": "2026-03-03", "miles": 2.92, "pace": 9.59, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-02", "miles": 5.42, "pace": 8.49, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-28", "miles": 4.66, "pace": 8.36, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-27", "miles": 4.43, "pace": 8.81, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-23", "miles": 3.25, "pace": 9.44, "hr": 137, "title": "Wilmette Running", "soccer": false}, {"date": "2026-02-21", "miles": 4.64, "pace": 8.41, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-20", "miles": 4.15, "pace": 8.67, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-18", "miles": 2.87, "pace": 9.06, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-14", "miles": 4.27, "pace": 8.43, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-13", "miles": 3.0, "pace": 8.83, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-10", "miles": 3.83, "pace": 8.62, "hr": 151, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-09", "miles": 3.73, "pace": 8.85, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-04", "miles": 2.47, "pace": 9.73, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-03", "miles": 3.69, "pace": 8.95, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-02", "miles": 6.17, "pace": 9.08, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-31", "miles": 3.58, "pace": 9.23, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-22", "miles": 3.89, "pace": 9.26, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-11", "miles": 2.95, "pace": 9.5, "hr": 137, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-01-10", "miles": 4.12, "pace": 8.74, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-09", "miles": 4.15, "pace": 8.67, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-07", "miles": 4.12, "pace": 8.74, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-06", "miles": 3.82, "pace": 8.63, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-03", "miles": 3.75, "pace": 8.8, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-02", "miles": 3.7, "pace": 8.93, "hr": 145, "title": "Wilmette - Base", "soccer": false}], "2025": [{"date": "2025-12-31", "miles": 5.01, "pace": 8.43, "hr": 150, "title": "Wilmette Running", "soccer": false}, {"date": "2025-12-24", "miles": 6.33, "pace": 8.37, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-20", "miles": 3.55, "pace": 8.47, "hr": 153, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-08", "miles": 3.54, "pace": 8.47, "hr": 139, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-11-27", "miles": 3.18, "pace": 8.34, "hr": 151, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-11-24", "miles": 6.84, "pace": 8.63, "hr": 147, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-11-22", "miles": 2.47, "pace": 8.93, "hr": 134, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-15", "miles": 2.85, "pace": 8.45, "hr": 144, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-09", "miles": 1.53, "pace": 25.28, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-09", "miles": 1.51, "pace": 19.99, "hr": 111, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-05", "miles": 3.14, "pace": 17.81, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-04", "miles": 4.01, "pace": 8.25, "hr": 154, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-03", "miles": 4.01, "pace": 8.32, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-02", "miles": 1.87, "pace": 17.74, "hr": 139, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-02", "miles": 1.56, "pace": 24.1, "hr": 127, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-28", "miles": 3.42, "pace": 8.78, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-22", "miles": 3.0, "pace": 21.9, "hr": 113, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-21", "miles": 2.72, "pace": 9.24, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-20", "miles": 2.76, "pace": 8.71, "hr": 135, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-19", "miles": 3.41, "pace": 8.37, "hr": 147, "title": "Wilmette Running", "soccer": false}, {"date": "2025-10-18", "miles": 3.75, "pace": 8.79, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-09", "miles": 4.25, "pace": 8.6, "hr": 140, "title": "Palo Alto - Base", "soccer": false}, {"date": "2025-10-08", "miles": 7.61, "pace": 9.56, "hr": 136, "title": "Palo Alto Running", "soccer": false}, {"date": "2025-10-06", "miles": 3.36, "pace": 8.77, "hr": 133, "title": "Palo Alto - Recovery", "soccer": false}, {"date": "2025-10-01", "miles": 2.79, "pace": 9.33, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-29", "miles": 2.76, "pace": 9.42, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-28", "miles": 7.65, "pace": 8.64, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-27", "miles": 2.62, "pace": 9.92, "hr": 122, "title": "Kenilworth - Recovery", "soccer": false}, {"date": "2025-09-24", "miles": 3.62, "pace": 19.58, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-23", "miles": 4.05, "pace": 8.9, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-22", "miles": 5.97, "pace": 8.38, "hr": 157, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-09-17", "miles": 2.86, "pace": 9.1, "hr": 131, "title": "Frisco - Recovery", "soccer": false}, {"date": "2025-09-15", "miles": 2.77, "pace": 9.38, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-14", "miles": 1.91, "pace": 23.76, "hr": 141, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-14", "miles": 2.28, "pace": 19.77, "hr": 143, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-13", "miles": 4.19, "pace": 8.6, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-11", "miles": 4.25, "pace": 8.47, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-10", "miles": 3.82, "pace": 17.99, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-03", "miles": 3.35, "pace": 8.38, "hr": 133, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-02", "miles": 3.01, "pace": 9.39, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-01", "miles": 4.98, "pace": 8.44, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-31", "miles": 4.38, "pace": 17.61, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-08-30", "miles": 3.15, "pace": 8.9, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-26", "miles": 0.95, "pace": 22.52, "hr": 142, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-26", "miles": 0.69, "pace": 30.72, "hr": 121, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-22", "miles": 4.7, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-21", "miles": 0.0, "pace": 7.58, "hr": 127, "title": "Wilmette Running", "soccer": false}, {"date": "2025-08-21", "miles": 9.2, "pace": 8.69, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-18", "miles": 4.66, "pace": 9.02, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-17", "miles": 2.07, "pace": 20.99, "hr": 139, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-17", "miles": 2.36, "pace": 19.3, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-16", "miles": 3.14, "pace": 9.55, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-15", "miles": 3.19, "pace": 9.4, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-14", "miles": 3.2, "pace": 9.39, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-13", "miles": 4.46, "pace": 18.76, "hr": 118, "title": "Wilmette Running", "soccer": true}, {"date": "2025-08-12", "miles": 5.88, "pace": 8.5, "hr": 142, "title": "Washington - VO2 Max", "soccer": false}, {"date": "2025-08-11", "miles": 4.73, "pace": 8.88, "hr": 132, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-10", "miles": 5.01, "pace": 8.37, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-09", "miles": 7.1, "pace": 8.31, "hr": 147, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-07", "miles": 9.12, "pace": 8.67, "hr": 137, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-06", "miles": 3.09, "pace": 8.77, "hr": 131, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-05", "miles": 8.61, "pace": 8.13, "hr": 144, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-03", "miles": 5.01, "pace": 8.67, "hr": 134, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-08-02", "miles": 8.58, "pace": 8.51, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-29", "miles": 5.72, "pace": 8.4, "hr": 145, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2025-07-27", "miles": 3.16, "pace": 18.32, "hr": 115, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-26", "miles": 4.93, "pace": 8.53, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-25", "miles": 4.89, "pace": 8.6, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-24", "miles": 10.07, "pace": 8.93, "hr": 134, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-07-22", "miles": 10.12, "pace": 8.59, "hr": 149, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-20", "miles": 4.88, "pace": 17.75, "hr": 114, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-19", "miles": 5.73, "pace": 8.38, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-17", "miles": 5.23, "pace": 8.6, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-16", "miles": 4.86, "pace": 8.65, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-15", "miles": 4.93, "pace": 8.52, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-14", "miles": 4.84, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-13", "miles": 9.29, "pace": 8.83, "hr": 137, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-12", "miles": 0.95, "pace": 23.76, "hr": 114, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.76, "pace": 35.25, "hr": 100, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.55, "pace": 30.55, "hr": 106, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-11", "miles": 5.72, "pace": 8.4, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-10", "miles": 3.23, "pace": 9.29, "hr": 117, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-09", "miles": 4.65, "pace": 17.66, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-07-08", "miles": 2.01, "pace": 8.39, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-07-07", "miles": 2.81, "pace": 9.3, "hr": 115, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-06", "miles": 10.01, "pace": 8.87, "hr": 130, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-05", "miles": 5.01, "pace": 8.61, "hr": 133, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-04", "miles": 5.07, "pace": 8.3, "hr": 138, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-03", "miles": 5.06, "pace": 8.3, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-02", "miles": 6.8, "pace": 8.38, "hr": 143, "title": "Washington - Threshold", "soccer": false}, {"date": "2025-07-01", "miles": 3.23, "pace": 9.31, "hr": 121, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-30", "miles": 3.47, "pace": 9.27, "hr": 125, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-29", "miles": 1.88, "pace": 20.49, "hr": 135, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-29", "miles": 1.82, "pace": 21.54, "hr": 130, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-28", "miles": 3.23, "pace": 9.29, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-27", "miles": 3.2, "pace": 9.39, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-26", "miles": 8.98, "pace": 8.8, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-25", "miles": 5.25, "pace": 8.6, "hr": 127, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-24", "miles": 5.01, "pace": 8.83, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-23", "miles": 5.01, "pace": 8.79, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-22", "miles": 5.01, "pace": 8.52, "hr": 155, "title": "Washington - Base", "soccer": false}, {"date": "2025-06-20", "miles": 0.26, "pace": 9.61, "hr": 140, "title": "Washington Running", "soccer": false}, {"date": "2025-06-20", "miles": 2.74, "pace": 7.29, "hr": 157, "title": "Washington Running", "soccer": false}, {"date": "2025-06-15", "miles": 2.13, "pace": 18.77, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-15", "miles": 2.12, "pace": 19.8, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-14", "miles": 5.01, "pace": 8.32, "hr": 135, "title": "Kenilworth Running", "soccer": false}, {"date": "2025-06-13", "miles": 5.12, "pace": 8.8, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-12", "miles": 3.42, "pace": 9.35, "hr": 119, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-11", "miles": 4.84, "pace": 8.68, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-10", "miles": 6.98, "pace": 8.17, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-09", "miles": 5.03, "pace": 8.61, "hr": 132, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-06-08", "miles": 1.92, "pace": 25.09, "hr": 132, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-08", "miles": 2.91, "pace": 15.82, "hr": 144, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-07", "miles": 3.72, "pace": 8.97, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-05", "miles": 7.04, "pace": 8.1, "hr": 146, "title": "Wilmette - Tempo", "soccer": false}, {"date": "2025-06-04", "miles": 3.31, "pace": 19.78, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-06-04", "miles": 2.32, "pace": 8.43, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-03", "miles": 5.79, "pace": 8.3, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-01", "miles": 3.21, "pace": 9.35, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-29", "miles": 2.0, "pace": 8.65, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-05-28", "miles": 3.66, "pace": 17.61, "hr": 121, "title": "Wilmette Running", "soccer": true}, {"date": "2025-05-27", "miles": 3.22, "pace": 9.32, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-26", "miles": 4.95, "pace": 8.5, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-25", "miles": 7.02, "pace": 8.12, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-24", "miles": 3.22, "pace": 9.32, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-23", "miles": 3.17, "pace": 9.46, "hr": 123, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-22", "miles": 3.19, "pace": 9.42, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-21", "miles": 5.83, "pace": 8.34, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-20", "miles": 4.86, "pace": 8.65, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-19", "miles": 6.95, "pace": 8.2, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-18", "miles": 1.97, "pace": 23.32, "hr": 129, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-18", "miles": 2.33, "pace": 16.6, "hr": 136, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-17", "miles": 5.53, "pace": 8.13, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-15", "miles": 2.98, "pace": 9.41, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-14", "miles": 4.54, "pace": 8.59, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-13", "miles": 6.92, "pace": 8.52, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-12", "miles": 2.01, "pace": 8.43, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-11", "miles": 6.78, "pace": 8.12, "hr": 151, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-10", "miles": 3.0, "pace": 9.33, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-07", "miles": 7.18, "pace": 8.5, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-05", "miles": 4.65, "pace": 8.4, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-04", "miles": 2.32, "pace": 16.74, "hr": 146, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-05-04", "miles": 2.6, "pace": 16.85, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.96, "pace": 23.06, "hr": 140, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.98, "pace": 22.79, "hr": 134, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-26", "miles": 3.02, "pace": 9.28, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-24", "miles": 3.24, "pace": 9.27, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-23", "miles": 4.03, "pace": 17.94, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-23", "miles": 4.68, "pace": 8.33, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-22", "miles": 4.49, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-20", "miles": 2.0, "pace": 9.04, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-19", "miles": 1.74, "pace": 17.18, "hr": 134, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-19", "miles": 2.37, "pace": 17.06, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-18", "miles": 3.02, "pace": 9.29, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-17", "miles": 4.69, "pace": 8.33, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-16", "miles": 2.44, "pace": 18.52, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-16", "miles": 4.68, "pace": 8.13, "hr": 142, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-15", "miles": 4.55, "pace": 8.58, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-14", "miles": 5.48, "pace": 8.21, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-13", "miles": 3.67, "pace": 21.09, "hr": 123, "title": "Evanston Running", "soccer": true}, {"date": "2025-04-09", "miles": 5.62, "pace": 8.36, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-07", "miles": 4.54, "pace": 8.16, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-06", "miles": 2.22, "pace": 17.86, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-06", "miles": 2.17, "pace": 19.32, "hr": 127, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-05", "miles": 4.7, "pace": 8.31, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-04", "miles": 0.53, "pace": 8.36, "hr": 110, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-02", "miles": 4.61, "pace": 17.35, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-03-31", "miles": 2.01, "pace": 8.13, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-29", "miles": 4.61, "pace": 8.47, "hr": 142, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-28", "miles": 4.63, "pace": 8.43, "hr": 141, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-26", "miles": 4.62, "pace": 8.45, "hr": 144, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-25", "miles": 4.14, "pace": 8.71, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-24", "miles": 4.34, "pace": 8.3, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-22", "miles": 3.05, "pace": 8.54, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-20", "miles": 2.89, "pace": 9.03, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-19", "miles": 2.94, "pace": 8.85, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-17", "miles": 5.85, "pace": 8.21, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-03-15", "miles": 2.9, "pace": 9.02, "hr": 128, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-12", "miles": 2.91, "pace": 8.94, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-10", "miles": 4.01, "pace": 8.25, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-03-03", "miles": 2.11, "pace": 8.45, "hr": 128, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-01", "miles": 2.77, "pace": 8.67, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-27", "miles": 2.53, "pace": 9.5, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-24", "miles": 4.27, "pace": 8.02, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-22", "miles": 2.75, "pace": 8.47, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-17", "miles": 2.0, "pace": 8.16, "hr": 138, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-15", "miles": 4.01, "pace": 8.08, "hr": 147, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-10", "miles": 3.42, "pace": 8.78, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-02-01", "miles": 2.25, "pace": 8.62, "hr": 132, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-31", "miles": 1.81, "pace": 8.15, "hr": 139, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-18", "miles": 2.8, "pace": 9.28, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-01-16", "miles": 2.01, "pace": 8.16, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-15", "miles": 2.72, "pace": 8.12, "hr": 135, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-13", "miles": 2.69, "pace": 8.0, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-11", "miles": 2.65, "pace": 8.45, "hr": 136, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-06", "miles": 2.08, "pace": 8.21, "hr": 134, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-02", "miles": 2.01, "pace": 7.75, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-01", "miles": 2.25, "pace": 7.91, "hr": 135, "title": "Wilmette Running", "soccer": false}], "vo2max": [{"date": "2025-01-06", "vo2max": 51.3, "fitnessAge": 20}, {"date": "2025-01-13", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2025-01-18", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-02-01", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2025-02-10", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-02-17", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-02-24", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-03-03", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-10", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-17", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-25", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2025-03-31", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2025-04-07", "vo2max": 52.6, "fitnessAge": 20}, {"date": "2025-04-15", "vo2max": 52.8, "fitnessAge": 20}, {"date": "2025-04-22", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-04-26", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-05", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-05-13", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-20", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-27", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-06-03", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-06-10", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-06-14", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-06-24", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-07-01", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-07-08", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-07-15", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-07-22", "vo2max": 53.3, "fitnessAge": 20}, {"date": "2025-07-29", "vo2max": 53.3, "fitnessAge": 20}, {"date": "2025-08-05", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-08-12", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-08-18", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-08-22", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-09-02", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-03", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-15", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-23", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-09-29", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-06", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-09", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-21", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-28", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-11-04", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-11-15", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-11-24", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-11-27", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-12-08", "vo2max": 52.9, "fitnessAge": 20}, {"date": "2025-12-20", "vo2max": 52.6, "fitnessAge": 20}, {"date": "2025-12-24", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2026-01-06", "vo2max": 52.3, "fitnessAge": 20}, {"date": "2026-01-11", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-01-22", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2026-02-03", "vo2max": 51.8, "fitnessAge": 20}, {"date": "2026-02-10", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-02-14", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-02-23", "vo2max": 51.6, "fitnessAge": 20}, {"date": "2026-03-03", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-03-09", "vo2max": 51.8, "fitnessAge": 20}, {"date": "2026-03-17", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-03-23", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2026-03-31", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-04-07", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-04-14", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2026-04-21", "vo2max": 52.5, "fitnessAge": 20}, {"date": "2026-04-25", "vo2max": 52.6, "fitnessAge": 20}], "racePredictions": {"5k": "20:01", "10k": "42:53", "half": "1:40:42", "marathon": "3:53:44"}};
-</script>
+<script>const RUNS = {"2026": [{"date": "2026-04-26", "miles": 2.73, "pace": 16.73, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-25", "miles": 5.01, "pace": 9.04, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-24", "miles": 9.08, "pace": 8.7, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-22", "miles": 3.79, "pace": 19.19, "hr": 109, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-22", "miles": 4.86, "pace": 8.65, "hr": 134, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-21", "miles": 4.79, "pace": 8.76, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-20", "miles": 6.24, "pace": 8.66, "hr": 147, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2026-04-19", "miles": 2.11, "pace": 23.12, "hr": 135, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-19", "miles": 2.14, "pace": 21.37, "hr": 136, "title": "Des Plaines Running", "soccer": true}, {"date": "2026-04-16", "miles": 7.39, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-15", "miles": 4.74, "pace": 8.87, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-14", "miles": 5.81, "pace": 8.27, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-13", "miles": 4.78, "pace": 8.79, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-12", "miles": 2.35, "pace": 19.56, "hr": 136, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-12", "miles": 1.96, "pace": 20.74, "hr": 135, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-09", "miles": 4.76, "pace": 8.83, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-08", "miles": 2.8, "pace": 18.76, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2026-04-08", "miles": 4.67, "pace": 9.0, "hr": 129, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-07", "miles": 5.01, "pace": 8.38, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-04-06", "miles": 5.74, "pace": 8.37, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-04-05", "miles": 3.01, "pace": 20.52, "hr": 123, "title": "Glenview Running", "soccer": true}, {"date": "2026-04-03", "miles": 3.05, "pace": 9.85, "hr": 124, "title": "Recovery", "soccer": false}, {"date": "2026-04-02", "miles": 4.73, "pace": 8.88, "hr": 136, "title": "Base", "soccer": false}, {"date": "2026-04-01", "miles": 5.02, "pace": 8.37, "hr": 149, "title": "Base", "soccer": false}, {"date": "2026-03-31", "miles": 6.32, "pace": 8.82, "hr": 139, "title": "Base", "soccer": false}, {"date": "2026-03-30", "miles": 4.36, "pace": 8.96, "hr": 134, "title": "Base", "soccer": false}, {"date": "2026-03-29", "miles": 4.74, "pace": 8.43, "hr": 148, "title": "Threshold", "soccer": false}, {"date": "2026-03-25", "miles": 3.19, "pace": 9.4, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-23", "miles": 5.63, "pace": 8.36, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-22", "miles": 3.11, "pace": 8.99, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-21", "miles": 4.69, "pace": 8.32, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-20", "miles": 2.03, "pace": 8.01, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-18", "miles": 4.45, "pace": 8.78, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-17", "miles": 4.65, "pace": 8.39, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-14", "miles": 5.24, "pace": 8.01, "hr": 158, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2026-03-11", "miles": 3.01, "pace": 10.04, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2026-03-09", "miles": 5.79, "pace": 8.46, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-03-06", "miles": 5.45, "pace": 8.26, "hr": 144, "title": "Chicago - Threshold", "soccer": false}, {"date": "2026-03-03", "miles": 2.92, "pace": 9.59, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-03-02", "miles": 5.42, "pace": 8.49, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-28", "miles": 4.66, "pace": 8.36, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-27", "miles": 4.43, "pace": 8.81, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-23", "miles": 3.25, "pace": 9.44, "hr": 137, "title": "Wilmette Running", "soccer": false}, {"date": "2026-02-21", "miles": 4.64, "pace": 8.41, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-20", "miles": 4.15, "pace": 8.67, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-18", "miles": 2.87, "pace": 9.06, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-14", "miles": 4.27, "pace": 8.43, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-13", "miles": 3.0, "pace": 8.83, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-10", "miles": 3.83, "pace": 8.62, "hr": 151, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-09", "miles": 3.73, "pace": 8.85, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-04", "miles": 2.47, "pace": 9.73, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-02-03", "miles": 3.69, "pace": 8.95, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-02-02", "miles": 6.17, "pace": 9.08, "hr": 145, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-31", "miles": 3.58, "pace": 9.23, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-22", "miles": 3.89, "pace": 9.26, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-11", "miles": 2.95, "pace": 9.5, "hr": 137, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2026-01-10", "miles": 4.12, "pace": 8.74, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-09", "miles": 4.15, "pace": 8.67, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-07", "miles": 4.12, "pace": 8.74, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-06", "miles": 3.82, "pace": 8.63, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-03", "miles": 3.75, "pace": 8.8, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2026-01-02", "miles": 3.7, "pace": 8.93, "hr": 145, "title": "Wilmette - Base", "soccer": false}], "2025": [{"date": "2025-12-31", "miles": 5.01, "pace": 8.43, "hr": 150, "title": "Wilmette Running", "soccer": false}, {"date": "2025-12-24", "miles": 6.33, "pace": 8.37, "hr": 150, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-20", "miles": 3.55, "pace": 8.47, "hr": 153, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-12-08", "miles": 3.54, "pace": 8.47, "hr": 139, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-11-27", "miles": 3.18, "pace": 8.34, "hr": 151, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-11-24", "miles": 6.84, "pace": 8.63, "hr": 147, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-11-22", "miles": 2.47, "pace": 8.93, "hr": 134, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-15", "miles": 2.85, "pace": 8.45, "hr": 144, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-11-09", "miles": 1.53, "pace": 25.28, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-09", "miles": 1.51, "pace": 19.99, "hr": 111, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-05", "miles": 3.14, "pace": 17.81, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-04", "miles": 4.01, "pace": 8.25, "hr": 154, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-03", "miles": 4.01, "pace": 8.32, "hr": 146, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-11-02", "miles": 1.87, "pace": 17.74, "hr": 139, "title": "Wilmette Running", "soccer": true}, {"date": "2025-11-02", "miles": 1.56, "pace": 24.1, "hr": 127, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-28", "miles": 3.42, "pace": 8.78, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-22", "miles": 3.0, "pace": 21.9, "hr": 113, "title": "Wilmette Running", "soccer": true}, {"date": "2025-10-21", "miles": 2.72, "pace": 9.24, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-20", "miles": 2.76, "pace": 8.71, "hr": 135, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-10-19", "miles": 3.41, "pace": 8.37, "hr": 147, "title": "Wilmette Running", "soccer": false}, {"date": "2025-10-18", "miles": 3.75, "pace": 8.79, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-10-09", "miles": 4.25, "pace": 8.6, "hr": 140, "title": "Palo Alto - Base", "soccer": false}, {"date": "2025-10-08", "miles": 7.61, "pace": 9.56, "hr": 136, "title": "Palo Alto Running", "soccer": false}, {"date": "2025-10-06", "miles": 3.36, "pace": 8.77, "hr": 133, "title": "Palo Alto - Recovery", "soccer": false}, {"date": "2025-10-01", "miles": 2.79, "pace": 9.33, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-29", "miles": 2.76, "pace": 9.42, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-28", "miles": 7.65, "pace": 8.64, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-27", "miles": 2.62, "pace": 9.92, "hr": 122, "title": "Kenilworth - Recovery", "soccer": false}, {"date": "2025-09-24", "miles": 3.62, "pace": 19.58, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-23", "miles": 4.05, "pace": 8.9, "hr": 144, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-22", "miles": 5.97, "pace": 8.38, "hr": 157, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-09-17", "miles": 2.86, "pace": 9.1, "hr": 131, "title": "Frisco - Recovery", "soccer": false}, {"date": "2025-09-15", "miles": 2.77, "pace": 9.38, "hr": 132, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-14", "miles": 1.91, "pace": 23.76, "hr": 141, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-14", "miles": 2.28, "pace": 19.77, "hr": 143, "title": "Glenview Running", "soccer": true}, {"date": "2025-09-13", "miles": 4.19, "pace": 8.6, "hr": 140, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-11", "miles": 4.25, "pace": 8.47, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-09-10", "miles": 3.82, "pace": 17.99, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-09-03", "miles": 3.35, "pace": 8.38, "hr": 133, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-02", "miles": 3.01, "pace": 9.39, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-09-01", "miles": 4.98, "pace": 8.44, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-31", "miles": 4.38, "pace": 17.61, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-08-30", "miles": 3.15, "pace": 8.9, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-26", "miles": 0.95, "pace": 22.52, "hr": 142, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-26", "miles": 0.69, "pace": 30.72, "hr": 121, "title": "Chicago Running", "soccer": true}, {"date": "2025-08-22", "miles": 4.7, "pace": 8.93, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-21", "miles": 0.0, "pace": 7.58, "hr": 127, "title": "Wilmette Running", "soccer": false}, {"date": "2025-08-21", "miles": 9.2, "pace": 8.69, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-18", "miles": 4.66, "pace": 9.02, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-08-17", "miles": 2.07, "pace": 20.99, "hr": 139, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-17", "miles": 2.36, "pace": 19.3, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-08-16", "miles": 3.14, "pace": 9.55, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-15", "miles": 3.19, "pace": 9.4, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-14", "miles": 3.2, "pace": 9.39, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-08-13", "miles": 4.46, "pace": 18.76, "hr": 118, "title": "Wilmette Running", "soccer": true}, {"date": "2025-08-12", "miles": 5.88, "pace": 8.5, "hr": 142, "title": "Washington - VO2 Max", "soccer": false}, {"date": "2025-08-11", "miles": 4.73, "pace": 8.88, "hr": 132, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-10", "miles": 5.01, "pace": 8.37, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-08-09", "miles": 7.1, "pace": 8.31, "hr": 147, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-07", "miles": 9.12, "pace": 8.67, "hr": 137, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-06", "miles": 3.09, "pace": 8.77, "hr": 131, "title": "Minneapolis - Base", "soccer": false}, {"date": "2025-08-05", "miles": 8.61, "pace": 8.13, "hr": 144, "title": "Minneapolis - Tempo", "soccer": false}, {"date": "2025-08-03", "miles": 5.01, "pace": 8.67, "hr": 134, "title": "Minneapolis Running", "soccer": false}, {"date": "2025-08-02", "miles": 8.58, "pace": 8.51, "hr": 135, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-29", "miles": 5.72, "pace": 8.4, "hr": 145, "title": "Wilmette - VO2 Max", "soccer": false}, {"date": "2025-07-27", "miles": 3.16, "pace": 18.32, "hr": 115, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-26", "miles": 4.93, "pace": 8.53, "hr": 130, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-25", "miles": 4.89, "pace": 8.6, "hr": 141, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-24", "miles": 10.07, "pace": 8.93, "hr": 134, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-07-22", "miles": 10.12, "pace": 8.59, "hr": 149, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-20", "miles": 4.88, "pace": 17.75, "hr": 114, "title": "Glenview Running", "soccer": true}, {"date": "2025-07-19", "miles": 5.73, "pace": 8.38, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-17", "miles": 5.23, "pace": 8.6, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-16", "miles": 4.86, "pace": 8.65, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-15", "miles": 4.93, "pace": 8.52, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-14", "miles": 4.84, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-13", "miles": 9.29, "pace": 8.83, "hr": 137, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-07-12", "miles": 0.95, "pace": 23.76, "hr": 114, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.76, "pace": 35.25, "hr": 100, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-12", "miles": 0.55, "pace": 30.55, "hr": 106, "title": "Evanston Running", "soccer": true}, {"date": "2025-07-11", "miles": 5.72, "pace": 8.4, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-07-10", "miles": 3.23, "pace": 9.29, "hr": 117, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-09", "miles": 4.65, "pace": 17.66, "hr": 115, "title": "Wilmette Running", "soccer": true}, {"date": "2025-07-08", "miles": 2.01, "pace": 8.39, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-07-07", "miles": 2.81, "pace": 9.3, "hr": 115, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-07-06", "miles": 10.01, "pace": 8.87, "hr": 130, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-05", "miles": 5.01, "pace": 8.61, "hr": 133, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-04", "miles": 5.07, "pace": 8.3, "hr": 138, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-03", "miles": 5.06, "pace": 8.3, "hr": 136, "title": "Washington - Base", "soccer": false}, {"date": "2025-07-02", "miles": 6.8, "pace": 8.38, "hr": 143, "title": "Washington - Threshold", "soccer": false}, {"date": "2025-07-01", "miles": 3.23, "pace": 9.31, "hr": 121, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-30", "miles": 3.47, "pace": 9.27, "hr": 125, "title": "Washington - Recovery", "soccer": false}, {"date": "2025-06-29", "miles": 1.88, "pace": 20.49, "hr": 135, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-29", "miles": 1.82, "pace": 21.54, "hr": 130, "title": "Lemont Running", "soccer": true}, {"date": "2025-06-28", "miles": 3.23, "pace": 9.29, "hr": 122, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-27", "miles": 3.2, "pace": 9.39, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-26", "miles": 8.98, "pace": 8.8, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-25", "miles": 5.25, "pace": 8.6, "hr": 127, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-24", "miles": 5.01, "pace": 8.83, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-23", "miles": 5.01, "pace": 8.79, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-22", "miles": 5.01, "pace": 8.52, "hr": 155, "title": "Washington - Base", "soccer": false}, {"date": "2025-06-20", "miles": 0.26, "pace": 9.61, "hr": 140, "title": "Washington Running", "soccer": false}, {"date": "2025-06-20", "miles": 2.74, "pace": 7.29, "hr": 157, "title": "Washington Running", "soccer": false}, {"date": "2025-06-15", "miles": 2.13, "pace": 18.77, "hr": 137, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-15", "miles": 2.12, "pace": 19.8, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-06-14", "miles": 5.01, "pace": 8.32, "hr": 135, "title": "Kenilworth Running", "soccer": false}, {"date": "2025-06-13", "miles": 5.12, "pace": 8.8, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-12", "miles": 3.42, "pace": 9.35, "hr": 119, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-11", "miles": 4.84, "pace": 8.68, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-06-10", "miles": 6.98, "pace": 8.17, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-09", "miles": 5.03, "pace": 8.61, "hr": 132, "title": "Kenilworth - Base", "soccer": false}, {"date": "2025-06-08", "miles": 1.92, "pace": 25.09, "hr": 132, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-08", "miles": 2.91, "pace": 15.82, "hr": 144, "title": "Buffalo Grove Running", "soccer": true}, {"date": "2025-06-07", "miles": 3.72, "pace": 8.97, "hr": 125, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-06-05", "miles": 7.04, "pace": 8.1, "hr": 146, "title": "Wilmette - Tempo", "soccer": false}, {"date": "2025-06-04", "miles": 3.31, "pace": 19.78, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-06-04", "miles": 2.32, "pace": 8.43, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-06-03", "miles": 5.79, "pace": 8.3, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-06-01", "miles": 3.21, "pace": 9.35, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-29", "miles": 2.0, "pace": 8.65, "hr": 123, "title": "Wilmette Running", "soccer": false}, {"date": "2025-05-28", "miles": 3.66, "pace": 17.61, "hr": 121, "title": "Wilmette Running", "soccer": true}, {"date": "2025-05-27", "miles": 3.22, "pace": 9.32, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-26", "miles": 4.95, "pace": 8.5, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-25", "miles": 7.02, "pace": 8.12, "hr": 146, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-24", "miles": 3.22, "pace": 9.32, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-23", "miles": 3.17, "pace": 9.46, "hr": 123, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-22", "miles": 3.19, "pace": 9.42, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-21", "miles": 5.83, "pace": 8.34, "hr": 140, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-20", "miles": 4.86, "pace": 8.65, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-19", "miles": 6.95, "pace": 8.2, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-18", "miles": 1.97, "pace": 23.32, "hr": 129, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-18", "miles": 2.33, "pace": 16.6, "hr": 136, "title": "Burr Ridge Running", "soccer": true}, {"date": "2025-05-17", "miles": 5.53, "pace": 8.13, "hr": 144, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-15", "miles": 2.98, "pace": 9.41, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-14", "miles": 4.54, "pace": 8.59, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-13", "miles": 6.92, "pace": 8.52, "hr": 139, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-12", "miles": 2.01, "pace": 8.43, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-11", "miles": 6.78, "pace": 8.12, "hr": 151, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-05-10", "miles": 3.0, "pace": 9.33, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-05-07", "miles": 7.18, "pace": 8.5, "hr": 143, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-05", "miles": 4.65, "pace": 8.4, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-05-04", "miles": 2.32, "pace": 16.74, "hr": 146, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-05-04", "miles": 2.6, "pace": 16.85, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.96, "pace": 23.06, "hr": 140, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-27", "miles": 1.98, "pace": 22.79, "hr": 134, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-26", "miles": 3.02, "pace": 9.28, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-24", "miles": 3.24, "pace": 9.27, "hr": 121, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-23", "miles": 4.03, "pace": 17.94, "hr": 114, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-23", "miles": 4.68, "pace": 8.33, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-22", "miles": 4.49, "pace": 8.69, "hr": 132, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-20", "miles": 2.0, "pace": 9.04, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-19", "miles": 1.74, "pace": 17.18, "hr": 134, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-19", "miles": 2.37, "pace": 17.06, "hr": 132, "title": "Des Plaines Running", "soccer": true}, {"date": "2025-04-18", "miles": 3.02, "pace": 9.29, "hr": 129, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-04-17", "miles": 4.69, "pace": 8.33, "hr": 131, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-16", "miles": 2.44, "pace": 18.52, "hr": 112, "title": "Wilmette Running", "soccer": true}, {"date": "2025-04-16", "miles": 4.68, "pace": 8.13, "hr": 142, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-15", "miles": 4.55, "pace": 8.58, "hr": 133, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-14", "miles": 5.48, "pace": 8.21, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-13", "miles": 3.67, "pace": 21.09, "hr": 123, "title": "Evanston Running", "soccer": true}, {"date": "2025-04-09", "miles": 5.62, "pace": 8.36, "hr": 138, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-07", "miles": 4.54, "pace": 8.16, "hr": 141, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-04-06", "miles": 2.22, "pace": 17.86, "hr": 133, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-06", "miles": 2.17, "pace": 19.32, "hr": 127, "title": "Glenview Running", "soccer": true}, {"date": "2025-04-05", "miles": 4.7, "pace": 8.31, "hr": 136, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-04-04", "miles": 0.53, "pace": 8.36, "hr": 110, "title": "Wilmette Running", "soccer": false}, {"date": "2025-04-02", "miles": 4.61, "pace": 17.35, "hr": 119, "title": "Wilmette Running", "soccer": true}, {"date": "2025-03-31", "miles": 2.01, "pace": 8.13, "hr": 138, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-29", "miles": 4.61, "pace": 8.47, "hr": 142, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-28", "miles": 4.63, "pace": 8.43, "hr": 141, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-26", "miles": 4.62, "pace": 8.45, "hr": 144, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-25", "miles": 4.14, "pace": 8.71, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-24", "miles": 4.34, "pace": 8.3, "hr": 143, "title": "Hig\u00fcey - Base", "soccer": false}, {"date": "2025-03-22", "miles": 3.05, "pace": 8.54, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-20", "miles": 2.89, "pace": 9.03, "hr": 126, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-19", "miles": 2.94, "pace": 8.85, "hr": 127, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-17", "miles": 5.85, "pace": 8.21, "hr": 148, "title": "Wilmette - Threshold", "soccer": false}, {"date": "2025-03-15", "miles": 2.9, "pace": 9.02, "hr": 128, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-12", "miles": 2.91, "pace": 8.94, "hr": 138, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-03-10", "miles": 4.01, "pace": 8.25, "hr": 142, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-03-03", "miles": 2.11, "pace": 8.45, "hr": 128, "title": "Wilmette Running", "soccer": false}, {"date": "2025-03-01", "miles": 2.77, "pace": 8.67, "hr": 131, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-27", "miles": 2.53, "pace": 9.5, "hr": 124, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-02-24", "miles": 4.27, "pace": 8.02, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-22", "miles": 2.75, "pace": 8.47, "hr": 143, "title": "Wilmette Running", "soccer": false}, {"date": "2025-02-17", "miles": 2.0, "pace": 8.16, "hr": 138, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-15", "miles": 4.01, "pace": 8.08, "hr": 147, "title": "Clark County Running", "soccer": false}, {"date": "2025-02-10", "miles": 3.42, "pace": 8.78, "hr": 147, "title": "Wilmette - Base", "soccer": false}, {"date": "2025-02-01", "miles": 2.25, "pace": 8.62, "hr": 132, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-31", "miles": 1.81, "pace": 8.15, "hr": 139, "title": "Nassau County Running", "soccer": false}, {"date": "2025-01-18", "miles": 2.8, "pace": 9.28, "hr": 136, "title": "Wilmette - Recovery", "soccer": false}, {"date": "2025-01-16", "miles": 2.01, "pace": 8.16, "hr": 131, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-15", "miles": 2.72, "pace": 8.12, "hr": 135, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-13", "miles": 2.69, "pace": 8.0, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-11", "miles": 2.65, "pace": 8.45, "hr": 136, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-06", "miles": 2.08, "pace": 8.21, "hr": 134, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-02", "miles": 2.01, "pace": 7.75, "hr": 141, "title": "Wilmette Running", "soccer": false}, {"date": "2025-01-01", "miles": 2.25, "pace": 7.91, "hr": 135, "title": "Wilmette Running", "soccer": false}], "vo2max": [{"date": "2025-01-06", "vo2max": 51.3, "fitnessAge": 20}, {"date": "2025-01-13", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2025-01-18", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-02-01", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2025-02-10", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-02-17", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-02-24", "vo2max": 52.0, "fitnessAge": 20}, {"date": "2025-03-03", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-10", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-17", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2025-03-25", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2025-03-31", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2025-04-07", "vo2max": 52.6, "fitnessAge": 20}, {"date": "2025-04-15", "vo2max": 52.8, "fitnessAge": 20}, {"date": "2025-04-22", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-04-26", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-05", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-05-13", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-20", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-05-27", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-06-03", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-06-10", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-06-14", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-06-24", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-07-01", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-07-08", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-07-15", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-07-22", "vo2max": 53.3, "fitnessAge": 20}, {"date": "2025-07-29", "vo2max": 53.3, "fitnessAge": 20}, {"date": "2025-08-05", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-08-12", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-08-18", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-08-22", "vo2max": 53.5, "fitnessAge": 20}, {"date": "2025-09-02", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-03", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-15", "vo2max": 53.6, "fitnessAge": 20}, {"date": "2025-09-23", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-09-29", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-06", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-09", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-21", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-10-28", "vo2max": 53.4, "fitnessAge": 20}, {"date": "2025-11-04", "vo2max": 53.2, "fitnessAge": 20}, {"date": "2025-11-15", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-11-24", "vo2max": 53.1, "fitnessAge": 20}, {"date": "2025-11-27", "vo2max": 53.0, "fitnessAge": 20}, {"date": "2025-12-08", "vo2max": 52.9, "fitnessAge": 20}, {"date": "2025-12-20", "vo2max": 52.6, "fitnessAge": 20}, {"date": "2025-12-24", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2026-01-06", "vo2max": 52.3, "fitnessAge": 20}, {"date": "2026-01-11", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-01-22", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2026-02-03", "vo2max": 51.8, "fitnessAge": 20}, {"date": "2026-02-10", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-02-14", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-02-23", "vo2max": 51.6, "fitnessAge": 20}, {"date": "2026-03-03", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-03-09", "vo2max": 51.8, "fitnessAge": 20}, {"date": "2026-03-17", "vo2max": 51.7, "fitnessAge": 20}, {"date": "2026-03-23", "vo2max": 52.1, "fitnessAge": 20}, {"date": "2026-03-31", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-04-07", "vo2max": 52.2, "fitnessAge": 20}, {"date": "2026-04-14", "vo2max": 52.4, "fitnessAge": 20}, {"date": "2026-04-21", "vo2max": 52.5, "fitnessAge": 20}, {"date": "2026-04-25", "vo2max": 52.6, "fitnessAge": 20}], "rhr": [{"date": "2025-01-01", "rhr": 52}, {"date": "2025-01-02", "rhr": 52}, {"date": "2025-01-03", "rhr": 58}, {"date": "2025-01-04", "rhr": 54}, {"date": "2025-01-05", "rhr": 59}, {"date": "2025-01-06", "rhr": 53}, {"date": "2025-01-07", "rhr": 52}, {"date": "2025-01-08", "rhr": 56}, {"date": "2025-01-09", "rhr": 56}, {"date": "2025-01-10", "rhr": 53}, {"date": "2025-01-11", "rhr": 55}, {"date": "2025-01-12", "rhr": 58}, {"date": "2025-01-13", "rhr": 56}, {"date": "2025-01-14", "rhr": 54}, {"date": "2025-01-15", "rhr": 56}, {"date": "2025-01-16", "rhr": 55}, {"date": "2025-01-17", "rhr": 57}, {"date": "2025-01-18", "rhr": 58}, {"date": "2025-01-19", "rhr": 57}, {"date": "2025-01-20", "rhr": 55}, {"date": "2025-01-21", "rhr": 57}, {"date": "2025-01-22", "rhr": 57}, {"date": "2025-01-23", "rhr": 56}, {"date": "2025-01-24", "rhr": 59}, {"date": "2025-01-25", "rhr": 57}, {"date": "2025-01-26", "rhr": 61}, {"date": "2025-01-27", "rhr": 53}, {"date": "2025-01-28", "rhr": 60}, {"date": "2025-01-29", "rhr": 60}, {"date": "2025-01-30", "rhr": 59}, {"date": "2025-01-31", "rhr": 59}, {"date": "2025-02-01", "rhr": 57}, {"date": "2025-02-02", "rhr": 53}, {"date": "2025-02-03", "rhr": 59}, {"date": "2025-02-04", "rhr": 62}, {"date": "2025-02-05", "rhr": 59}, {"date": "2025-02-06", "rhr": 61}, {"date": "2025-02-07", "rhr": 56}, {"date": "2025-02-08", "rhr": 55}, {"date": "2025-02-09", "rhr": 53}, {"date": "2025-02-10", "rhr": 56}, {"date": "2025-02-11", "rhr": 60}, {"date": "2025-02-12", "rhr": 59}, {"date": "2025-02-13", "rhr": 56}, {"date": "2025-02-14", "rhr": 58}, {"date": "2025-02-15", "rhr": 57}, {"date": "2025-02-16", "rhr": 57}, {"date": "2025-02-17", "rhr": 58}, {"date": "2025-02-18", "rhr": 51}, {"date": "2025-02-19", "rhr": 57}, {"date": "2025-02-20", "rhr": 55}, {"date": "2025-02-21", "rhr": 54}, {"date": "2025-02-22", "rhr": 58}, {"date": "2025-02-23", "rhr": 57}, {"date": "2025-02-24", "rhr": 60}, {"date": "2025-02-25", "rhr": 58}, {"date": "2025-02-26", "rhr": 56}, {"date": "2025-02-27", "rhr": 56}, {"date": "2025-02-28", "rhr": 60}, {"date": "2025-03-01", "rhr": 54}, {"date": "2025-03-02", "rhr": 58}, {"date": "2025-03-03", "rhr": 53}, {"date": "2025-03-04", "rhr": 55}, {"date": "2025-03-05", "rhr": 61}, {"date": "2025-03-06", "rhr": 56}, {"date": "2025-03-07", "rhr": 55}, {"date": "2025-03-08", "rhr": 60}, {"date": "2025-03-09", "rhr": 58}, {"date": "2025-03-10", "rhr": 54}, {"date": "2025-03-11", "rhr": 56}, {"date": "2025-03-12", "rhr": 54}, {"date": "2025-03-13", "rhr": 51}, {"date": "2025-03-14", "rhr": 52}, {"date": "2025-03-15", "rhr": 55}, {"date": "2025-03-16", "rhr": 56}, {"date": "2025-03-17", "rhr": 50}, {"date": "2025-03-18", "rhr": 56}, {"date": "2025-03-19", "rhr": 57}, {"date": "2025-03-20", "rhr": 55}, {"date": "2025-03-21", "rhr": 54}, {"date": "2025-03-22", "rhr": 56}, {"date": "2025-03-23", "rhr": 52}, {"date": "2025-03-24", "rhr": 48}, {"date": "2025-03-25", "rhr": 58}, {"date": "2025-03-26", "rhr": 54}, {"date": "2025-03-27", "rhr": 52}, {"date": "2025-03-28", "rhr": 54}, {"date": "2025-03-29", "rhr": 59}, {"date": "2025-03-30", "rhr": 53}, {"date": "2025-03-31", "rhr": 53}, {"date": "2025-04-01", "rhr": 53}, {"date": "2025-04-02", "rhr": 53}, {"date": "2025-04-03", "rhr": 55}, {"date": "2025-04-04", "rhr": 56}, {"date": "2025-04-05", "rhr": 57}, {"date": "2025-04-06", "rhr": 52}, {"date": "2025-04-07", "rhr": 55}, {"date": "2025-04-08", "rhr": 54}, {"date": "2025-04-09", "rhr": 57}, {"date": "2025-04-10", "rhr": 55}, {"date": "2025-04-11", "rhr": 58}, {"date": "2025-04-12", "rhr": 52}, {"date": "2025-04-13", "rhr": 58}, {"date": "2025-04-14", "rhr": 54}, {"date": "2025-04-15", "rhr": 59}, {"date": "2025-04-16", "rhr": 52}, {"date": "2025-04-17", "rhr": 55}, {"date": "2025-04-18", "rhr": 58}, {"date": "2025-04-19", "rhr": 56}, {"date": "2025-04-20", "rhr": 50}, {"date": "2025-04-21", "rhr": 54}, {"date": "2025-04-22", "rhr": 48}, {"date": "2025-04-23", "rhr": 51}, {"date": "2025-04-24", "rhr": 56}, {"date": "2025-04-25", "rhr": 51}, {"date": "2025-04-26", "rhr": 58}, {"date": "2025-04-27", "rhr": 55}, {"date": "2025-04-28", "rhr": 52}, {"date": "2025-04-29", "rhr": 54}, {"date": "2025-04-30", "rhr": 52}, {"date": "2025-05-01", "rhr": 53}, {"date": "2025-05-02", "rhr": 54}, {"date": "2025-05-03", "rhr": 56}, {"date": "2025-05-04", "rhr": 58}, {"date": "2025-05-05", "rhr": 56}, {"date": "2025-05-06", "rhr": 58}, {"date": "2025-05-07", "rhr": 57}, {"date": "2025-05-08", "rhr": 61}, {"date": "2025-05-09", "rhr": 58}, {"date": "2025-05-10", "rhr": 58}, {"date": "2025-05-11", "rhr": 53}, {"date": "2025-05-12", "rhr": 56}, {"date": "2025-05-13", "rhr": 58}, {"date": "2025-05-14", "rhr": 52}, {"date": "2025-05-15", "rhr": 53}, {"date": "2025-05-16", "rhr": 53}, {"date": "2025-05-17", "rhr": 56}, {"date": "2025-05-18", "rhr": 53}, {"date": "2025-05-19", "rhr": 50}, {"date": "2025-05-20", "rhr": 51}, {"date": "2025-05-21", "rhr": 54}, {"date": "2025-05-22", "rhr": 54}, {"date": "2025-05-23", "rhr": 53}, {"date": "2025-05-24", "rhr": 50}, {"date": "2025-05-25", "rhr": 49}, {"date": "2025-05-26", "rhr": 51}, {"date": "2025-05-27", "rhr": 51}, {"date": "2025-05-28", "rhr": 52}, {"date": "2025-05-29", "rhr": 54}, {"date": "2025-05-30", "rhr": 55}, {"date": "2025-05-31", "rhr": 49}, {"date": "2025-06-01", "rhr": 56}, {"date": "2025-06-02", "rhr": 51}, {"date": "2025-06-03", "rhr": 55}, {"date": "2025-06-04", "rhr": 54}, {"date": "2025-06-05", "rhr": 56}, {"date": "2025-06-06", "rhr": 52}, {"date": "2025-06-07", "rhr": 53}, {"date": "2025-06-08", "rhr": 52}, {"date": "2025-06-09", "rhr": 51}, {"date": "2025-06-10", "rhr": 55}, {"date": "2025-06-11", "rhr": 53}, {"date": "2025-06-12", "rhr": 50}, {"date": "2025-06-13", "rhr": 53}, {"date": "2025-06-14", "rhr": 55}, {"date": "2025-06-15", "rhr": 48}, {"date": "2025-06-16", "rhr": 52}, {"date": "2025-06-17", "rhr": 48}, {"date": "2025-06-18", "rhr": 52}, {"date": "2025-06-19", "rhr": 51}, {"date": "2025-06-20", "rhr": 54}, {"date": "2025-06-21", "rhr": 55}, {"date": "2025-06-22", "rhr": 52}, {"date": "2025-06-23", "rhr": 52}, {"date": "2025-06-24", "rhr": 53}, {"date": "2025-06-25", "rhr": 53}, {"date": "2025-06-26", "rhr": 52}, {"date": "2025-06-27", "rhr": 55}, {"date": "2025-06-28", "rhr": 50}, {"date": "2025-06-29", "rhr": 48}, {"date": "2025-06-30", "rhr": 47}, {"date": "2025-07-01", "rhr": 49}, {"date": "2025-07-02", "rhr": 47}, {"date": "2025-07-03", "rhr": 54}, {"date": "2025-07-04", "rhr": 53}, {"date": "2025-07-05", "rhr": 55}, {"date": "2025-07-06", "rhr": 50}, {"date": "2025-07-07", "rhr": 47}, {"date": "2025-07-08", "rhr": 53}, {"date": "2025-07-09", "rhr": 48}, {"date": "2025-07-10", "rhr": 55}, {"date": "2025-07-11", "rhr": 47}, {"date": "2025-07-12", "rhr": 54}, {"date": "2025-07-13", "rhr": 49}, {"date": "2025-07-14", "rhr": 48}, {"date": "2025-07-15", "rhr": 50}, {"date": "2025-07-16", "rhr": 55}, {"date": "2025-07-17", "rhr": 47}, {"date": "2025-07-18", "rhr": 55}, {"date": "2025-07-19", "rhr": 45}, {"date": "2025-07-20", "rhr": 51}, {"date": "2025-07-21", "rhr": 53}, {"date": "2025-07-22", "rhr": 50}, {"date": "2025-07-23", "rhr": 50}, {"date": "2025-07-24", "rhr": 51}, {"date": "2025-07-25", "rhr": 51}, {"date": "2025-07-26", "rhr": 52}, {"date": "2025-07-27", "rhr": 52}, {"date": "2025-07-28", "rhr": 48}, {"date": "2025-07-29", "rhr": 46}, {"date": "2025-07-30", "rhr": 48}, {"date": "2025-07-31", "rhr": 47}, {"date": "2025-08-01", "rhr": 53}, {"date": "2025-08-02", "rhr": 49}, {"date": "2025-08-03", "rhr": 53}, {"date": "2025-08-04", "rhr": 54}, {"date": "2025-08-05", "rhr": 53}, {"date": "2025-08-06", "rhr": 53}, {"date": "2025-08-07", "rhr": 52}, {"date": "2025-08-08", "rhr": 56}, {"date": "2025-08-09", "rhr": 51}, {"date": "2025-08-10", "rhr": 53}, {"date": "2025-08-11", "rhr": 50}, {"date": "2025-08-12", "rhr": 54}, {"date": "2025-08-13", "rhr": 50}, {"date": "2025-08-14", "rhr": 55}, {"date": "2025-08-15", "rhr": 56}, {"date": "2025-08-16", "rhr": 55}, {"date": "2025-08-17", "rhr": 54}, {"date": "2025-08-18", "rhr": 53}, {"date": "2025-08-19", "rhr": 50}, {"date": "2025-08-20", "rhr": 51}, {"date": "2025-08-21", "rhr": 50}, {"date": "2025-08-22", "rhr": 54}, {"date": "2025-08-23", "rhr": 54}, {"date": "2025-08-24", "rhr": 48}, {"date": "2025-08-25", "rhr": 53}, {"date": "2025-08-26", "rhr": 49}, {"date": "2025-08-27", "rhr": 56}, {"date": "2025-08-28", "rhr": 52}, {"date": "2025-08-29", "rhr": 53}, {"date": "2025-08-30", "rhr": 56}, {"date": "2025-08-31", "rhr": 49}, {"date": "2025-09-01", "rhr": 55}, {"date": "2025-09-02", "rhr": 53}, {"date": "2025-09-03", "rhr": 54}, {"date": "2025-09-04", "rhr": 56}, {"date": "2025-09-05", "rhr": 57}, {"date": "2025-09-06", "rhr": 53}, {"date": "2025-09-07", "rhr": 54}, {"date": "2025-09-08", "rhr": 48}, {"date": "2025-09-09", "rhr": 52}, {"date": "2025-09-10", "rhr": 54}, {"date": "2025-09-11", "rhr": 58}, {"date": "2025-09-12", "rhr": 50}, {"date": "2025-09-13", "rhr": 57}, {"date": "2025-09-14", "rhr": 57}, {"date": "2025-09-15", "rhr": 55}, {"date": "2025-09-16", "rhr": 51}, {"date": "2025-09-17", "rhr": 57}, {"date": "2025-09-18", "rhr": 51}, {"date": "2025-09-19", "rhr": 55}, {"date": "2025-09-20", "rhr": 54}, {"date": "2025-09-21", "rhr": 50}, {"date": "2025-09-22", "rhr": 53}, {"date": "2025-09-23", "rhr": 53}, {"date": "2025-09-24", "rhr": 53}, {"date": "2025-09-25", "rhr": 56}, {"date": "2025-09-26", "rhr": 52}, {"date": "2025-09-27", "rhr": 57}, {"date": "2025-09-28", "rhr": 52}, {"date": "2025-09-29", "rhr": 56}, {"date": "2025-09-30", "rhr": 57}, {"date": "2025-10-01", "rhr": 53}, {"date": "2025-10-02", "rhr": 51}, {"date": "2025-10-03", "rhr": 55}, {"date": "2025-10-04", "rhr": 51}, {"date": "2025-10-05", "rhr": 56}, {"date": "2025-10-06", "rhr": 56}, {"date": "2025-10-07", "rhr": 54}, {"date": "2025-10-08", "rhr": 56}, {"date": "2025-10-09", "rhr": 53}, {"date": "2025-10-10", "rhr": 61}, {"date": "2025-10-11", "rhr": 53}, {"date": "2025-10-12", "rhr": 59}, {"date": "2025-10-13", "rhr": 51}, {"date": "2025-10-14", "rhr": 59}, {"date": "2025-10-15", "rhr": 53}, {"date": "2025-10-16", "rhr": 59}, {"date": "2025-10-17", "rhr": 56}, {"date": "2025-10-18", "rhr": 56}, {"date": "2025-10-19", "rhr": 59}, {"date": "2025-10-20", "rhr": 56}, {"date": "2025-10-21", "rhr": 56}, {"date": "2025-10-22", "rhr": 54}, {"date": "2025-10-23", "rhr": 59}, {"date": "2025-10-24", "rhr": 61}, {"date": "2025-10-25", "rhr": 55}, {"date": "2025-10-26", "rhr": 56}, {"date": "2025-10-27", "rhr": 58}, {"date": "2025-10-28", "rhr": 57}, {"date": "2025-10-29", "rhr": 61}, {"date": "2025-10-30", "rhr": 56}, {"date": "2025-10-31", "rhr": 55}, {"date": "2025-11-01", "rhr": 57}, {"date": "2025-11-02", "rhr": 56}, {"date": "2025-11-03", "rhr": 59}, {"date": "2025-11-04", "rhr": 55}, {"date": "2025-11-05", "rhr": 56}, {"date": "2025-11-06", "rhr": 57}, {"date": "2025-11-07", "rhr": 57}, {"date": "2025-11-08", "rhr": 52}, {"date": "2025-11-09", "rhr": 52}, {"date": "2025-11-10", "rhr": 58}, {"date": "2025-11-11", "rhr": 55}, {"date": "2025-11-12", "rhr": 55}, {"date": "2025-11-13", "rhr": 57}, {"date": "2025-11-14", "rhr": 59}, {"date": "2025-11-15", "rhr": 59}, {"date": "2025-11-16", "rhr": 63}, {"date": "2025-11-17", "rhr": 60}, {"date": "2025-11-18", "rhr": 56}, {"date": "2025-11-19", "rhr": 56}, {"date": "2025-11-20", "rhr": 53}, {"date": "2025-11-21", "rhr": 59}, {"date": "2025-11-22", "rhr": 62}, {"date": "2025-11-23", "rhr": 56}, {"date": "2025-11-24", "rhr": 56}, {"date": "2025-11-25", "rhr": 59}, {"date": "2025-11-26", "rhr": 60}, {"date": "2025-11-27", "rhr": 57}, {"date": "2025-11-28", "rhr": 56}, {"date": "2025-11-29", "rhr": 57}, {"date": "2025-11-30", "rhr": 50}, {"date": "2025-12-01", "rhr": 54}, {"date": "2025-12-02", "rhr": 53}, {"date": "2025-12-03", "rhr": 57}, {"date": "2025-12-04", "rhr": 61}, {"date": "2025-12-05", "rhr": 62}, {"date": "2025-12-06", "rhr": 59}, {"date": "2025-12-07", "rhr": 56}, {"date": "2025-12-08", "rhr": 55}, {"date": "2025-12-09", "rhr": 55}, {"date": "2025-12-10", "rhr": 54}, {"date": "2025-12-11", "rhr": 54}, {"date": "2025-12-12", "rhr": 63}, {"date": "2025-12-13", "rhr": 60}, {"date": "2025-12-14", "rhr": 53}, {"date": "2025-12-15", "rhr": 53}, {"date": "2025-12-16", "rhr": 58}, {"date": "2025-12-17", "rhr": 58}, {"date": "2025-12-18", "rhr": 58}, {"date": "2025-12-19", "rhr": 65}, {"date": "2025-12-20", "rhr": 62}, {"date": "2025-12-21", "rhr": 62}, {"date": "2025-12-22", "rhr": 52}, {"date": "2025-12-23", "rhr": 52}, {"date": "2025-12-24", "rhr": 52}, {"date": "2025-12-25", "rhr": 52}, {"date": "2025-12-26", "rhr": 51}, {"date": "2025-12-27", "rhr": 50}, {"date": "2025-12-28", "rhr": 56}, {"date": "2025-12-29", "rhr": 49}, {"date": "2025-12-30", "rhr": 50}, {"date": "2025-12-31", "rhr": 53}, {"date": "2026-01-01", "rhr": 56}, {"date": "2026-01-02", "rhr": 58}, {"date": "2026-01-03", "rhr": 52}, {"date": "2026-01-04", "rhr": 55}, {"date": "2026-01-05", "rhr": 52}, {"date": "2026-01-06", "rhr": 52}, {"date": "2026-01-07", "rhr": 54}, {"date": "2026-01-08", "rhr": 55}, {"date": "2026-01-09", "rhr": 55}, {"date": "2026-01-10", "rhr": 57}, {"date": "2026-01-11", "rhr": 60}, {"date": "2026-01-12", "rhr": 58}, {"date": "2026-01-13", "rhr": 59}, {"date": "2026-01-14", "rhr": 51}, {"date": "2026-01-15", "rhr": 53}, {"date": "2026-01-16", "rhr": 50}, {"date": "2026-01-17", "rhr": 55}, {"date": "2026-01-18", "rhr": 55}, {"date": "2026-01-19", "rhr": 53}, {"date": "2026-01-20", "rhr": 51}, {"date": "2026-01-21", "rhr": 56}, {"date": "2026-01-22", "rhr": 57}, {"date": "2026-01-23", "rhr": 57}, {"date": "2026-01-24", "rhr": 59}, {"date": "2026-01-25", "rhr": 56}, {"date": "2026-01-26", "rhr": 56}, {"date": "2026-01-27", "rhr": 56}, {"date": "2026-01-28", "rhr": 57}, {"date": "2026-01-29", "rhr": 54}, {"date": "2026-01-30", "rhr": 55}, {"date": "2026-01-31", "rhr": 58}, {"date": "2026-02-01", "rhr": 49}, {"date": "2026-02-02", "rhr": 53}, {"date": "2026-02-03", "rhr": 60}, {"date": "2026-02-04", "rhr": 52}, {"date": "2026-02-05", "rhr": 57}, {"date": "2026-02-06", "rhr": 53}, {"date": "2026-02-07", "rhr": 52}, {"date": "2026-02-08", "rhr": 49}, {"date": "2026-02-09", "rhr": 59}, {"date": "2026-02-10", "rhr": 58}, {"date": "2026-02-11", "rhr": 57}, {"date": "2026-02-12", "rhr": 53}, {"date": "2026-02-13", "rhr": 61}, {"date": "2026-02-14", "rhr": 56}, {"date": "2026-02-15", "rhr": 57}, {"date": "2026-02-16", "rhr": 53}, {"date": "2026-02-17", "rhr": 55}, {"date": "2026-02-18", "rhr": 57}, {"date": "2026-02-19", "rhr": 56}, {"date": "2026-02-20", "rhr": 52}, {"date": "2026-02-21", "rhr": 52}, {"date": "2026-02-22", "rhr": 55}, {"date": "2026-02-23", "rhr": 53}, {"date": "2026-02-24", "rhr": 55}, {"date": "2026-02-25", "rhr": 51}, {"date": "2026-02-26", "rhr": 58}, {"date": "2026-02-27", "rhr": 55}, {"date": "2026-02-28", "rhr": 52}, {"date": "2026-03-01", "rhr": 50}, {"date": "2026-03-02", "rhr": 53}, {"date": "2026-03-03", "rhr": 50}, {"date": "2026-03-04", "rhr": 51}, {"date": "2026-03-05", "rhr": 52}, {"date": "2026-03-06", "rhr": 50}, {"date": "2026-03-07", "rhr": 55}, {"date": "2026-03-08", "rhr": 55}, {"date": "2026-03-09", "rhr": 51}, {"date": "2026-03-10", "rhr": 51}, {"date": "2026-03-11", "rhr": 55}, {"date": "2026-03-12", "rhr": 55}, {"date": "2026-03-13", "rhr": 48}, {"date": "2026-03-14", "rhr": 53}, {"date": "2026-03-15", "rhr": 55}, {"date": "2026-03-16", "rhr": 49}, {"date": "2026-03-17", "rhr": 53}, {"date": "2026-03-18", "rhr": 54}, {"date": "2026-03-19", "rhr": 52}, {"date": "2026-03-20", "rhr": 52}, {"date": "2026-03-21", "rhr": 56}, {"date": "2026-03-22", "rhr": 48}, {"date": "2026-03-23", "rhr": 52}, {"date": "2026-03-24", "rhr": 51}, {"date": "2026-03-25", "rhr": 51}, {"date": "2026-03-26", "rhr": 54}, {"date": "2026-03-27", "rhr": 54}, {"date": "2026-03-28", "rhr": 51}, {"date": "2026-03-29", "rhr": 54}, {"date": "2026-03-30", "rhr": 49}, {"date": "2026-03-31", "rhr": 51}, {"date": "2026-04-01", "rhr": 49}, {"date": "2026-04-02", "rhr": 53}, {"date": "2026-04-03", "rhr": 49}, {"date": "2026-04-04", "rhr": 53}, {"date": "2026-04-05", "rhr": 50}, {"date": "2026-04-06", "rhr": 52}, {"date": "2026-04-07", "rhr": 54}, {"date": "2026-04-08", "rhr": 56}, {"date": "2026-04-09", "rhr": 56}, {"date": "2026-04-10", "rhr": 56}, {"date": "2026-04-11", "rhr": 52}, {"date": "2026-04-12", "rhr": 50}, {"date": "2026-04-13", "rhr": 54}, {"date": "2026-04-14", "rhr": 56}, {"date": "2026-04-15", "rhr": 52}, {"date": "2026-04-16", "rhr": 52}, {"date": "2026-04-17", "rhr": 56}, {"date": "2026-04-18", "rhr": 52}, {"date": "2026-04-19", "rhr": 48}, {"date": "2026-04-20", "rhr": 51}, {"date": "2026-04-21", "rhr": 52}, {"date": "2026-04-22", "rhr": 55}, {"date": "2026-04-23", "rhr": 55}, {"date": "2026-04-24", "rhr": 54}, {"date": "2026-04-25", "rhr": 53}, {"date": "2026-04-26", "rhr": 49}, {"date": "2026-04-27", "rhr": 48}], "bodyBattery": [{"date": "2026-01-01", "peak": 66, "drawdown": 35}, {"date": "2026-01-02", "peak": 59, "drawdown": 37}, {"date": "2026-01-03", "peak": 81, "drawdown": 49}, {"date": "2026-01-04", "peak": 78, "drawdown": 40}, {"date": "2026-01-05", "peak": 84, "drawdown": 49}, {"date": "2026-01-06", "peak": 85, "drawdown": 63}, {"date": "2026-01-07", "peak": 73, "drawdown": 46}, {"date": "2026-01-08", "peak": 58, "drawdown": 29}, {"date": "2026-01-09", "peak": 71, "drawdown": 48}, {"date": "2026-01-10", "peak": 63, "drawdown": 43}, {"date": "2026-01-11", "peak": 50, "drawdown": 26}, {"date": "2026-01-12", "peak": 68, "drawdown": 38}, {"date": "2026-01-13", "peak": 61, "drawdown": 43}, {"date": "2026-01-14", "peak": 81, "drawdown": 41}, {"date": "2026-01-15", "peak": 90, "drawdown": 60}, {"date": "2026-01-16", "peak": 94, "drawdown": 66}, {"date": "2026-01-17", "peak": 70, "drawdown": 36}, {"date": "2026-01-18", "peak": 79, "drawdown": 46}, {"date": "2026-01-19", "peak": 75, "drawdown": 38}, {"date": "2026-01-20", "peak": 90, "drawdown": 65}, {"date": "2026-01-21", "peak": 61, "drawdown": 37}, {"date": "2026-01-22", "peak": 56, "drawdown": 38}, {"date": "2026-01-23", "peak": 62, "drawdown": 39}, {"date": "2026-01-24", "peak": 59, "drawdown": 32}, {"date": "2026-01-25", "peak": 74, "drawdown": 60}, {"date": "2026-01-26", "peak": 46, "drawdown": 34}, {"date": "2026-01-27", "peak": 40, "drawdown": 27}, {"date": "2026-01-28", "peak": 62, "drawdown": 26}, {"date": "2026-01-29", "peak": 87, "drawdown": 55}, {"date": "2026-01-30", "peak": 71, "drawdown": 42}, {"date": "2026-01-31", "peak": 61, "drawdown": 39}, {"date": "2026-02-01", "peak": 93, "drawdown": 56}, {"date": "2026-02-02", "peak": 90, "drawdown": 60}, {"date": "2026-02-03", "peak": 55, "drawdown": 42}, {"date": "2026-02-04", "peak": 77, "drawdown": 46}, {"date": "2026-02-05", "peak": 69, "drawdown": 32}, {"date": "2026-02-06", "peak": 78, "drawdown": 43}, {"date": "2026-02-07", "peak": 84, "drawdown": 43}, {"date": "2026-02-08", "peak": 100, "drawdown": 74}, {"date": "2026-02-09", "peak": 60, "drawdown": 34}, {"date": "2026-02-10", "peak": 60, "drawdown": 37}, {"date": "2026-02-11", "peak": 67, "drawdown": 53}, {"date": "2026-02-12", "peak": 59, "drawdown": 20}, {"date": "2026-02-13", "peak": 63, "drawdown": 43}, {"date": "2026-02-14", "peak": 55, "drawdown": 33}, {"date": "2026-02-15", "peak": 61, "drawdown": 40}, {"date": "2026-02-16", "peak": 84, "drawdown": 45}, {"date": "2026-02-17", "peak": 72, "drawdown": 59}, {"date": "2026-02-18", "peak": 54, "drawdown": 37}, {"date": "2026-02-19", "peak": 59, "drawdown": 14}, {"date": "2026-02-20", "peak": 84, "drawdown": 59}, {"date": "2026-02-21", "peak": 73, "drawdown": 42}, {"date": "2026-02-22", "peak": 67, "drawdown": 37}, {"date": "2026-02-23", "peak": 82, "drawdown": 44}, {"date": "2026-02-24", "peak": 69, "drawdown": 38}, {"date": "2026-02-25", "peak": 93, "drawdown": 61}, {"date": "2026-02-26", "peak": 62, "drawdown": 31}, {"date": "2026-02-27", "peak": 78, "drawdown": 55}, {"date": "2026-02-28", "peak": 78, "drawdown": 42}, {"date": "2026-03-01", "peak": 96, "drawdown": 61}, {"date": "2026-03-02", "peak": 79, "drawdown": 37}, {"date": "2026-03-03", "peak": 96, "drawdown": 67}, {"date": "2026-03-04", "peak": 91, "drawdown": 58}, {"date": "2026-03-05", "peak": 68, "drawdown": 25}, {"date": "2026-03-06", "peak": 100, "drawdown": 66}, {"date": "2026-03-07", "peak": 58, "drawdown": 24}, {"date": "2026-03-08", "peak": 71, "drawdown": 32}, {"date": "2026-03-09", "peak": 89, "drawdown": 43}, {"date": "2026-03-10", "peak": 96, "drawdown": 67}, {"date": "2026-03-11", "peak": 69, "drawdown": 51}, {"date": "2026-03-12", "peak": 65, "drawdown": 27}, {"date": "2026-03-13", "peak": 99, "drawdown": 54}, {"date": "2026-03-14", "peak": 76, "drawdown": 51}, {"date": "2026-03-15", "peak": 65, "drawdown": 27}, {"date": "2026-03-16", "peak": 100, "drawdown": 50}, {"date": "2026-03-17", "peak": 82, "drawdown": 40}, {"date": "2026-03-18", "peak": 74, "drawdown": 46}, {"date": "2026-03-19", "peak": 76, "drawdown": 41}, {"date": "2026-03-20", "peak": 67, "drawdown": 48}, {"date": "2026-03-21", "peak": 52, "drawdown": 22}, {"date": "2026-03-22", "peak": 93, "drawdown": 57}, {"date": "2026-03-23", "peak": 77, "drawdown": 32}, {"date": "2026-03-24", "peak": 89, "drawdown": 53}, {"date": "2026-03-25", "peak": 80, "drawdown": 62}, {"date": "2026-03-26", "peak": 42, "drawdown": 12}, {"date": "2026-03-27", "peak": 69, "drawdown": 45}, {"date": "2026-03-28", "peak": 74, "drawdown": 43}, {"date": "2026-03-29", "peak": 68, "drawdown": 34}, {"date": "2026-03-30", "peak": 83, "drawdown": 37}, {"date": "2026-03-31", "peak": 82, "drawdown": 56}, {"date": "2026-04-01", "peak": 85, "drawdown": 66}, {"date": "2026-04-02", "peak": 66, "drawdown": 27}, {"date": "2026-04-03", "peak": 79, "drawdown": 39}, {"date": "2026-04-04", "peak": 66, "drawdown": 29}, {"date": "2026-04-05", "peak": 100, "drawdown": 58}, {"date": "2026-04-06", "peak": 78, "drawdown": 34}, {"date": "2026-04-07", "peak": 79, "drawdown": 54}, {"date": "2026-04-08", "peak": 64, "drawdown": 33}, {"date": "2026-04-09", "peak": 60, "drawdown": 38}, {"date": "2026-04-10", "peak": 61, "drawdown": 38}, {"date": "2026-04-11", "peak": 74, "drawdown": 51}, {"date": "2026-04-12", "peak": 82, "drawdown": 59}, {"date": "2026-04-13", "peak": 73, "drawdown": 32}, {"date": "2026-04-14", "peak": 66, "drawdown": 58}, {"date": "2026-04-15", "peak": 63, "drawdown": 38}, {"date": "2026-04-16", "peak": 80, "drawdown": 43}, {"date": "2026-04-17", "peak": 58, "drawdown": 33}, {"date": "2026-04-18", "peak": 76, "drawdown": 36}, {"date": "2026-04-19", "peak": 97, "drawdown": 75}, {"date": "2026-04-20", "peak": 75, "drawdown": 27}, {"date": "2026-04-21", "peak": 92, "drawdown": 58}, {"date": "2026-04-22", "peak": 68, "drawdown": 54}, {"date": "2026-04-23", "peak": 55, "drawdown": 18}, {"date": "2026-04-24", "peak": 79, "drawdown": 61}, {"date": "2026-04-25", "peak": 68, "drawdown": 28}, {"date": "2026-04-26", "peak": 89, "drawdown": 55}, {"date": "2026-04-27", "peak": 92, "drawdown": 18}], "racePredictions": {"5k": "20:01", "10k": "42:53", "half": "1:40:42", "marathon": "3:53:44"}};</script>
 
 <header>
   <h1>Running Dashboard</h1>
-  <p id="subtitle">Loading…</p>
+  <p id="hdr-sub">Loading…</p>
 </header>
 
-<!-- Fitness strip: VO2 max + Race predictions (year-independent) -->
-<div class="fitness-strip" id="fitnessStrip" style="display:none">
-  <div class="fcard" id="vo2Card">
-    <div class="flabel">VO2 Max</div>
-    <div style="display:flex;align-items:baseline">
-      <div class="fvalue" id="vo2Value">—</div>
-      <div class="ftrend" id="vo2Trend"></div>
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn"        data-tab="monthly">Monthly</button>
+  <button class="tab-btn"        data-tab="activity">Activity</button>
+  <button class="tab-btn"        data-tab="health">Health</button>
+  <button class="tab-btn"        data-tab="runlog">Run Log</button>
+</nav>
+
+<!-- ── Overview ──────────────────────────────────────────── -->
+<div id="pane-overview" class="tab-pane active">
+  <div class="sp">
+    <div class="goal-card">
+      <div class="goal-top">
+        <span class="goal-title">1,000 Mile Goal · 2026</span>
+        <span class="goal-pct-label" id="goal-pct-label">—</span>
+      </div>
+      <div class="goal-bar-outer">
+        <div class="goal-bar-fill" id="goal-fill"></div>
+        <div class="goal-bar-tick" id="goal-tick"></div>
+      </div>
+      <div class="goal-footer">
+        <span>0 mi</span>
+        <span id="goal-mid">—</span>
+        <span>1,000 mi</span>
+      </div>
     </div>
-    <div class="fsub" id="vo2Sub">—</div>
   </div>
-  <div class="fcard">
-    <div class="flabel">Race Predictions</div>
-    <div class="race-grid" id="raceGrid"></div>
-  </div>
-</div>
-
-<!-- Year tabs -->
-<div class="year-tabs" id="yearTabs"></div>
-
-<!-- Per-year stats -->
-<div class="stats-grid" id="statsGrid"></div>
-
-<!-- 1000-mile goal bar -->
-<div class="goal-section" id="goalSection"></div>
-
-<!-- Monthly mileage + pace trend -->
-<div class="charts-row">
-  <div class="chart-card">
-    <h2>Monthly Mileage</h2>
-    <canvas id="milesChart" height="200"></canvas>
-  </div>
-  <div class="chart-card">
-    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.75rem">(running only)</span></h2>
-    <canvas id="paceChart" height="200"></canvas>
+  <div class="sp"><div class="cards-grid" id="ov-cards"></div></div>
+  <div class="sp">
+    <div class="chart-card">
+      <h3>Cumulative Miles — 2026 vs 2025 vs Target</h3>
+      <canvas id="cumChart" height="200"></canvas>
+    </div>
   </div>
 </div>
 
-<!-- VO2 max trend (all time) -->
-<div class="chart-full" id="vo2Section" style="display:none">
-  <h2>VO2 Max Trend
-    <span style="color:#64748b;font-weight:400;font-size:0.75rem"> — weekly Garmin estimate</span>
-  </h2>
-  <canvas id="vo2Chart" height="120"></canvas>
+<!-- ── Monthly ────────────────────────────────────────────── -->
+<div id="pane-monthly" class="tab-pane">
+  <div class="sp"><div class="month-cards" id="month-cards"></div></div>
+  <div class="sp" style="font-size:.73rem;color:var(--muted);padding-top:8px">
+    * current month prorated to days elapsed
+  </div>
+  <div class="sp">
+    <div class="chart-card">
+      <h3>Cumulative Miles vs Target — Running Total</h3>
+      <canvas id="surplusChart" height="200"></canvas>
+    </div>
+  </div>
 </div>
 
-<!-- Runs table -->
-<div class="runs-section">
-  <h2>All Runs</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th><th>Title</th><th>Miles</th><th>Pace (min/mi)</th><th>Avg HR</th>
-      </tr>
-    </thead>
-    <tbody id="runsTableBody"></tbody>
-  </table>
+<!-- ── Activity ───────────────────────────────────────────── -->
+<div id="pane-activity" class="tab-pane">
+  <div class="sp"><div class="cards-grid" id="act-cards"></div></div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>Pace Trend 2026 <span style="font-weight:400;color:var(--muted)">(lower = faster)</span></h3>
+      <canvas id="paceChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Monthly Miles — 2026 vs 2025</h3>
+      <canvas id="monthlyBarsChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Health ─────────────────────────────────────────────── -->
+<div id="pane-health" class="tab-pane">
+  <div class="sp"><div class="race-card"><h3>Race Predictions</h3><div class="race-grid" id="race-grid"></div></div></div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>VO2 Max <span style="font-weight:400;color:var(--muted)">(higher = better)</span></h3>
+      <canvas id="vo2Chart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Resting HR <span style="font-weight:400;color:var(--muted)">(lower = fitter)</span></h3>
+      <canvas id="rhrChart" height="200"></canvas>
+    </div>
+  </div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
+      <canvas id="bbPeakChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
+      <canvas id="bbDrawChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Run Log ─────────────────────────────────────────────── -->
+<div id="pane-runlog" class="tab-pane">
+  <div class="sp">
+    <table>
+      <thead><tr><th>Date</th><th>Title</th><th>Miles</th><th>Pace</th><th>Avg HR</th></tr></thead>
+      <tbody id="runlog-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
 (function () {
-  if (!RUNS) {
-    document.getElementById('subtitle').textContent = 'No data loaded.';
-    return;
-  }
+  if (!RUNS) { document.getElementById('hdr-sub').textContent = 'No data loaded.'; return; }
 
-  const GOAL   = 1000;
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // ── Constants & data ────────────────────────────────────
+  const GOAL     = 1000;
+  const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MON_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]; // 2026, not a leap year
 
-  // ── Data extraction ──────────────────────────────────────
-  const yearKeys  = Object.keys(RUNS).filter(k => /^\d{4}$/.test(k)).sort((a, b) => b - a);
-  const vo2Data   = RUNS.vo2max || [];
+  const runs26    = RUNS['2026'] || [];
+  const runs25    = RUNS['2025'] || [];
+  const vo2Data   = RUNS.vo2max         || [];
+  const rhrData   = RUNS.rhr            || [];
+  const bbData    = RUNS.bodyBattery    || [];
   const racePreds = RUNS.racePredictions || {};
-  let   activeYear = yearKeys[0];
 
-  // ── Fitness strip ────────────────────────────────────────
-  if (vo2Data.length || Object.keys(racePreds).length) {
-    document.getElementById('fitnessStrip').style.display = 'grid';
+  const real26 = runs26.filter(r => !r.soccer);
+  const real25 = runs25.filter(r => !r.soccer);
+
+  const now      = new Date();
+  const DOY      = Math.floor((now - new Date(2026, 0, 1)) / 86400000); // days since Jan 1
+  const PCT_DAYS = DOY / 365;
+
+  const miles26 = runs26.reduce((s, r) => s + r.miles, 0);
+  const miles25 = runs25.reduce((s, r) => s + r.miles, 0);
+
+  // 2025 YTD to same calendar date
+  const same25 = now.toISOString().slice(0, 10).replace('2026', '2025');
+  const miles25ytd = runs25.filter(r => r.date && r.date <= same25)
+                           .reduce((s, r) => s + r.miles, 0);
+
+  document.getElementById('hdr-sub').textContent =
+    `2026 · ${miles26.toFixed(1)} mi · ${runs26.length} runs · synced ${now.toLocaleDateString()}`;
+
+  // ── Helpers ──────────────────────────────────────────────
+  function fmtPace(p) {
+    if (!p) return '—';
+    const m = Math.floor(p), s = Math.round((p - m) * 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
   }
 
-  // VO2 max card
-  if (vo2Data.length) {
-    const latest = vo2Data[vo2Data.length - 1];
-    const prev   = vo2Data.length > 1 ? vo2Data[vo2Data.length - 2] : null;
-    const delta  = prev ? latest.vo2max - prev.vo2max : 0;
-    document.getElementById('vo2Value').textContent = latest.vo2max.toFixed(1);
-    const trendEl = document.getElementById('vo2Trend');
-    if (Math.abs(delta) < 0.05)      { trendEl.textContent = '→'; trendEl.className = 'ftrend flat'; }
-    else if (delta > 0)              { trendEl.textContent = '↑ +' + delta.toFixed(1); trendEl.className = 'ftrend up'; }
-    else                             { trendEl.textContent = '↓ ' + delta.toFixed(1); trendEl.className = 'ftrend down'; }
-    document.getElementById('vo2Sub').textContent =
-      `Fitness age ${latest.fitnessAge ?? '—'} · as of ${latest.date}`;
+  function card(label, value, sub = '', cls = '') {
+    return `<div class="stat-card">
+      <div class="sc-label">${label}</div>
+      <div class="sc-value${cls ? ' ' + cls : ''}">${value}</div>
+      ${sub ? `<div class="sc-sub">${sub}</div>` : ''}
+    </div>`;
   }
 
-  // Race predictions
-  const raceLabels = { '5k': '5K', '10k': '10K', 'half': 'Half', 'marathon': 'Marathon' };
-  const raceGrid = document.getElementById('raceGrid');
-  for (const [key, label] of Object.entries(raceLabels)) {
-    const t = racePreds[key];
-    raceGrid.innerHTML += `
-      <div class="race-item">
-        <div class="rlabel">${label}</div>
-        <div class="rvalue">${t ?? '—'}</div>
-      </div>`;
-  }
-
-  // ── Year tabs ────────────────────────────────────────────
-  const tabsEl = document.getElementById('yearTabs');
-  yearKeys.forEach(y => {
-    const btn = document.createElement('button');
-    btn.textContent = y;
-    btn.dataset.year = y;
-    if (y === activeYear) btn.classList.add('active');
-    btn.addEventListener('click', () => { activeYear = y; render(); });
-    tabsEl.appendChild(btn);
-  });
-
-  // ── Chart instances ──────────────────────────────────────
-  const chartOpts = {
+  // Chart.js default options shared across all charts
+  const BASE_OPTS = {
     responsive: true,
+    animation: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxRotation: 45 } },
+      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
       y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
     },
   };
 
-  const milesChart = new Chart(document.getElementById('milesChart'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 }] },
-    options: { ...chartOpts, scales: { ...chartOpts.scales,
-      y: { ...chartOpts.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
+  // Build day-of-year cumulative array (index = DOY 0-364)
+  function cumDOY(runs) {
+    const map = {};
+    runs.forEach(r => {
+      if (!r.date) return;
+      const d = new Date(r.date);
+      const doy = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
+      map[doy] = (map[doy] || 0) + r.miles;
+    });
+    let c = 0;
+    return Array.from({ length: 365 }, (_, i) => +(c += map[i] || 0).toFixed(2));
+  }
+
+  // Month labels at DOY month-starts, empty string otherwise
+  const MONTH_STARTS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+  const DOY_LABELS   = Array.from({ length: 365 }, (_, i) => {
+    const mi = MONTH_STARTS.indexOf(i);
+    return mi >= 0 ? MONTHS[mi] : '';
   });
 
-  const paceChart = new Chart(document.getElementById('paceChart'), {
-    type: 'line',
-    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122',
-        tension: 0.3, pointRadius: 2, fill: true }] },
-    options: { ...chartOpts, scales: { ...chartOpts.scales,
-      y: { ...chartOpts.scales.y, reverse: true, title: { display: true, text: 'min/mi', color: '#64748b' } } } },
-  });
+  // Monthly stats for 2026 (completed + prorated current)
+  function monthlyStats26() {
+    const curM = now.getMonth(), curD = now.getDate();
+    return MON_DAYS.map((days, i) => {
+      if (i > curM) return null;
+      const actual = runs26
+        .filter(r => r.date && parseInt(r.date.slice(5, 7)) - 1 === i)
+        .reduce((s, r) => s + r.miles, 0);
+      const fullTarget = (days / 365) * GOAL;
+      const target     = i < curM ? fullTarget : (curD / days) * fullTarget;
+      return { month: MONTHS[i], actual, target, gain: actual - target, isCurrent: i === curM };
+    }).filter(Boolean);
+  }
 
-  // VO2 max trend chart
-  let vo2Chart = null;
-  if (vo2Data.length) {
-    document.getElementById('vo2Section').style.display = 'block';
-    vo2Chart = new Chart(document.getElementById('vo2Chart'), {
+  // ── Tab management ───────────────────────────────────────
+  const inited = {};
+  function showTab(name) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`pane-${name}`).classList.add('active');
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+    if (!inited[name]) { inited[name] = true; initTab(name); }
+  }
+  function initTab(n) {
+    if (n === 'overview') initOverview();
+    if (n === 'monthly')  initMonthly();
+    if (n === 'activity') initActivity();
+    if (n === 'health')   initHealth();
+    if (n === 'runlog')   initRunlog();
+  }
+  document.querySelectorAll('.tab-btn').forEach(b =>
+    b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+  // ── OVERVIEW ─────────────────────────────────────────────
+  function initOverview() {
+    const targetMiles  = PCT_DAYS * GOAL;
+    const ahead        = miles26 - targetMiles;
+    const daysAhead    = ahead / (GOAL / 365);
+    const dailyNeeded  = (GOAL - miles26) / Math.max(365 - DOY, 1);
+    const paces        = real26.map(r => r.pace).filter(Boolean);
+    const avgPace      = paces.length ? paces.reduce((a, b) => a + b) / paces.length : null;
+    const soccerCt     = runs26.filter(r => r.soccer).length;
+    const pctMiles     = Math.min(miles26 / GOAL * 100, 100);
+
+    // Goal bar
+    document.getElementById('goal-fill').style.width = pctMiles.toFixed(2) + '%';
+    document.getElementById('goal-tick').style.left  = (PCT_DAYS * 100).toFixed(2) + '%';
+    document.getElementById('goal-pct-label').textContent =
+      `${pctMiles.toFixed(1)}% of miles · ${(PCT_DAYS * 100).toFixed(1)}% of days`;
+    document.getElementById('goal-mid').textContent =
+      `${miles26.toFixed(1)} mi${ahead >= 0 ? ' ▲' : ' ▼'}`;
+
+    // Cards
+    document.getElementById('ov-cards').innerHTML = [
+      card('Miles YTD',         miles26.toFixed(1),
+           `of ${GOAL} mi goal`),
+      card('Miles for Even Pace', targetMiles.toFixed(1),
+           `${(PCT_DAYS * 100).toFixed(1)}% of year elapsed`),
+      card(ahead >= 0 ? 'Ahead of Pace' : 'Behind Pace',
+           Math.abs(ahead).toFixed(1) + ' mi',
+           `${daysAhead >= 0 ? '+' : ''}${daysAhead.toFixed(1)} days`,
+           ahead >= 0 ? 'pos' : 'neg'),
+      card('vs 2025 Same Date',
+           (miles26 - miles25ytd >= 0 ? '+' : '') + (miles26 - miles25ytd).toFixed(1) + ' mi',
+           `2025 had ${miles25ytd.toFixed(1)} mi by this date`,
+           miles26 - miles25ytd >= 0 ? 'pos' : 'neg'),
+      card('Daily Avg Needed',  dailyNeeded.toFixed(2) + ' mi/day',
+           `${365 - DOY} days remaining`),
+      card('Avg Running Pace',  avgPace ? fmtPace(avgPace) : '—',
+           `${real26.length} runs, excl. ${soccerCt} soccer`),
+    ].join('');
+
+    // Cumulative chart
+    const cum26 = cumDOY(runs26);
+    const cum25 = cumDOY(runs25);
+    const target = Array.from({ length: 365 }, (_, i) => +((i + 1) * GOAL / 365).toFixed(1));
+    const cum26plot = cum26.map((v, i) => i <= DOY ? v : null);
+
+    new Chart(document.getElementById('cumChart'), {
       type: 'line',
       data: {
-        labels: vo2Data.map(d => d.date.slice(5)),  // MM-DD
-        datasets: [{
-          data: vo2Data.map(d => d.vo2max),
-          borderColor: '#8b5cf6',
-          backgroundColor: '#8b5cf622',
-          tension: 0.4,
-          pointRadius: 2,
-          fill: true,
-        }],
+        labels: DOY_LABELS,
+        datasets: [
+          { label: '2026',   data: cum26plot, borderColor: '#3b82f6', backgroundColor: '#3b82f610',
+            tension: 0.2, pointRadius: 0, fill: true, borderWidth: 2 },
+          { label: '2025',   data: cum25,     borderColor: '#64748b', borderDash: [5, 4],
+            tension: 0.2, pointRadius: 0, fill: false, borderWidth: 1.5 },
+          { label: 'Target', data: target,    borderColor: '#f59e0b', borderDash: [6, 3],
+            tension: 0, pointRadius: 0, fill: false, borderWidth: 1.5 },
+        ],
       },
       options: {
-        responsive: true,
-        plugins: { legend: { display: false },
-          tooltip: { callbacks: {
-            title: (items) => vo2Data[items[0].dataIndex]?.date ?? '',
-            label: (item) => `VO2 Max: ${item.raw}`,
-          }},
+        responsive: true, animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: true, labels: { color: '#94a3b8', usePointStyle: true, pointStyleWidth: 16 } },
+          tooltip: { filter: item => item.raw != null },
         },
         scales: {
-          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxTicksLimit: 16, maxRotation: 45 } },
+          x: { grid: { color: '#1e2535' },
+               ticks: { color: '#64748b', autoSkip: false, maxRotation: 0,
+                        callback: (_, i) => DOY_LABELS[i] || null } },
           y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
-               title: { display: true, text: 'mL/kg/min', color: '#64748b' } },
+               title: { display: true, text: 'Cumulative Miles', color: '#64748b' },
+               min: 0, suggestedMax: 1050 },
         },
       },
     });
   }
 
-  // ── Helpers ──────────────────────────────────────────────
-  function fmtPace(p) {
-    if (!p) return '—';
-    const m = Math.floor(p);
-    const s = Math.round((p - m) * 60);
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
+  // ── MONTHLY ──────────────────────────────────────────────
+  function initMonthly() {
+    const months = monthlyStats26();
 
-  function isLeapYear(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
-
-  // ── Main render (called on year-tab change) ───────────────
-  function render() {
-    tabsEl.querySelectorAll('button').forEach(b =>
-      b.classList.toggle('active', b.dataset.year === activeYear));
-
-    const runs     = RUNS[activeYear] || [];
-    const realRuns = runs.filter(r => !r.soccer);
-    const now      = new Date();
-    const yearNum  = parseInt(activeYear);
-
-    // ── Summary stats ────────────────────────────────────
-    const totalMiles = runs.reduce((s, r) => s + r.miles, 0);
-    const paces  = realRuns.map(r => r.pace).filter(Boolean);
-    const avgPace = paces.length ? paces.reduce((a, b) => a + b, 0) / paces.length : null;
-    const hrs    = runs.map(r => r.hr).filter(Boolean);
-    const avgHR  = hrs.length ? Math.round(hrs.reduce((a, b) => a + b, 0) / hrs.length) : null;
-    const soccerCt = runs.filter(r => r.soccer).length;
-
-    // Month over month delta (current month vs previous month)
-    const byMonth = Array(12).fill(0);
-    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5,7)) - 1] += r.miles; });
-    const curMon  = now.getMonth();
-    const prevMon = curMon === 0 ? 11 : curMon - 1;
-    const momDelta = byMonth[curMon] - byMonth[prevMon];
-    const momLabel = yearNum === now.getFullYear()
-      ? (momDelta >= 0
-          ? `+${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`
-          : `${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`)
-      : null;
-
-    document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card">
-        <div class="label">Total Miles</div>
-        <div class="value">${totalMiles.toFixed(1)}</div>
-        <div class="sub">${runs.length} runs${momLabel ? ' · <span class="' + (momDelta>=0?'ahead':'behind') + '">' + momLabel + '</span>' : ''}</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Avg Pace</div>
-        <div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div>
-        <div class="sub">min/mi (runs only)</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Avg HR</div>
-        <div class="value">${avgHR ?? '—'}</div>
-        <div class="sub">bpm</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Soccer</div>
-        <div class="value">${soccerCt}</div>
-        <div class="sub">sessions flagged</div>
-      </div>
-    `;
-
-    // ── 1000-mile goal bar ────────────────────────────────
-    const daysInYear = isLeapYear(yearNum) ? 366 : 365;
-    const dayOfYear  = yearNum === now.getFullYear()
-      ? Math.floor((now - new Date(yearNum, 0, 1)) / 86400000)
-      : daysInYear;
-    const pctDone    = Math.min(totalMiles / GOAL * 100, 100);
-    const pctPace    = Math.min(dayOfYear / daysInYear * 100, 100);
-    const onPaceMi   = (dayOfYear / daysInYear) * GOAL;
-    const delta      = totalMiles - onPaceMi;
-    const aheadBehind = delta >= 0
-      ? `<span class="delta ahead">+${delta.toFixed(1)} mi ahead</span>`
-      : `<span class="delta behind">${delta.toFixed(1)} mi behind</span>`;
-    const milesLeft  = Math.max(GOAL - totalMiles, 0);
-    const weeksLeft  = (daysInYear - dayOfYear) / 7;
-    const neededPerWeek = weeksLeft > 0 ? milesLeft / weeksLeft : 0;
-    const projectedMiles = weeksLeft > 0
-      ? (totalMiles + neededPerWeek * weeksLeft).toFixed(0)
-      : totalMiles.toFixed(0);
-
-    const goalHtml = `
-      <div class="goal-header">
-        <span class="goal-title">1,000 Mile Goal</span>
-        <span class="goal-nums">${totalMiles.toFixed(1)} / ${GOAL} mi</span>
-      </div>
-      <div class="goal-bar-outer">
-        <div class="goal-bar-fill" style="width:${pctDone.toFixed(2)}%"></div>
-        <div class="goal-bar-pace-marker" style="left:${pctPace.toFixed(2)}%"></div>
-      </div>
-      <div class="goal-footer">
-        <span class="on-pace-label">On-pace mark: ${onPaceMi.toFixed(1)} mi</span>
-        ${aheadBehind}
-        ${yearNum === now.getFullYear() && milesLeft > 0
-          ? `<span>${neededPerWeek.toFixed(1)} mi/wk needed</span>`
-          : ''}
+    document.getElementById('month-cards').innerHTML = months.map(m => {
+      const pos = m.gain >= 0;
+      return `<div class="mc ${pos ? 'gain' : 'loss'}">
+        <div class="mc-name">${m.month}${m.isCurrent ? ' *' : ''}</div>
+        <div class="mc-miles">${m.actual.toFixed(1)}</div>
+        <div class="mc-delta ${pos ? 'pos' : 'neg'}">${pos ? '+' : ''}${m.gain.toFixed(1)} mi</div>
+        <div class="mc-target">target ${m.target.toFixed(1)}</div>
       </div>`;
-    document.getElementById('goalSection').innerHTML = goalHtml;
+    }).join('');
 
-    // Subtitle
-    document.getElementById('subtitle').textContent =
-      `${activeYear} · ${runs.length} runs · ${totalMiles.toFixed(1)} miles`;
+    let cum = 0;
+    const cumData   = months.map(m => +(cum += m.gain).toFixed(1));
+    const barColors = cumData.map(v => v >= 0 ? '#10b98155' : '#ef444455');
+    const barBorder = cumData.map(v => v >= 0 ? '#10b981' : '#ef4444');
+    const zeroLine  = months.map(() => 0);
 
-    // ── Monthly mileage chart ─────────────────────────────
-    const nonZero = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
-    milesChart.data.labels = nonZero.map(x => MONTHS[x.i]);
-    milesChart.data.datasets[0].data = nonZero.map(x => +x.m.toFixed(1));
-    milesChart.update();
-
-    // ── Pace trend chart ──────────────────────────────────
-    const paceSeries = realRuns
-      .filter(r => r.pace && r.date)
-      .sort((a, b) => a.date.localeCompare(b.date));
-    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));
-    paceChart.data.datasets[0].data = paceSeries.map(r => +r.pace.toFixed(2));
-    paceChart.update();
-
-    // ── Runs table ────────────────────────────────────────
-    document.getElementById('runsTableBody').innerHTML = runs
-      .slice()
-      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-      .map(r => `
-        <tr>
-          <td>${r.date ?? '—'}</td>
-          <td>${r.title ?? ''}${r.soccer ? '<span class="badge-soccer">soccer</span>' : ''}</td>
-          <td>${r.miles.toFixed(2)}</td>
-          <td class="pace-cell">${fmtPace(r.pace)}</td>
-          <td>${r.hr ?? '—'}</td>
-        </tr>`)
-      .join('');
+    new Chart(document.getElementById('surplusChart'), {
+      type: 'bar',
+      data: {
+        labels: months.map(m => m.month),
+        datasets: [
+          { data: cumData, backgroundColor: barColors, borderColor: barBorder,
+            borderWidth: 1, borderRadius: 4 },
+          { type: 'line', data: zeroLine, borderColor: '#475569', borderDash: [4, 3],
+            pointRadius: 0, borderWidth: 1 },
+        ],
+      },
+      options: {
+        responsive: true, animation: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+          y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
+               title: { display: true, text: 'Cumulative mi vs target', color: '#64748b' } },
+        },
+      },
+    });
   }
 
-  render();
+  // ── ACTIVITY ─────────────────────────────────────────────
+  function initActivity() {
+    const longest  = runs26.reduce((a, b) => b.miles > a.miles ? b : a, { miles: 0 });
+    const bestRun  = real26.filter(r => r.pace).reduce((a, b) => b.pace < a.pace ? b : a, { pace: 999 });
+    const hrs      = runs26.map(r => r.hr).filter(Boolean);
+    const avgHR    = hrs.length ? Math.round(hrs.reduce((a, b) => a + b) / hrs.length) : null;
+    const paces26  = real26.map(r => r.pace).filter(Boolean);
+    const avgPace26 = paces26.length ? paces26.reduce((a, b) => a + b) / paces26.length : null;
+
+    document.getElementById('act-cards').innerHTML = [
+      card('Total Runs 2026',  runs26.length,
+           `${runs26.filter(r => r.soccer).length} soccer sessions`),
+      card('Longest Run',      longest.miles > 0 ? longest.miles.toFixed(2) + ' mi' : '—',
+           longest.date || ''),
+      card('Best Pace',        bestRun.pace < 999 ? fmtPace(bestRun.pace) : '—',
+           bestRun.date || ''),
+      card('Avg HR 2026',      avgHR ? avgHR + ' bpm' : '—', 'all runs'),
+      card('Avg Pace 2026',    avgPace26 ? fmtPace(avgPace26) : '—', 'runs only'),
+      card('2025 Full Year',   miles25.toFixed(1) + ' mi', `${runs25.length} runs`),
+    ].join('');
+
+    // Pace trend (2026 real runs)
+    const paceSorted = real26.filter(r => r.pace && r.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    new Chart(document.getElementById('paceChart'), {
+      type: 'line',
+      data: {
+        labels: paceSorted.map(r => r.date.slice(5)),
+        datasets: [{
+          data: paceSorted.map(r => +r.pace.toFixed(2)),
+          borderColor: '#3b82f6', backgroundColor: '#3b82f610',
+          tension: 0.25, pointRadius: 3, fill: true, borderWidth: 1.5,
+        }],
+      },
+      options: {
+        ...BASE_OPTS,
+        scales: {
+          x: { ...BASE_OPTS.scales.x, ticks: { ...BASE_OPTS.scales.x.ticks, maxTicksLimit: 10 } },
+          y: { ...BASE_OPTS.scales.y, reverse: true,
+               title: { display: true, text: 'min/mi', color: '#64748b' } },
+        },
+      },
+    });
+
+    // Monthly grouped bars 2026 vs 2025
+    const mon26 = Array(12).fill(0), mon25 = Array(12).fill(0);
+    runs26.forEach(r => { if (r.date) mon26[parseInt(r.date.slice(5,7))-1] += r.miles; });
+    runs25.forEach(r => { if (r.date) mon25[parseInt(r.date.slice(5,7))-1] += r.miles; });
+
+    new Chart(document.getElementById('monthlyBarsChart'), {
+      type: 'bar',
+      data: {
+        labels: MONTHS,
+        datasets: [
+          { label: '2026', data: mon26.map(v => +v.toFixed(1)),
+            backgroundColor: '#3b82f677', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 3 },
+          { label: '2025', data: mon25.map(v => +v.toFixed(1)),
+            backgroundColor: '#64748b44', borderColor: '#64748b', borderWidth: 1, borderRadius: 3 },
+        ],
+      },
+      options: {
+        responsive: true, animation: false,
+        plugins: { legend: { display: true, labels: { color: '#94a3b8', usePointStyle: true } } },
+        scales: {
+          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+          y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
+               title: { display: true, text: 'Miles', color: '#64748b' } },
+        },
+      },
+    });
+  }
+
+  // ── HEALTH ───────────────────────────────────────────────
+  function initHealth() {
+    // Race predictions
+    const raceLabels = { '5k': '5K', '10k': '10K', 'half': 'Half', 'marathon': 'Marathon' };
+    document.getElementById('race-grid').innerHTML = Object.entries(raceLabels)
+      .map(([k, label]) => `
+        <div>
+          <div class="rp-label">${label}</div>
+          <div class="rp-value">${racePreds[k] || '—'}</div>
+        </div>`).join('');
+
+    // VO2 max
+    if (vo2Data.length) {
+      new Chart(document.getElementById('vo2Chart'), {
+        type: 'line',
+        data: {
+          labels: vo2Data.map(d => d.date.slice(5)),
+          datasets: [{
+            data: vo2Data.map(d => d.vo2max),
+            borderColor: '#8b5cf6', backgroundColor: '#8b5cf622',
+            tension: 0.4, pointRadius: 2, fill: true, borderWidth: 2,
+          }],
+        },
+        options: {
+          ...BASE_OPTS,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { title: items => vo2Data[items[0].dataIndex]?.date ?? '' } },
+          },
+          scales: {
+            x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 14, maxRotation: 45 } },
+            y: { ...BASE_OPTS.scales.y, title: { display: true, text: 'mL/kg/min', color: '#64748b' } },
+          },
+        },
+      });
+    }
+
+    // Resting HR — thin to every 3rd day to avoid overplotting ~730 pts
+    if (rhrData.length) {
+      const rhrThin = rhrData.filter((_, i) => i % 3 === 0);
+      new Chart(document.getElementById('rhrChart'), {
+        type: 'line',
+        data: {
+          labels: rhrThin.map(d => d.date.slice(5)),
+          datasets: [{
+            data: rhrThin.map(d => d.rhr),
+            borderColor: '#f43f5e', backgroundColor: '#f43f5e11',
+            tension: 0.2, pointRadius: 0, fill: true, borderWidth: 1.5,
+          }],
+        },
+        options: {
+          ...BASE_OPTS,
+          scales: {
+            x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 12, maxRotation: 45 } },
+            y: { ...BASE_OPTS.scales.y, reverse: true,
+                 title: { display: true, text: 'BPM', color: '#64748b' } },
+          },
+        },
+      });
+    }
+
+    // Body Battery (2026 only — 2025 has null intraday levels)
+    if (bbData.length) {
+      const mkBBChart = (canvasId, dataKey, color, label) =>
+        new Chart(document.getElementById(canvasId), {
+          type: 'line',
+          data: {
+            labels: bbData.map(d => d.date.slice(5)),
+            datasets: [{
+              data: bbData.map(d => d[dataKey]),
+              borderColor: color, backgroundColor: color + '18',
+              tension: 0.2, pointRadius: 0, fill: true, borderWidth: 1.5,
+            }],
+          },
+          options: {
+            ...BASE_OPTS,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { title: items => bbData[items[0].dataIndex]?.date ?? '' } },
+            },
+            scales: {
+              x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 10, maxRotation: 45 } },
+              y: { ...BASE_OPTS.scales.y, min: 0, max: 100,
+                   title: { display: true, text: label, color: '#64748b' } },
+            },
+          },
+        });
+
+      mkBBChart('bbPeakChart', 'peak',     '#10b981', 'Peak level (0–100)');
+      mkBBChart('bbDrawChart', 'drawdown', '#f59e0b', 'Points lost after peak');
+    } else {
+      ['bbPeakChart','bbDrawChart'].forEach(id => {
+        const canvas = document.getElementById(id);
+        const ctx = canvas.getContext('2d');
+        canvas.height = 60;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No intraday data available (2025 historical data not stored by Garmin)',
+                     canvas.offsetWidth / 2, 36);
+      });
+    }
+  }
+
+  // ── RUN LOG ──────────────────────────────────────────────
+  function initRunlog() {
+    document.getElementById('runlog-body').innerHTML = runs26
+      .slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .map(r => `<tr>
+        <td>${r.date ?? '—'}</td>
+        <td class="tnums">${r.title ?? ''}${r.soccer ? '<span class="badge">soccer</span>' : ''}</td>
+        <td class="tnums">${r.miles.toFixed(2)}</td>
+        <td class="tnums">${fmtPace(r.pace)}</td>
+        <td class="tnums">${r.hr ?? '—'}</td>
+      </tr>`).join('');
+  }
+
+  // Boot
+  showTab('overview');
 })();
 </script>
 </body>

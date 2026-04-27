@@ -1,540 +1,641 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Running Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:      #0f1117;
+  --surface: #161b27;
+  --border:  #1e2535;
+  --muted:   #64748b;
+  --text:    #e2e8f0;
+  --blue:    #3b82f6;
+  --grey:    #94a3b8;
+  --orange:  #f59e0b;
+  --green:   #10b981;
+  --red:     #ef4444;
+  --purple:  #8b5cf6;
+  --pink:    #f43f5e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+     background:var(--bg);color:var(--text);min-height:100vh}
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0f1117;
-      color: #e2e8f0;
-      min-height: 100vh;
-    }
+/* ── Header ─────────────────────────────────────────────── */
+header{padding:20px 28px 14px;border-bottom:1px solid var(--border)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 
-    /* ── Layout primitives ─────────────────────────────────── */
-    .pad { padding-left: 32px; padding-right: 32px; }
-    @media (max-width: 600px) { .pad { padding-left: 16px; padding-right: 16px; } }
+/* ── Tab nav ────────────────────────────────────────────── */
+.tab-nav{display:flex;gap:0;padding:0 28px;border-bottom:1px solid var(--border);
+         overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:12px 18px;border:none;background:transparent;
+         color:var(--muted);font-size:.875rem;cursor:pointer;
+         border-bottom:2px solid transparent;margin-bottom:-1px;
+         transition:color .15s,border-color .15s;white-space:nowrap}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.tab-btn:hover:not(.active){color:var(--grey)}
 
-    /* ── Header ────────────────────────────────────────────── */
-    header {
-      padding: 24px 32px 16px;
-      border-bottom: 1px solid #1e2535;
-    }
-    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
-    header p  { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+/* ── Tab panes ──────────────────────────────────────────── */
+.tab-pane{display:none;padding-bottom:48px}
+.tab-pane.active{display:block}
 
-    /* ── Fitness strip ─────────────────────────────────────── */
-    .fitness-strip {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 14px;
-      padding: 20px 32px 0;
-    }
-    @media (max-width: 700px) { .fitness-strip { grid-template-columns: 1fr; } }
+/* ── Section spacing ─────────────────────────────────────── */
+.sp{padding:16px 28px 0}
 
-    .fcard {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 18px 20px;
-    }
-    .fcard .flabel {
-      font-size: 0.72rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .fcard .fvalue {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-top: 4px;
-      letter-spacing: -0.02em;
-    }
-    .fcard .fsub { font-size: 0.78rem; color: #64748b; margin-top: 3px; }
-    .fcard .ftrend { font-size: 0.82rem; margin-left: 6px; }
-    .fcard .ftrend.up   { color: #10b981; }
-    .fcard .ftrend.down { color: #f59e0b; }
-    .fcard .ftrend.flat { color: #64748b; }
+/* ── Stat cards ─────────────────────────────────────────── */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 18px}
+.sc-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.sc-value{font-size:1.65rem;font-weight:700;margin:4px 0 2px;letter-spacing:-.02em}
+.sc-sub{font-size:.74rem;color:var(--muted)}
+.sc-value.pos{color:var(--green)}.sc-value.neg{color:var(--red)}
 
-    .race-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 12px;
-    }
-    @media (max-width: 500px) { .race-grid { grid-template-columns: repeat(2, 1fr); } }
-    .race-item .rlabel { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .race-item .rvalue { font-size: 1.15rem; font-weight: 700; margin-top: 3px; font-variant-numeric: tabular-nums; }
+/* ── Goal bar ───────────────────────────────────────────── */
+.goal-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px}
+.goal-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.goal-title{font-size:.8rem;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.05em}
+.goal-pct-label{font-size:.78rem;color:var(--muted)}
+.goal-bar-outer{position:relative;height:10px;background:var(--border);border-radius:5px}
+.goal-bar-fill{height:100%;background:var(--blue);border-radius:5px;max-width:100%;transition:width .4s}
+.goal-bar-tick{position:absolute;top:-5px;width:2px;height:20px;background:var(--orange);
+               border-radius:1px;transform:translateX(-50%)}
+.goal-footer{display:flex;justify-content:space-between;margin-top:6px;font-size:.74rem;color:var(--muted)}
 
-    /* ── Year tabs ─────────────────────────────────────────── */
-    .year-tabs {
-      display: flex;
-      gap: 8px;
-      padding: 20px 32px 0;
-    }
-    .year-tabs button {
-      padding: 6px 20px;
-      border-radius: 6px;
-      border: 1px solid #2a3347;
-      background: transparent;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .year-tabs button.active {
-      background: #3b82f6;
-      border-color: #3b82f6;
-      color: #fff;
-      font-weight: 600;
-    }
-    .year-tabs button:hover:not(.active) { border-color: #3b82f6; color: #93c5fd; }
+/* ── Charts ─────────────────────────────────────────────── */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.chart-card h3{font-size:.8rem;font-weight:600;color:var(--grey);margin-bottom:12px;
+               text-transform:uppercase;letter-spacing:.04em}
+.chart-card canvas{width:100%!important}
+.charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.charts-2col{grid-template-columns:1fr}}
 
-    /* ── Stats grid ────────────────────────────────────────── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 14px;
-      padding: 16px 32px 0;
-    }
-    .stat-card {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 16px 20px;
-    }
-    .stat-card .label { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .stat-card .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
-    .stat-card .sub   { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
-    .stat-card .sub.ahead  { color: #10b981; }
-    .stat-card .sub.behind { color: #f59e0b; }
+/* ── Month cards ────────────────────────────────────────── */
+.month-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.mc{background:var(--surface);border:1px solid var(--border);border-left:3px solid;
+    border-radius:8px;padding:12px 14px}
+.mc.gain{border-left-color:var(--green)}.mc.loss{border-left-color:var(--red)}
+.mc-name{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.mc-miles{font-size:1.3rem;font-weight:700;margin:4px 0 2px}
+.mc-delta{font-size:.8rem;font-weight:600}
+.mc-delta.pos{color:var(--green)}.mc-delta.neg{color:var(--red)}
+.mc-target{font-size:.68rem;color:var(--muted)}
 
-    /* ── Goal bar ──────────────────────────────────────────── */
-    .goal-section {
-      padding: 14px 32px 0;
-    }
-    .goal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-    .goal-header .goal-title { font-size: 0.78rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-    .goal-header .goal-nums  { font-size: 0.82rem; color: #94a3b8; }
-    .goal-bar-outer {
-      position: relative;
-      height: 8px;
-      background: #1e2535;
-      border-radius: 4px;
-      overflow: visible;
-    }
-    .goal-bar-fill {
-      height: 100%;
-      background: #3b82f6;
-      border-radius: 4px;
-      max-width: 100%;
-      transition: width 0.4s ease;
-    }
-    .goal-bar-pace-marker {
-      position: absolute;
-      top: -5px;
-      width: 2px;
-      height: 18px;
-      background: #475569;
-      border-radius: 1px;
-    }
-    .goal-footer {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 5px;
-      font-size: 0.76rem;
-      color: #475569;
-    }
-    .goal-footer .on-pace-label { color: #475569; }
-    .goal-footer .delta         { font-weight: 600; }
-    .goal-footer .delta.ahead   { color: #10b981; }
-    .goal-footer .delta.behind  { color: #f59e0b; }
+/* ── Race predictions ───────────────────────────────────── */
+.race-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px}
+.race-card h3{font-size:.8rem;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px}
+.race-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:500px){.race-grid{grid-template-columns:repeat(2,1fr)}}
+.rp-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.rp-value{font-size:1.3rem;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
 
-    /* ── Charts ────────────────────────────────────────────── */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      padding: 14px 32px 0;
-    }
-    @media (max-width: 760px) { .charts-row { grid-template-columns: 1fr; } }
-
-    .chart-card {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 20px;
-    }
-    .chart-card h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
-    .chart-card canvas { width: 100% !important; }
-
-    .chart-full {
-      background: #161b27;
-      border: 1px solid #1e2535;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 14px 32px 0;
-    }
-    .chart-full h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 14px; }
-
-    /* ── Runs table ────────────────────────────────────────── */
-    .runs-section { padding: 14px 32px 40px; }
-    .runs-section h2 { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 10px; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    thead th {
-      text-align: left;
-      padding: 8px 12px;
-      color: #64748b;
-      font-weight: 500;
-      border-bottom: 1px solid #1e2535;
-    }
-    tbody tr { border-bottom: 1px solid #1a2030; transition: background 0.1s; }
-    tbody tr:hover { background: #161b27; }
-    tbody td { padding: 9px 12px; }
-    .badge-soccer {
-      display: inline-block;
-      background: #f59e0b22;
-      color: #f59e0b;
-      border: 1px solid #f59e0b44;
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      margin-left: 6px;
-    }
-    .pace-cell { font-variant-numeric: tabular-nums; }
-  </style>
+/* ── Run log table ──────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+thead th{text-align:left;padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid #1a2030;transition:background .1s}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:8px 12px}
+.badge{display:inline-block;background:#f59e0b22;color:var(--orange);border:1px solid #f59e0b44;
+       border-radius:4px;padding:1px 6px;font-size:.7rem;font-weight:600;margin-left:6px}
+.tnums{font-variant-numeric:tabular-nums}
+</style>
 </head>
 <body>
-
-<script>
-  const RUNS_DATA_PLACEHOLDER = null;
-</script>
+<script>const RUNS_DATA_PLACEHOLDER = null;</script>
 
 <header>
   <h1>Running Dashboard</h1>
-  <p id="subtitle">Loading…</p>
+  <p id="hdr-sub">Loading…</p>
 </header>
 
-<!-- Fitness strip: VO2 max + Race predictions (year-independent) -->
-<div class="fitness-strip" id="fitnessStrip" style="display:none">
-  <div class="fcard" id="vo2Card">
-    <div class="flabel">VO2 Max</div>
-    <div style="display:flex;align-items:baseline">
-      <div class="fvalue" id="vo2Value">—</div>
-      <div class="ftrend" id="vo2Trend"></div>
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn"        data-tab="monthly">Monthly</button>
+  <button class="tab-btn"        data-tab="activity">Activity</button>
+  <button class="tab-btn"        data-tab="health">Health</button>
+  <button class="tab-btn"        data-tab="runlog">Run Log</button>
+</nav>
+
+<!-- ── Overview ──────────────────────────────────────────── -->
+<div id="pane-overview" class="tab-pane active">
+  <div class="sp">
+    <div class="goal-card">
+      <div class="goal-top">
+        <span class="goal-title">1,000 Mile Goal · 2026</span>
+        <span class="goal-pct-label" id="goal-pct-label">—</span>
+      </div>
+      <div class="goal-bar-outer">
+        <div class="goal-bar-fill" id="goal-fill"></div>
+        <div class="goal-bar-tick" id="goal-tick"></div>
+      </div>
+      <div class="goal-footer">
+        <span>0 mi</span>
+        <span id="goal-mid">—</span>
+        <span>1,000 mi</span>
+      </div>
     </div>
-    <div class="fsub" id="vo2Sub">—</div>
   </div>
-  <div class="fcard">
-    <div class="flabel">Race Predictions</div>
-    <div class="race-grid" id="raceGrid"></div>
-  </div>
-</div>
-
-<!-- Year tabs -->
-<div class="year-tabs" id="yearTabs"></div>
-
-<!-- Per-year stats -->
-<div class="stats-grid" id="statsGrid"></div>
-
-<!-- 1000-mile goal bar -->
-<div class="goal-section" id="goalSection"></div>
-
-<!-- Monthly mileage + pace trend -->
-<div class="charts-row">
-  <div class="chart-card">
-    <h2>Monthly Mileage</h2>
-    <canvas id="milesChart" height="200"></canvas>
-  </div>
-  <div class="chart-card">
-    <h2>Pace Over Time <span style="color:#64748b;font-weight:400;font-size:0.75rem">(running only)</span></h2>
-    <canvas id="paceChart" height="200"></canvas>
+  <div class="sp"><div class="cards-grid" id="ov-cards"></div></div>
+  <div class="sp">
+    <div class="chart-card">
+      <h3>Cumulative Miles — 2026 vs 2025 vs Target</h3>
+      <canvas id="cumChart" height="200"></canvas>
+    </div>
   </div>
 </div>
 
-<!-- VO2 max trend (all time) -->
-<div class="chart-full" id="vo2Section" style="display:none">
-  <h2>VO2 Max Trend
-    <span style="color:#64748b;font-weight:400;font-size:0.75rem"> — weekly Garmin estimate</span>
-  </h2>
-  <canvas id="vo2Chart" height="120"></canvas>
+<!-- ── Monthly ────────────────────────────────────────────── -->
+<div id="pane-monthly" class="tab-pane">
+  <div class="sp"><div class="month-cards" id="month-cards"></div></div>
+  <div class="sp" style="font-size:.73rem;color:var(--muted);padding-top:8px">
+    * current month prorated to days elapsed
+  </div>
+  <div class="sp">
+    <div class="chart-card">
+      <h3>Cumulative Miles vs Target — Running Total</h3>
+      <canvas id="surplusChart" height="200"></canvas>
+    </div>
+  </div>
 </div>
 
-<!-- Runs table -->
-<div class="runs-section">
-  <h2>All Runs</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th><th>Title</th><th>Miles</th><th>Pace (min/mi)</th><th>Avg HR</th>
-      </tr>
-    </thead>
-    <tbody id="runsTableBody"></tbody>
-  </table>
+<!-- ── Activity ───────────────────────────────────────────── -->
+<div id="pane-activity" class="tab-pane">
+  <div class="sp"><div class="cards-grid" id="act-cards"></div></div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>Pace Trend 2026 <span style="font-weight:400;color:var(--muted)">(lower = faster)</span></h3>
+      <canvas id="paceChart" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Monthly Miles — 2026 vs 2025</h3>
+      <canvas id="monthlyBarsChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Health ─────────────────────────────────────────────── -->
+<div id="pane-health" class="tab-pane">
+  <div class="sp"><div class="race-card"><h3>Race Predictions</h3><div class="race-grid" id="race-grid"></div></div></div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>VO2 Max <span style="font-weight:400;color:var(--muted)">(higher = better)</span></h3>
+      <canvas id="vo2Chart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Resting HR <span style="font-weight:400;color:var(--muted)">(lower = fitter)</span></h3>
+      <canvas id="rhrChart" height="200"></canvas>
+    </div>
+  </div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
+      <canvas id="bbPeakChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
+      <canvas id="bbDrawChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ── Run Log ─────────────────────────────────────────────── -->
+<div id="pane-runlog" class="tab-pane">
+  <div class="sp">
+    <table>
+      <thead><tr><th>Date</th><th>Title</th><th>Miles</th><th>Pace</th><th>Avg HR</th></tr></thead>
+      <tbody id="runlog-body"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
 (function () {
-  if (!RUNS) {
-    document.getElementById('subtitle').textContent = 'No data loaded.';
-    return;
-  }
+  if (!RUNS) { document.getElementById('hdr-sub').textContent = 'No data loaded.'; return; }
 
-  const GOAL   = 1000;
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // ── Constants & data ────────────────────────────────────
+  const GOAL     = 1000;
+  const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MON_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31]; // 2026, not a leap year
 
-  // ── Data extraction ──────────────────────────────────────
-  const yearKeys  = Object.keys(RUNS).filter(k => /^\d{4}$/.test(k)).sort((a, b) => b - a);
-  const vo2Data   = RUNS.vo2max || [];
+  const runs26    = RUNS['2026'] || [];
+  const runs25    = RUNS['2025'] || [];
+  const vo2Data   = RUNS.vo2max         || [];
+  const rhrData   = RUNS.rhr            || [];
+  const bbData    = RUNS.bodyBattery    || [];
   const racePreds = RUNS.racePredictions || {};
-  let   activeYear = yearKeys[0];
 
-  // ── Fitness strip ────────────────────────────────────────
-  if (vo2Data.length || Object.keys(racePreds).length) {
-    document.getElementById('fitnessStrip').style.display = 'grid';
+  const real26 = runs26.filter(r => !r.soccer);
+  const real25 = runs25.filter(r => !r.soccer);
+
+  const now      = new Date();
+  const DOY      = Math.floor((now - new Date(2026, 0, 1)) / 86400000); // days since Jan 1
+  const PCT_DAYS = DOY / 365;
+
+  const miles26 = runs26.reduce((s, r) => s + r.miles, 0);
+  const miles25 = runs25.reduce((s, r) => s + r.miles, 0);
+
+  // 2025 YTD to same calendar date
+  const same25 = now.toISOString().slice(0, 10).replace('2026', '2025');
+  const miles25ytd = runs25.filter(r => r.date && r.date <= same25)
+                           .reduce((s, r) => s + r.miles, 0);
+
+  document.getElementById('hdr-sub').textContent =
+    `2026 · ${miles26.toFixed(1)} mi · ${runs26.length} runs · synced ${now.toLocaleDateString()}`;
+
+  // ── Helpers ──────────────────────────────────────────────
+  function fmtPace(p) {
+    if (!p) return '—';
+    const m = Math.floor(p), s = Math.round((p - m) * 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
   }
 
-  // VO2 max card
-  if (vo2Data.length) {
-    const latest = vo2Data[vo2Data.length - 1];
-    const prev   = vo2Data.length > 1 ? vo2Data[vo2Data.length - 2] : null;
-    const delta  = prev ? latest.vo2max - prev.vo2max : 0;
-    document.getElementById('vo2Value').textContent = latest.vo2max.toFixed(1);
-    const trendEl = document.getElementById('vo2Trend');
-    if (Math.abs(delta) < 0.05)      { trendEl.textContent = '→'; trendEl.className = 'ftrend flat'; }
-    else if (delta > 0)              { trendEl.textContent = '↑ +' + delta.toFixed(1); trendEl.className = 'ftrend up'; }
-    else                             { trendEl.textContent = '↓ ' + delta.toFixed(1); trendEl.className = 'ftrend down'; }
-    document.getElementById('vo2Sub').textContent =
-      `Fitness age ${latest.fitnessAge ?? '—'} · as of ${latest.date}`;
+  function card(label, value, sub = '', cls = '') {
+    return `<div class="stat-card">
+      <div class="sc-label">${label}</div>
+      <div class="sc-value${cls ? ' ' + cls : ''}">${value}</div>
+      ${sub ? `<div class="sc-sub">${sub}</div>` : ''}
+    </div>`;
   }
 
-  // Race predictions
-  const raceLabels = { '5k': '5K', '10k': '10K', 'half': 'Half', 'marathon': 'Marathon' };
-  const raceGrid = document.getElementById('raceGrid');
-  for (const [key, label] of Object.entries(raceLabels)) {
-    const t = racePreds[key];
-    raceGrid.innerHTML += `
-      <div class="race-item">
-        <div class="rlabel">${label}</div>
-        <div class="rvalue">${t ?? '—'}</div>
-      </div>`;
-  }
-
-  // ── Year tabs ────────────────────────────────────────────
-  const tabsEl = document.getElementById('yearTabs');
-  yearKeys.forEach(y => {
-    const btn = document.createElement('button');
-    btn.textContent = y;
-    btn.dataset.year = y;
-    if (y === activeYear) btn.classList.add('active');
-    btn.addEventListener('click', () => { activeYear = y; render(); });
-    tabsEl.appendChild(btn);
-  });
-
-  // ── Chart instances ──────────────────────────────────────
-  const chartOpts = {
+  // Chart.js default options shared across all charts
+  const BASE_OPTS = {
     responsive: true,
+    animation: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxRotation: 45 } },
+      x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
       y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
     },
   };
 
-  const milesChart = new Chart(document.getElementById('milesChart'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 }] },
-    options: { ...chartOpts, scales: { ...chartOpts.scales,
-      y: { ...chartOpts.scales.y, title: { display: true, text: 'Miles', color: '#64748b' } } } },
+  // Build day-of-year cumulative array (index = DOY 0-364)
+  function cumDOY(runs) {
+    const map = {};
+    runs.forEach(r => {
+      if (!r.date) return;
+      const d = new Date(r.date);
+      const doy = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
+      map[doy] = (map[doy] || 0) + r.miles;
+    });
+    let c = 0;
+    return Array.from({ length: 365 }, (_, i) => +(c += map[i] || 0).toFixed(2));
+  }
+
+  // Month labels at DOY month-starts, empty string otherwise
+  const MONTH_STARTS = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+  const DOY_LABELS   = Array.from({ length: 365 }, (_, i) => {
+    const mi = MONTH_STARTS.indexOf(i);
+    return mi >= 0 ? MONTHS[mi] : '';
   });
 
-  const paceChart = new Chart(document.getElementById('paceChart'), {
-    type: 'line',
-    data: { labels: [], datasets: [{ data: [], borderColor: '#10b981', backgroundColor: '#10b98122',
-        tension: 0.3, pointRadius: 2, fill: true }] },
-    options: { ...chartOpts, scales: { ...chartOpts.scales,
-      y: { ...chartOpts.scales.y, reverse: true, title: { display: true, text: 'min/mi', color: '#64748b' } } } },
-  });
+  // Monthly stats for 2026 (completed + prorated current)
+  function monthlyStats26() {
+    const curM = now.getMonth(), curD = now.getDate();
+    return MON_DAYS.map((days, i) => {
+      if (i > curM) return null;
+      const actual = runs26
+        .filter(r => r.date && parseInt(r.date.slice(5, 7)) - 1 === i)
+        .reduce((s, r) => s + r.miles, 0);
+      const fullTarget = (days / 365) * GOAL;
+      const target     = i < curM ? fullTarget : (curD / days) * fullTarget;
+      return { month: MONTHS[i], actual, target, gain: actual - target, isCurrent: i === curM };
+    }).filter(Boolean);
+  }
 
-  // VO2 max trend chart
-  let vo2Chart = null;
-  if (vo2Data.length) {
-    document.getElementById('vo2Section').style.display = 'block';
-    vo2Chart = new Chart(document.getElementById('vo2Chart'), {
+  // ── Tab management ───────────────────────────────────────
+  const inited = {};
+  function showTab(name) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`pane-${name}`).classList.add('active');
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+    if (!inited[name]) { inited[name] = true; initTab(name); }
+  }
+  function initTab(n) {
+    if (n === 'overview') initOverview();
+    if (n === 'monthly')  initMonthly();
+    if (n === 'activity') initActivity();
+    if (n === 'health')   initHealth();
+    if (n === 'runlog')   initRunlog();
+  }
+  document.querySelectorAll('.tab-btn').forEach(b =>
+    b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+  // ── OVERVIEW ─────────────────────────────────────────────
+  function initOverview() {
+    const targetMiles  = PCT_DAYS * GOAL;
+    const ahead        = miles26 - targetMiles;
+    const daysAhead    = ahead / (GOAL / 365);
+    const dailyNeeded  = (GOAL - miles26) / Math.max(365 - DOY, 1);
+    const paces        = real26.map(r => r.pace).filter(Boolean);
+    const avgPace      = paces.length ? paces.reduce((a, b) => a + b) / paces.length : null;
+    const soccerCt     = runs26.filter(r => r.soccer).length;
+    const pctMiles     = Math.min(miles26 / GOAL * 100, 100);
+
+    // Goal bar
+    document.getElementById('goal-fill').style.width = pctMiles.toFixed(2) + '%';
+    document.getElementById('goal-tick').style.left  = (PCT_DAYS * 100).toFixed(2) + '%';
+    document.getElementById('goal-pct-label').textContent =
+      `${pctMiles.toFixed(1)}% of miles · ${(PCT_DAYS * 100).toFixed(1)}% of days`;
+    document.getElementById('goal-mid').textContent =
+      `${miles26.toFixed(1)} mi${ahead >= 0 ? ' ▲' : ' ▼'}`;
+
+    // Cards
+    document.getElementById('ov-cards').innerHTML = [
+      card('Miles YTD',         miles26.toFixed(1),
+           `of ${GOAL} mi goal`),
+      card('Miles for Even Pace', targetMiles.toFixed(1),
+           `${(PCT_DAYS * 100).toFixed(1)}% of year elapsed`),
+      card(ahead >= 0 ? 'Ahead of Pace' : 'Behind Pace',
+           Math.abs(ahead).toFixed(1) + ' mi',
+           `${daysAhead >= 0 ? '+' : ''}${daysAhead.toFixed(1)} days`,
+           ahead >= 0 ? 'pos' : 'neg'),
+      card('vs 2025 Same Date',
+           (miles26 - miles25ytd >= 0 ? '+' : '') + (miles26 - miles25ytd).toFixed(1) + ' mi',
+           `2025 had ${miles25ytd.toFixed(1)} mi by this date`,
+           miles26 - miles25ytd >= 0 ? 'pos' : 'neg'),
+      card('Daily Avg Needed',  dailyNeeded.toFixed(2) + ' mi/day',
+           `${365 - DOY} days remaining`),
+      card('Avg Running Pace',  avgPace ? fmtPace(avgPace) : '—',
+           `${real26.length} runs, excl. ${soccerCt} soccer`),
+    ].join('');
+
+    // Cumulative chart
+    const cum26 = cumDOY(runs26);
+    const cum25 = cumDOY(runs25);
+    const target = Array.from({ length: 365 }, (_, i) => +((i + 1) * GOAL / 365).toFixed(1));
+    const cum26plot = cum26.map((v, i) => i <= DOY ? v : null);
+
+    new Chart(document.getElementById('cumChart'), {
       type: 'line',
       data: {
-        labels: vo2Data.map(d => d.date.slice(5)),  // MM-DD
-        datasets: [{
-          data: vo2Data.map(d => d.vo2max),
-          borderColor: '#8b5cf6',
-          backgroundColor: '#8b5cf622',
-          tension: 0.4,
-          pointRadius: 2,
-          fill: true,
-        }],
+        labels: DOY_LABELS,
+        datasets: [
+          { label: '2026',   data: cum26plot, borderColor: '#3b82f6', backgroundColor: '#3b82f610',
+            tension: 0.2, pointRadius: 0, fill: true, borderWidth: 2 },
+          { label: '2025',   data: cum25,     borderColor: '#64748b', borderDash: [5, 4],
+            tension: 0.2, pointRadius: 0, fill: false, borderWidth: 1.5 },
+          { label: 'Target', data: target,    borderColor: '#f59e0b', borderDash: [6, 3],
+            tension: 0, pointRadius: 0, fill: false, borderWidth: 1.5 },
+        ],
       },
       options: {
-        responsive: true,
-        plugins: { legend: { display: false },
-          tooltip: { callbacks: {
-            title: (items) => vo2Data[items[0].dataIndex]?.date ?? '',
-            label: (item) => `VO2 Max: ${item.raw}`,
-          }},
+        responsive: true, animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: true, labels: { color: '#94a3b8', usePointStyle: true, pointStyleWidth: 16 } },
+          tooltip: { filter: item => item.raw != null },
         },
         scales: {
-          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b', maxTicksLimit: 16, maxRotation: 45 } },
+          x: { grid: { color: '#1e2535' },
+               ticks: { color: '#64748b', autoSkip: false, maxRotation: 0,
+                        callback: (_, i) => DOY_LABELS[i] || null } },
           y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
-               title: { display: true, text: 'mL/kg/min', color: '#64748b' } },
+               title: { display: true, text: 'Cumulative Miles', color: '#64748b' },
+               min: 0, suggestedMax: 1050 },
         },
       },
     });
   }
 
-  // ── Helpers ──────────────────────────────────────────────
-  function fmtPace(p) {
-    if (!p) return '—';
-    const m = Math.floor(p);
-    const s = Math.round((p - m) * 60);
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
+  // ── MONTHLY ──────────────────────────────────────────────
+  function initMonthly() {
+    const months = monthlyStats26();
 
-  function isLeapYear(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
-
-  // ── Main render (called on year-tab change) ───────────────
-  function render() {
-    tabsEl.querySelectorAll('button').forEach(b =>
-      b.classList.toggle('active', b.dataset.year === activeYear));
-
-    const runs     = RUNS[activeYear] || [];
-    const realRuns = runs.filter(r => !r.soccer);
-    const now      = new Date();
-    const yearNum  = parseInt(activeYear);
-
-    // ── Summary stats ────────────────────────────────────
-    const totalMiles = runs.reduce((s, r) => s + r.miles, 0);
-    const paces  = realRuns.map(r => r.pace).filter(Boolean);
-    const avgPace = paces.length ? paces.reduce((a, b) => a + b, 0) / paces.length : null;
-    const hrs    = runs.map(r => r.hr).filter(Boolean);
-    const avgHR  = hrs.length ? Math.round(hrs.reduce((a, b) => a + b, 0) / hrs.length) : null;
-    const soccerCt = runs.filter(r => r.soccer).length;
-
-    // Month over month delta (current month vs previous month)
-    const byMonth = Array(12).fill(0);
-    runs.forEach(r => { if (r.date) byMonth[parseInt(r.date.slice(5,7)) - 1] += r.miles; });
-    const curMon  = now.getMonth();
-    const prevMon = curMon === 0 ? 11 : curMon - 1;
-    const momDelta = byMonth[curMon] - byMonth[prevMon];
-    const momLabel = yearNum === now.getFullYear()
-      ? (momDelta >= 0
-          ? `+${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`
-          : `${momDelta.toFixed(1)} mi vs ${MONTHS[prevMon]}`)
-      : null;
-
-    document.getElementById('statsGrid').innerHTML = `
-      <div class="stat-card">
-        <div class="label">Total Miles</div>
-        <div class="value">${totalMiles.toFixed(1)}</div>
-        <div class="sub">${runs.length} runs${momLabel ? ' · <span class="' + (momDelta>=0?'ahead':'behind') + '">' + momLabel + '</span>' : ''}</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Avg Pace</div>
-        <div class="value">${avgPace ? fmtPace(avgPace) : '—'}</div>
-        <div class="sub">min/mi (runs only)</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Avg HR</div>
-        <div class="value">${avgHR ?? '—'}</div>
-        <div class="sub">bpm</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Soccer</div>
-        <div class="value">${soccerCt}</div>
-        <div class="sub">sessions flagged</div>
-      </div>
-    `;
-
-    // ── 1000-mile goal bar ────────────────────────────────
-    const daysInYear = isLeapYear(yearNum) ? 366 : 365;
-    const dayOfYear  = yearNum === now.getFullYear()
-      ? Math.floor((now - new Date(yearNum, 0, 1)) / 86400000)
-      : daysInYear;
-    const pctDone    = Math.min(totalMiles / GOAL * 100, 100);
-    const pctPace    = Math.min(dayOfYear / daysInYear * 100, 100);
-    const onPaceMi   = (dayOfYear / daysInYear) * GOAL;
-    const delta      = totalMiles - onPaceMi;
-    const aheadBehind = delta >= 0
-      ? `<span class="delta ahead">+${delta.toFixed(1)} mi ahead</span>`
-      : `<span class="delta behind">${delta.toFixed(1)} mi behind</span>`;
-    const milesLeft  = Math.max(GOAL - totalMiles, 0);
-    const weeksLeft  = (daysInYear - dayOfYear) / 7;
-    const neededPerWeek = weeksLeft > 0 ? milesLeft / weeksLeft : 0;
-    const projectedMiles = weeksLeft > 0
-      ? (totalMiles + neededPerWeek * weeksLeft).toFixed(0)
-      : totalMiles.toFixed(0);
-
-    const goalHtml = `
-      <div class="goal-header">
-        <span class="goal-title">1,000 Mile Goal</span>
-        <span class="goal-nums">${totalMiles.toFixed(1)} / ${GOAL} mi</span>
-      </div>
-      <div class="goal-bar-outer">
-        <div class="goal-bar-fill" style="width:${pctDone.toFixed(2)}%"></div>
-        <div class="goal-bar-pace-marker" style="left:${pctPace.toFixed(2)}%"></div>
-      </div>
-      <div class="goal-footer">
-        <span class="on-pace-label">On-pace mark: ${onPaceMi.toFixed(1)} mi</span>
-        ${aheadBehind}
-        ${yearNum === now.getFullYear() && milesLeft > 0
-          ? `<span>${neededPerWeek.toFixed(1)} mi/wk needed</span>`
-          : ''}
+    document.getElementById('month-cards').innerHTML = months.map(m => {
+      const pos = m.gain >= 0;
+      return `<div class="mc ${pos ? 'gain' : 'loss'}">
+        <div class="mc-name">${m.month}${m.isCurrent ? ' *' : ''}</div>
+        <div class="mc-miles">${m.actual.toFixed(1)}</div>
+        <div class="mc-delta ${pos ? 'pos' : 'neg'}">${pos ? '+' : ''}${m.gain.toFixed(1)} mi</div>
+        <div class="mc-target">target ${m.target.toFixed(1)}</div>
       </div>`;
-    document.getElementById('goalSection').innerHTML = goalHtml;
+    }).join('');
 
-    // Subtitle
-    document.getElementById('subtitle').textContent =
-      `${activeYear} · ${runs.length} runs · ${totalMiles.toFixed(1)} miles`;
+    let cum = 0;
+    const cumData   = months.map(m => +(cum += m.gain).toFixed(1));
+    const barColors = cumData.map(v => v >= 0 ? '#10b98155' : '#ef444455');
+    const barBorder = cumData.map(v => v >= 0 ? '#10b981' : '#ef4444');
+    const zeroLine  = months.map(() => 0);
 
-    // ── Monthly mileage chart ─────────────────────────────
-    const nonZero = byMonth.map((m, i) => ({ m, i })).filter(x => x.m > 0);
-    milesChart.data.labels = nonZero.map(x => MONTHS[x.i]);
-    milesChart.data.datasets[0].data = nonZero.map(x => +x.m.toFixed(1));
-    milesChart.update();
-
-    // ── Pace trend chart ──────────────────────────────────
-    const paceSeries = realRuns
-      .filter(r => r.pace && r.date)
-      .sort((a, b) => a.date.localeCompare(b.date));
-    paceChart.data.labels = paceSeries.map(r => r.date.slice(5));
-    paceChart.data.datasets[0].data = paceSeries.map(r => +r.pace.toFixed(2));
-    paceChart.update();
-
-    // ── Runs table ────────────────────────────────────────
-    document.getElementById('runsTableBody').innerHTML = runs
-      .slice()
-      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-      .map(r => `
-        <tr>
-          <td>${r.date ?? '—'}</td>
-          <td>${r.title ?? ''}${r.soccer ? '<span class="badge-soccer">soccer</span>' : ''}</td>
-          <td>${r.miles.toFixed(2)}</td>
-          <td class="pace-cell">${fmtPace(r.pace)}</td>
-          <td>${r.hr ?? '—'}</td>
-        </tr>`)
-      .join('');
+    new Chart(document.getElementById('surplusChart'), {
+      type: 'bar',
+      data: {
+        labels: months.map(m => m.month),
+        datasets: [
+          { data: cumData, backgroundColor: barColors, borderColor: barBorder,
+            borderWidth: 1, borderRadius: 4 },
+          { type: 'line', data: zeroLine, borderColor: '#475569', borderDash: [4, 3],
+            pointRadius: 0, borderWidth: 1 },
+        ],
+      },
+      options: {
+        responsive: true, animation: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+          y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
+               title: { display: true, text: 'Cumulative mi vs target', color: '#64748b' } },
+        },
+      },
+    });
   }
 
-  render();
+  // ── ACTIVITY ─────────────────────────────────────────────
+  function initActivity() {
+    const longest  = runs26.reduce((a, b) => b.miles > a.miles ? b : a, { miles: 0 });
+    const bestRun  = real26.filter(r => r.pace).reduce((a, b) => b.pace < a.pace ? b : a, { pace: 999 });
+    const hrs      = runs26.map(r => r.hr).filter(Boolean);
+    const avgHR    = hrs.length ? Math.round(hrs.reduce((a, b) => a + b) / hrs.length) : null;
+    const paces26  = real26.map(r => r.pace).filter(Boolean);
+    const avgPace26 = paces26.length ? paces26.reduce((a, b) => a + b) / paces26.length : null;
+
+    document.getElementById('act-cards').innerHTML = [
+      card('Total Runs 2026',  runs26.length,
+           `${runs26.filter(r => r.soccer).length} soccer sessions`),
+      card('Longest Run',      longest.miles > 0 ? longest.miles.toFixed(2) + ' mi' : '—',
+           longest.date || ''),
+      card('Best Pace',        bestRun.pace < 999 ? fmtPace(bestRun.pace) : '—',
+           bestRun.date || ''),
+      card('Avg HR 2026',      avgHR ? avgHR + ' bpm' : '—', 'all runs'),
+      card('Avg Pace 2026',    avgPace26 ? fmtPace(avgPace26) : '—', 'runs only'),
+      card('2025 Full Year',   miles25.toFixed(1) + ' mi', `${runs25.length} runs`),
+    ].join('');
+
+    // Pace trend (2026 real runs)
+    const paceSorted = real26.filter(r => r.pace && r.date)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    new Chart(document.getElementById('paceChart'), {
+      type: 'line',
+      data: {
+        labels: paceSorted.map(r => r.date.slice(5)),
+        datasets: [{
+          data: paceSorted.map(r => +r.pace.toFixed(2)),
+          borderColor: '#3b82f6', backgroundColor: '#3b82f610',
+          tension: 0.25, pointRadius: 3, fill: true, borderWidth: 1.5,
+        }],
+      },
+      options: {
+        ...BASE_OPTS,
+        scales: {
+          x: { ...BASE_OPTS.scales.x, ticks: { ...BASE_OPTS.scales.x.ticks, maxTicksLimit: 10 } },
+          y: { ...BASE_OPTS.scales.y, reverse: true,
+               title: { display: true, text: 'min/mi', color: '#64748b' } },
+        },
+      },
+    });
+
+    // Monthly grouped bars 2026 vs 2025
+    const mon26 = Array(12).fill(0), mon25 = Array(12).fill(0);
+    runs26.forEach(r => { if (r.date) mon26[parseInt(r.date.slice(5,7))-1] += r.miles; });
+    runs25.forEach(r => { if (r.date) mon25[parseInt(r.date.slice(5,7))-1] += r.miles; });
+
+    new Chart(document.getElementById('monthlyBarsChart'), {
+      type: 'bar',
+      data: {
+        labels: MONTHS,
+        datasets: [
+          { label: '2026', data: mon26.map(v => +v.toFixed(1)),
+            backgroundColor: '#3b82f677', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 3 },
+          { label: '2025', data: mon25.map(v => +v.toFixed(1)),
+            backgroundColor: '#64748b44', borderColor: '#64748b', borderWidth: 1, borderRadius: 3 },
+        ],
+      },
+      options: {
+        responsive: true, animation: false,
+        plugins: { legend: { display: true, labels: { color: '#94a3b8', usePointStyle: true } } },
+        scales: {
+          x: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' } },
+          y: { grid: { color: '#1e2535' }, ticks: { color: '#64748b' },
+               title: { display: true, text: 'Miles', color: '#64748b' } },
+        },
+      },
+    });
+  }
+
+  // ── HEALTH ───────────────────────────────────────────────
+  function initHealth() {
+    // Race predictions
+    const raceLabels = { '5k': '5K', '10k': '10K', 'half': 'Half', 'marathon': 'Marathon' };
+    document.getElementById('race-grid').innerHTML = Object.entries(raceLabels)
+      .map(([k, label]) => `
+        <div>
+          <div class="rp-label">${label}</div>
+          <div class="rp-value">${racePreds[k] || '—'}</div>
+        </div>`).join('');
+
+    // VO2 max
+    if (vo2Data.length) {
+      new Chart(document.getElementById('vo2Chart'), {
+        type: 'line',
+        data: {
+          labels: vo2Data.map(d => d.date.slice(5)),
+          datasets: [{
+            data: vo2Data.map(d => d.vo2max),
+            borderColor: '#8b5cf6', backgroundColor: '#8b5cf622',
+            tension: 0.4, pointRadius: 2, fill: true, borderWidth: 2,
+          }],
+        },
+        options: {
+          ...BASE_OPTS,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { title: items => vo2Data[items[0].dataIndex]?.date ?? '' } },
+          },
+          scales: {
+            x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 14, maxRotation: 45 } },
+            y: { ...BASE_OPTS.scales.y, title: { display: true, text: 'mL/kg/min', color: '#64748b' } },
+          },
+        },
+      });
+    }
+
+    // Resting HR — thin to every 3rd day to avoid overplotting ~730 pts
+    if (rhrData.length) {
+      const rhrThin = rhrData.filter((_, i) => i % 3 === 0);
+      new Chart(document.getElementById('rhrChart'), {
+        type: 'line',
+        data: {
+          labels: rhrThin.map(d => d.date.slice(5)),
+          datasets: [{
+            data: rhrThin.map(d => d.rhr),
+            borderColor: '#f43f5e', backgroundColor: '#f43f5e11',
+            tension: 0.2, pointRadius: 0, fill: true, borderWidth: 1.5,
+          }],
+        },
+        options: {
+          ...BASE_OPTS,
+          scales: {
+            x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 12, maxRotation: 45 } },
+            y: { ...BASE_OPTS.scales.y, reverse: true,
+                 title: { display: true, text: 'BPM', color: '#64748b' } },
+          },
+        },
+      });
+    }
+
+    // Body Battery (2026 only — 2025 has null intraday levels)
+    if (bbData.length) {
+      const mkBBChart = (canvasId, dataKey, color, label) =>
+        new Chart(document.getElementById(canvasId), {
+          type: 'line',
+          data: {
+            labels: bbData.map(d => d.date.slice(5)),
+            datasets: [{
+              data: bbData.map(d => d[dataKey]),
+              borderColor: color, backgroundColor: color + '18',
+              tension: 0.2, pointRadius: 0, fill: true, borderWidth: 1.5,
+            }],
+          },
+          options: {
+            ...BASE_OPTS,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { title: items => bbData[items[0].dataIndex]?.date ?? '' } },
+            },
+            scales: {
+              x: { ...BASE_OPTS.scales.x, ticks: { color: '#64748b', maxTicksLimit: 10, maxRotation: 45 } },
+              y: { ...BASE_OPTS.scales.y, min: 0, max: 100,
+                   title: { display: true, text: label, color: '#64748b' } },
+            },
+          },
+        });
+
+      mkBBChart('bbPeakChart', 'peak',     '#10b981', 'Peak level (0–100)');
+      mkBBChart('bbDrawChart', 'drawdown', '#f59e0b', 'Points lost after peak');
+    } else {
+      ['bbPeakChart','bbDrawChart'].forEach(id => {
+        const canvas = document.getElementById(id);
+        const ctx = canvas.getContext('2d');
+        canvas.height = 60;
+        ctx.fillStyle = '#64748b';
+        ctx.font = '13px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No intraday data available (2025 historical data not stored by Garmin)',
+                     canvas.offsetWidth / 2, 36);
+      });
+    }
+  }
+
+  // ── RUN LOG ──────────────────────────────────────────────
+  function initRunlog() {
+    document.getElementById('runlog-body').innerHTML = runs26
+      .slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .map(r => `<tr>
+        <td>${r.date ?? '—'}</td>
+        <td class="tnums">${r.title ?? ''}${r.soccer ? '<span class="badge">soccer</span>' : ''}</td>
+        <td class="tnums">${r.miles.toFixed(2)}</td>
+        <td class="tnums">${fmtPace(r.pace)}</td>
+        <td class="tnums">${r.hr ?? '—'}</td>
+      </tr>`).join('');
+  }
+
+  // Boot
+  showTab('overview');
 })();
 </script>
 </body>

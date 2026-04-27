@@ -135,13 +135,94 @@ def fetch_vo2max():
         d = g.get('calendarDate')
         v = g.get('vo2MaxPreciseValue')
         if d and v is not None:
-            result.append({
-                'date': d,
-                'vo2max': v,
-                'fitnessAge': g.get('fitnessAge'),
-            })
-    print(f'  vo2max: {len(result)} weekly readings '
-          f'({result[0]["date"]} → {result[-1]["date"]})')
+            result.append({'date': d, 'vo2max': v, 'fitnessAge': g.get('fitnessAge')})
+    if result:
+        print(f'  vo2max: {len(result)} weekly readings ({result[0]["date"]} → {result[-1]["date"]})')
+    else:
+        print('  vo2max: 0 readings')
+    return result
+
+
+# ── Resting HR ────────────────────────────────────────────────────────────────
+
+def fetch_rhr():
+    """Bulk-fetch daily RHR via userstats endpoint (2 calls for 2025+2026)."""
+    username = garth.client.username
+    today = date.today().isoformat()
+    result = []
+
+    for start, end in [('2025-01-01', '2025-12-31'), ('2026-01-01', today)]:
+        try:
+            r = garth.connectapi(f'/userstats-service/wellness/daily/{username}',
+                                 params={'fromDate': start, 'untilDate': end})
+            entries = (r.get('allMetrics', {}).get('metricsMap', {})
+                       .get('WELLNESS_RESTING_HEART_RATE', []))
+            for e in entries:
+                if e.get('value') is not None:
+                    result.append({'date': e['calendarDate'], 'rhr': int(e['value'])})
+        except Exception as exc:
+            print(f'  RHR fetch error ({start}): {exc}')
+
+    result.sort(key=lambda x: x['date'])
+    if result:
+        print(f'  rhr: {len(result)} daily readings ({result[0]["date"]} → {result[-1]["date"]})')
+    else:
+        print('  rhr: 0 readings')
+    return result
+
+
+# ── Body Battery ──────────────────────────────────────────────────────────────
+
+def fetch_body_battery():
+    """Fetch daily BB peak+drawdown from intraday data.
+
+    The reports/daily endpoint has a ~31-day range limit per request, so we
+    fetch month-by-month for 2026 only. 2025 returns 400 (no intraday data).
+    peak     = maximum BB level reached during the day
+    drawdown = peak minus the minimum level after the peak (daily cost)
+    """
+    today_d = date.today()
+    today   = today_d.isoformat()
+
+    # One request per calendar month in 2026
+    import calendar
+    ranges = []
+    for month in range(1, today_d.month + 1):
+        start = f'2026-{month:02d}-01'
+        last_day = calendar.monthrange(2026, month)[1]
+        end_d = date(2026, month, last_day)
+        end   = min(end_d, today_d).isoformat()
+        ranges.append((start, end))
+
+    result = []
+    skipped = 0
+    for start, end in ranges:
+        try:
+            data = garth.connectapi(
+                '/wellness-service/wellness/bodyBattery/reports/daily',
+                params={'startDate': start, 'endDate': end},
+            )
+        except Exception as exc:
+            print(f'  BB fetch error ({start}): {exc}')
+            continue
+
+        for day in (data or []):
+            vals = day.get('bodyBatteryValuesArray') or []
+            levels = [v[1] for v in vals if v and v[1] is not None]
+            if len(levels) < 2:
+                skipped += 1
+                continue
+
+            peak = max(levels)
+            peak_idx = levels.index(peak)
+            after_peak = levels[peak_idx:]
+            drawdown = peak - min(after_peak)
+
+            result.append({'date': day['date'], 'peak': peak, 'drawdown': drawdown})
+
+    result.sort(key=lambda x: x['date'])
+    print(f'  bodyBattery: {len(result)} days with intraday data'
+          + (f' ({skipped} skipped — null intraday levels)' if skipped else ''))
     return result
 
 
@@ -169,7 +250,7 @@ def fetch_race_predictions():
         'half':     _secs_to_time(data.get('timeHalfMarathon')),
         'marathon': _secs_to_time(data.get('timeMarathon')),
     }
-    print(f'  race predictions: {preds}')
+    print(f'  racePredictions: {preds}')
     return preds
 
 
@@ -199,23 +280,21 @@ def main():
         result[year] = runs
         print(f'  {year}: {len(runs)} running activities kept')
 
-    result['vo2max'] = fetch_vo2max()
+    result['vo2max']          = fetch_vo2max()
+    result['rhr']             = fetch_rhr()
+    result['bodyBattery']     = fetch_body_battery()
     result['racePredictions'] = fetch_race_predictions()
 
     with open('runs_data.json', 'w') as f:
         json.dump(result, f, indent=2)
 
     run_total = sum(len(result[y]) for y in ['2025', '2026'])
-    print(f'\nSaved {run_total} runs + {len(result["vo2max"])} VO2max readings to runs_data.json')
-
-    for year in ['2026', '2025']:
-        runs = result[year]
-        if runs:
-            print(f'\nFirst 5 runs from {year}:')
-            for r in runs[:5]:
-                tag = ' [SOCCER]' if r['soccer'] else ''
-                print(f"  {r['date']}  {r['miles']:.2f} mi  pace {r['pace']}  HR {r['hr']}  {r['title']}{tag}")
-            break
+    print(f'\nSaved to runs_data.json:')
+    print(f'  runs:        {run_total}  ({len(result["2026"])} in 2026, {len(result["2025"])} in 2025)')
+    print(f'  vo2max:      {len(result["vo2max"])} weekly readings')
+    print(f'  rhr:         {len(result["rhr"])} daily readings')
+    print(f'  bodyBattery: {len(result["bodyBattery"])} daily readings')
+    print(f'  racePreds:   {result["racePredictions"]}')
 
 
 if __name__ == '__main__':
