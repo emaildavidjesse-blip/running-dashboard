@@ -4338,6 +4338,10 @@
     {
       "date": "2026-04-27",
       "rhr": 48
+    },
+    {
+      "date": "2026-04-28",
+      "rhr": 55
     }
   ],
   "bodyBattery": [
@@ -4924,7 +4928,566 @@
     {
       "date": "2026-04-27",
       "peak": 92,
-      "drawdown": 18
+      "drawdown": 33
+    },
+    {
+      "date": "2026-04-28",
+      "peak": 85,
+      "drawdown": 28
+    }
+  ],
+  "trainingLoad": [
+    {
+      "date": "2025-01-06",
+      "load": 424,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-01-13",
+      "load": 359,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Declining"
+    },
+    {
+      "date": "2025-01-20",
+      "load": 319,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Declining"
+    },
+    {
+      "date": "2025-01-27",
+      "load": 111,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-02-03",
+      "load": 350,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Overreaching",
+      "fitnessTrend": "Declining"
+    },
+    {
+      "date": "2025-02-10",
+      "load": 379,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-02-17",
+      "load": 346,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-02-24",
+      "load": 394,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-03-03",
+      "load": 341,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-03-10",
+      "load": 312,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-03-17",
+      "load": 554,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-03-24",
+      "load": 542,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-03-31",
+      "load": 609,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-04-07",
+      "load": 491,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-04-14",
+      "load": 436,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-04-21",
+      "load": 689,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Overreaching",
+      "fitnessTrend": "Declining"
+    },
+    {
+      "date": "2025-04-28",
+      "load": 619,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-05-05",
+      "load": 389,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-05-12",
+      "load": 556,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-05-19",
+      "load": 847,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-05-26",
+      "load": 788,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-06-02",
+      "load": 329,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-06-09",
+      "load": 894,
+      "tunnelMin": 559,
+      "tunnelMax": 1258,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-06-16",
+      "load": 716,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-06-23",
+      "load": 493,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-06-30",
+      "load": 749,
+      "tunnelMin": 559,
+      "tunnelMax": 1258,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-07-07",
+      "load": 709,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-07-14",
+      "load": 681,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-07-21",
+      "load": 606,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-07-28",
+      "load": 693,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-08-04",
+      "load": 447,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-08-11",
+      "load": 832,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-08-18",
+      "load": 732,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-08-25",
+      "load": 258,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-09-01",
+      "load": 505,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-09-08",
+      "load": 227,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-09-15",
+      "load": 664,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-09-22",
+      "load": 322,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-09-29",
+      "load": 513,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-10-06",
+      "load": 188,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-10-13",
+      "load": 219,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-10-20",
+      "load": 376,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-10-27",
+      "load": 176,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-11-03",
+      "load": 470,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-11-10",
+      "load": 366,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-11-17",
+      "load": 134,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-11-24",
+      "load": 374,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-12-01",
+      "load": 107,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-12-08",
+      "load": 249,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-12-15",
+      "load": 149,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-12-22",
+      "load": 367,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2025-12-29",
+      "load": 297,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-01-05",
+      "load": 525,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-01-12",
+      "load": 654,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-01-19",
+      "load": 55,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-01-26",
+      "load": 318,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-02-02",
+      "load": 382,
+      "tunnelMin": 281,
+      "tunnelMax": 640,
+      "status": "Productive",
+      "fitnessTrend": "Improving"
+    },
+    {
+      "date": "2026-02-09",
+      "load": 465,
+      "tunnelMin": 226,
+      "tunnelMax": 484,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-02-16",
+      "load": 572,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-02-23",
+      "load": 665,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-03-02",
+      "load": 516,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-03-09",
+      "load": 552,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-03-16",
+      "load": 450,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-03-23",
+      "load": 741,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-03-30",
+      "load": 447,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-04-06",
+      "load": 707,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-04-13",
+      "load": 680,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-04-20",
+      "load": 792,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-04-27",
+      "load": 677,
+      "tunnelMin": 559,
+      "tunnelMax": 1258,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {

@@ -2,7 +2,7 @@
 import os
 import json
 import time
-from datetime import date
+from datetime import date, timedelta
 from dotenv import load_dotenv
 import garth
 
@@ -226,6 +226,57 @@ def fetch_body_battery():
     return result
 
 
+# ── Training load / status ───────────────────────────────────────────────────
+
+_STATUS_MAP = {
+    0: 'Unknown', 1: 'Peaking', 2: 'Productive',
+    3: 'Maintaining', 4: 'Maintaining', 5: 'Recovery',
+    6: 'Unproductive', 7: 'Overreaching',
+}
+_TREND_MAP = {1: 'Improving', 2: 'Stable', 3: 'Declining'}
+
+
+def fetch_training_load():
+    """Poll trainingstatus/aggregated for every Monday 2025-01-06 → today.
+    ~69 sequential calls; no sleep needed as data endpoints are not rate-limited.
+    """
+    today   = date.today()
+    result  = []
+    errors  = []
+
+    d = date(2025, 1, 6)           # first Monday of 2025
+    while d <= today:
+        ds = d.isoformat()
+        try:
+            r = garth.connectapi(
+                f'/metrics-service/metrics/trainingstatus/aggregated/{ds}'
+            )
+            load_data = (
+                (r.get('mostRecentTrainingStatus') or {})
+                .get('latestTrainingStatusData') or {}
+            )
+            if not load_data:
+                errors.append(ds)
+                d += timedelta(weeks=1)
+                continue
+            entry = list(load_data.values())[0]
+            result.append({
+                'date':        entry.get('calendarDate', ds),
+                'load':        entry.get('weeklyTrainingLoad'),
+                'tunnelMin':   entry.get('loadTunnelMin'),
+                'tunnelMax':   entry.get('loadTunnelMax'),
+                'status':      _STATUS_MAP.get(entry.get('trainingStatus'), 'Unknown'),
+                'fitnessTrend': _TREND_MAP.get(entry.get('fitnessTrend'), 'Stable'),
+            })
+        except Exception as exc:
+            errors.append(ds)
+        d += timedelta(weeks=1)
+
+    print(f'  trainingLoad: {len(result)} weekly records'
+          + (f', {len(errors)} errors ({errors[:3]})' if errors else ''))
+    return result
+
+
 # ── Race predictions ──────────────────────────────────────────────────────────
 
 def _secs_to_time(total_seconds):
@@ -283,6 +334,7 @@ def main():
     result['vo2max']          = fetch_vo2max()
     result['rhr']             = fetch_rhr()
     result['bodyBattery']     = fetch_body_battery()
+    result['trainingLoad']    = fetch_training_load()
     result['racePredictions'] = fetch_race_predictions()
 
     with open('runs_data.json', 'w') as f:
@@ -293,8 +345,9 @@ def main():
     print(f'  runs:        {run_total}  ({len(result["2026"])} in 2026, {len(result["2025"])} in 2025)')
     print(f'  vo2max:      {len(result["vo2max"])} weekly readings')
     print(f'  rhr:         {len(result["rhr"])} daily readings')
-    print(f'  bodyBattery: {len(result["bodyBattery"])} daily readings')
-    print(f'  racePreds:   {result["racePredictions"]}')
+    print(f'  bodyBattery:  {len(result["bodyBattery"])} daily readings')
+    print(f'  trainingLoad: {len(result["trainingLoad"])} weekly readings')
+    print(f'  racePreds:    {result["racePredictions"]}')
 
 
 if __name__ == '__main__':
