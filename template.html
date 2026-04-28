@@ -87,6 +87,8 @@ header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 .status-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px}
 .sl-item{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--grey)}
 .sl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.status-row-labels{display:flex;flex-direction:column;justify-content:space-around;
+                   font-size:.7rem;color:var(--muted);min-width:28px;text-align:right;padding-right:4px}
 
 table{width:100%;border-collapse:collapse;font-size:.84rem}
 thead th{text-align:left;padding:8px 12px;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)}
@@ -200,7 +202,10 @@ tbody td{padding:8px 12px}
   <div class="sp">
     <div class="chart-card">
       <h3>Training Status Timeline</h3>
-      <canvas id="statusChart" height="54"></canvas>
+      <div style="display:flex;align-items:stretch;gap:6px">
+        <div class="status-row-labels"><span>2025</span><span>2026</span></div>
+        <div style="flex:1;min-width:0;height:70px;position:relative"><canvas id="statusChart"></canvas></div>
+      </div>
       <div class="status-legend" id="status-legend"></div>
     </div>
   </div>
@@ -537,13 +542,13 @@ tbody td{padding:8px 12px}
 
   // ── HEALTH ───────────────────────────────────────────────
   function initHealth() {
-    // Race predictions card
+    // ── Race predictions ──────────────────────────────────
     const raceLabels = {'5k':'5K','10k':'10K','half':'Half','marathon':'Marathon'};
     document.getElementById('race-grid').innerHTML = Object.entries(raceLabels)
       .map(([k,lbl])=>`<div><div class="rp-label">${lbl}</div><div class="rp-value">${racePreds[k]||'—'}</div></div>`)
       .join('');
 
-    // Current training status card
+    // ── Current training status card ──────────────────────
     if (trainingData.length) {
       const lat = trainingData[trainingData.length - 1];
       const inRange = lat.load >= lat.tunnelMin && lat.load <= lat.tunnelMax;
@@ -560,103 +565,131 @@ tbody td{padding:8px 12px}
         </div>`;
     }
 
-    // ── VO2 max: 2-year monthly, "Jan '25" labels ──────────
+    // Helper: DOY from a date string ("YYYY-MM-DD")
+    function doy(dateStr) {
+      const dt = new Date(dateStr + 'T12:00:00');
+      return Math.floor((dt - new Date(dt.getFullYear(), 0, 1)) / 86400000);
+    }
+
+    // Shared DOY x-axis tick config (shows "Jan","Feb"... at month-start positions)
+    const doyTicks = {
+      color: '#64748b', autoSkip: false, maxRotation: 0,
+      callback: (_, i) => DOY_LABELS[i] || null,
+    };
+
+    // ── VO2 max: DOY-aligned, full weekly granularity ─────
     if (vo2Data.length) {
-      const { keys: mKeys, labels: mLabels } = genMonthRange('2025-01', nowYM);
-      const vo2Map = {};
-      vo2Data.forEach(d => { vo2Map[d.date.slice(0,7)] = d.vo2max; });
-      const vo2Series = mKeys.map(k => vo2Map[k] ?? null);
-      const vo2_25 = vo2Series.map((v,i) => mKeys[i].startsWith('2025') ? v : null);
-      const vo2_26 = vo2Series.map((v,i) => mKeys[i].startsWith('2026') ? v : null);
+      const v25 = new Array(365).fill(null);
+      const v26 = new Array(365).fill(null);
+      const v25date = {}, v26date = {};
+
+      vo2Data.forEach(d => {
+        const di = doy(d.date);
+        if (d.date.startsWith('2025')) { v25[di] = d.vo2max; v25date[di] = d.date; }
+        else                           { v26[di] = d.vo2max; v26date[di] = d.date; }
+      });
 
       new Chart(document.getElementById('vo2Chart'), {
-        type:'line',
-        data:{
-          labels: mLabels,
-          datasets:[
-            { label:'2025', data:vo2_25, borderColor:'#94a3b8', borderDash:[5,4],
-              tension:.4, pointRadius:3, fill:false, borderWidth:1.5 },
-            { label:'2026', data:vo2_26, borderColor:'#3b82f6',
-              tension:.4, pointRadius:3, fill:false, borderWidth:2 },
+        type: 'line',
+        data: {
+          labels: DOY_LABELS,
+          datasets: [
+            { label:'2025', data:v25, spanGaps:true, borderColor:'#94a3b8', borderDash:[5,4],
+              tension:.4, pointRadius:4, fill:false, borderWidth:1.5 },
+            { label:'2026', data:v26, spanGaps:true, borderColor:'#3b82f6',
+              tension:.4, pointRadius:4, fill:false, borderWidth:2 },
           ],
         },
         options:{
           responsive:true, animation:false,
           plugins:{
-            legend:{display:true,labels:{color:'#94a3b8',usePointStyle:true}},
+            legend:{ display:true, labels:{color:'#94a3b8',usePointStyle:true} },
+            tooltip:{
+              mode:'nearest', intersect:false,
+              callbacks:{
+                title: items => {
+                  const di = items[0].dataIndex;
+                  return items[0].datasetIndex===0 ? (v25date[di]||`2025 day ${di+1}`)
+                                                   : (v26date[di]||`2026 day ${di+1}`);
+                },
+                label: items => items.raw != null ? `VO2 Max: ${items.raw} mL/kg/min` : null,
+              },
+            },
           },
           scales:{
-            x:{grid:{color:'#1e2535'},ticks:{color:'#64748b',maxRotation:45}},
-            y:{grid:{color:'#1e2535'},ticks:{color:'#64748b'},
-               title:{display:true,text:'mL/kg/min',color:'#64748b'}},
+            x:{ grid:{color:'#1e2535'}, ticks:doyTicks },
+            y:{ grid:{color:'#1e2535'}, ticks:{color:'#64748b'},
+                title:{display:true,text:'mL/kg/min',color:'#64748b'} },
           },
         },
       });
     }
 
-    // ── Resting HR: 2-year monthly average, inverted ───────
+    // ── Resting HR: DOY-aligned, full daily granularity ───
     if (rhrData.length) {
-      const { keys: mKeys, labels: mLabels } = genMonthRange('2025-01', nowYM);
-      const rhrBuckets = {};
-      rhrData.forEach(d => {
-        const k = d.date.slice(0,7);
-        if (!rhrBuckets[k]) rhrBuckets[k] = [];
-        rhrBuckets[k].push(d.rhr);
-      });
-      const rhrMap = {};
-      for (const [k,vals] of Object.entries(rhrBuckets))
-        rhrMap[k] = Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+      const r25 = new Array(365).fill(null);
+      const r26 = new Array(365).fill(null);
+      const r25date = {}, r26date = {};
 
-      const rhrSeries = mKeys.map(k => rhrMap[k] ?? null);
-      const rhr_25 = rhrSeries.map((v,i) => mKeys[i].startsWith('2025') ? v : null);
-      const rhr_26 = rhrSeries.map((v,i) => mKeys[i].startsWith('2026') ? v : null);
+      rhrData.forEach(d => {
+        const di = doy(d.date);
+        if (d.date.startsWith('2025')) { r25[di] = d.rhr; r25date[di] = d.date; }
+        else                           { r26[di] = d.rhr; r26date[di] = d.date; }
+      });
 
       new Chart(document.getElementById('rhrChart'), {
-        type:'line',
-        data:{
-          labels: mLabels,
-          datasets:[
-            { label:'2025', data:rhr_25, borderColor:'#94a3b8', borderDash:[5,4],
-              tension:.3, pointRadius:3, fill:false, borderWidth:1.5 },
-            { label:'2026', data:rhr_26, borderColor:'#f43f5e',
-              tension:.3, pointRadius:3, fill:false, borderWidth:2 },
+        type: 'line',
+        data: {
+          labels: DOY_LABELS,
+          datasets: [
+            { label:'2025', data:r25, spanGaps:false, borderColor:'#94a3b8', borderDash:[5,4],
+              tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
+            { label:'2026', data:r26, spanGaps:false, borderColor:'#f43f5e',
+              tension:.1, pointRadius:0, fill:false, borderWidth:2 },
           ],
         },
         options:{
           responsive:true, animation:false,
           plugins:{
-            legend:{display:true,labels:{color:'#94a3b8',usePointStyle:true}},
+            legend:{ display:true, labels:{color:'#94a3b8',usePointStyle:true} },
+            tooltip:{
+              mode:'index', intersect:false,
+              callbacks:{
+                title: items => {
+                  const di = items[0].dataIndex;
+                  return [r25date[di], r26date[di]].filter(Boolean).join(' / ') || `Day ${di+1}`;
+                },
+                label: items => items.raw != null ? `${items.dataset.label}: ${items.raw} bpm` : null,
+              },
+            },
           },
           scales:{
-            x:{grid:{color:'#1e2535'},ticks:{color:'#64748b',maxRotation:45}},
-            y:{grid:{color:'#1e2535'},ticks:{color:'#64748b'}, reverse:true,
-               title:{display:true,text:'BPM (lower = fitter)',color:'#64748b'}},
+            x:{ grid:{color:'#1e2535'}, ticks:doyTicks },
+            y:{ grid:{color:'#1e2535'}, ticks:{color:'#64748b'}, reverse:true,
+                title:{display:true,text:'BPM (lower = fitter)',color:'#64748b'} },
           },
         },
       });
     }
 
-    // ── Body Battery (2026 only, date-labelled "Jan", "Feb") ─
+    // ── Body Battery (2026 only) ───────────────────────────
     if (bbData.length) {
       const mkBB = (id, key, color, label) =>
         new Chart(document.getElementById(id), {
           type:'line',
           data:{
-            labels: bbData.map(d => d.date.slice(5)),   // MM-DD within 2026
+            labels: bbData.map(d => d.date.slice(5)),
             datasets:[{ data:bbData.map(d=>d[key]),
               borderColor:color, backgroundColor:color+'18',
               tension:.2, pointRadius:0, fill:true, borderWidth:1.5 }],
           },
           options:{
             ...BASE,
-            plugins:{
-              legend:{display:false},
-              tooltip:{callbacks:{title:items=>bbData[items[0].dataIndex]?.date??''}},
-            },
+            plugins:{ legend:{display:false},
+              tooltip:{callbacks:{title:items=>bbData[items[0].dataIndex]?.date??''}} },
             scales:{
               x:{...BASE.scales.x, ticks:{color:'#64748b',maxTicksLimit:10,maxRotation:45}},
-              y:{...BASE.scales.y, min:0, max:100,
-                 title:{display:true,text:label,color:'#64748b'}},
+              y:{...BASE.scales.y, min:0, max:100, title:{display:true,text:label,color:'#64748b'}},
             },
           },
         });
@@ -672,90 +705,135 @@ tbody td{padding:8px 12px}
       });
     }
 
-    // ── Training load: tunnel band + load line, "Mon 'YY" ticks ─
+    // ── Training load: DOY-aligned, 2025+2026, 2026 tunnel ─
     if (trainingData.length) {
-      const tld = trainingData;
-      const tickCb = monthStartTick(tld);
+      const tl25 = new Array(365).fill(null);
+      const tl26 = new Array(365).fill(null);
+      const tlMin = new Array(365).fill(null);
+      const tlMax = new Array(365).fill(null);
+      const tlMeta25 = {}, tlMeta26 = {};
+
+      trainingData.forEach(d => {
+        const di = doy(d.date);
+        if (d.date.startsWith('2025')) { tl25[di] = d.load; tlMeta25[di] = d; }
+        else { tl26[di] = d.load; tlMin[di] = d.tunnelMin; tlMax[di] = d.tunnelMax; tlMeta26[di] = d; }
+      });
 
       new Chart(document.getElementById('trainingLoadChart'), {
-        type:'line',
-        data:{
-          labels: tld.map(d => d.date),
-          datasets:[
-            // Tunnel band: fill from min line up to max line
-            { data:tld.map(d=>d.tunnelMin), fill:'+1',
-              backgroundColor:'rgba(16,185,129,0.10)', borderColor:'transparent',
-              pointRadius:0, tension:.3, borderWidth:0 },
-            { data:tld.map(d=>d.tunnelMax), fill:false,
+        type: 'line',
+        data: {
+          labels: DOY_LABELS,
+          datasets: [
+            // Tunnel band (2026): fill from min → max
+            { data:tlMin, spanGaps:true, fill:'+1',
+              backgroundColor:'rgba(16,185,129,0.10)', borderColor:'transparent', pointRadius:0, tension:.3, borderWidth:0 },
+            { data:tlMax, spanGaps:true, fill:false,
               borderColor:'transparent', pointRadius:0, tension:.3, borderWidth:0 },
-            // Load line
-            { label:'Weekly Load', data:tld.map(d=>d.load),
-              borderColor:'#3b82f6', backgroundColor:'transparent',
-              fill:false, pointRadius:2, tension:.3, borderWidth:2 },
+            // 2026 load (blue solid)
+            { label:'2026', data:tl26, spanGaps:false, borderColor:'#3b82f6',
+              fill:false, pointRadius:3, tension:.3, borderWidth:2 },
+            // 2025 load (grey dashed)
+            { label:'2025', data:tl25, spanGaps:false, borderColor:'#94a3b8', borderDash:[5,4],
+              fill:false, pointRadius:3, tension:.3, borderWidth:1.5 },
           ],
         },
         options:{
           responsive:true, animation:false,
-          interaction:{mode:'index',intersect:false},
           plugins:{
-            legend:{display:false},
+            legend:{
+              display:true,
+              labels:{ color:'#94a3b8', usePointStyle:true,
+                       filter: item => item.datasetIndex >= 2 },
+            },
             tooltip:{
-              filter: item => item.datasetIndex === 2,
+              mode:'nearest', intersect:false,
+              filter: item => item.datasetIndex >= 2 && item.raw != null,
               callbacks:{
-                title: items => tld[items[0].dataIndex]?.date ?? '',
+                title: items => {
+                  const di = items[0].dataIndex;
+                  const d = items[0].datasetIndex===2 ? tlMeta26[di] : tlMeta25[di];
+                  return d?.date ?? `DOY ${di}`;
+                },
                 label: items => {
-                  const d = tld[items.dataIndex];
-                  return d ? `Load: ${d.load}  (range ${d.tunnelMin}–${d.tunnelMax})  ${d.status}` : '';
+                  const di = items.dataIndex;
+                  if (items.datasetIndex === 2) {
+                    const d = tlMeta26[di];
+                    return d ? `2026: Load ${d.load} · ${d.status} · tunnel ${d.tunnelMin}–${d.tunnelMax}` : null;
+                  }
+                  const d = tlMeta25[di];
+                  return d ? `2025: Load ${d.load} · ${d.status}` : null;
                 },
               },
             },
           },
           scales:{
-            x:{ grid:{color:'#1e2535'},
-                ticks:{color:'#64748b', autoSkip:false, maxRotation:45, callback:tickCb} },
+            x:{ grid:{color:'#1e2535'}, ticks:doyTicks },
             y:{ grid:{color:'#1e2535'}, ticks:{color:'#64748b'},
                 title:{display:true,text:'Weekly Training Load',color:'#64748b'} },
           },
         },
       });
 
-      // Training status timeline strip
+      // ── Status timeline: 2-row stacked by week-of-year ──
+      const MONTH_WOY = [0,4,8,12,17,21,25,30,34,39,43,47];
+
+      const wc25 = Array(53).fill('rgba(0,0,0,0)');
+      const wc26 = Array(53).fill('rgba(0,0,0,0)');
+      const wt25 = Array(53).fill(null);
+      const wt26 = Array(53).fill(null);
+
+      trainingData.forEach(d => {
+        const di = doy(d.date);
+        const woy = Math.min(Math.floor(di / 7), 52);
+        if (d.date.startsWith('2025')) { wc25[woy] = STATUS_COLORS[d.status]||'#1e2535'; wt25[woy] = d; }
+        else                           { wc26[woy] = STATUS_COLORS[d.status]||'#1e2535'; wt26[woy] = d; }
+      });
+
       new Chart(document.getElementById('statusChart'), {
-        type:'bar',
+        type: 'bar',
         data:{
-          labels: tld.map(d => d.date),
-          datasets:[{
-            data: tld.map(()=>1),
-            backgroundColor: tld.map(d => STATUS_COLORS[d.status] || '#1e2535'),
-            borderWidth: 0,
-            barPercentage: 1.05,
-            categoryPercentage: 1.0,
-          }],
+          labels: Array.from({length:53},(_,i)=>i),
+          datasets:[
+            { label:'2026', data:Array(53).fill(1), backgroundColor:wc26,
+              stack:'rows', borderWidth:0, barPercentage:1.0, categoryPercentage:1.0 },
+            { label:'2025', data:Array(53).fill(1), backgroundColor:wc25,
+              stack:'rows', borderWidth:0, barPercentage:1.0, categoryPercentage:1.0 },
+          ],
         },
         options:{
-          responsive:true, animation:false,
+          responsive:true, animation:false, maintainAspectRatio:false,
           plugins:{
-            legend:{display:false},
-            tooltip:{callbacks:{
-              title: items => tld[items[0].dataIndex]?.date ?? '',
-              label: items => {
-                const d = tld[items[0].dataIndex];
-                return d ? `${d.status} · Load ${d.load} · ${d.fitnessTrend}` : '';
+            legend:{ display:true, position:'bottom',
+              labels:{ color:'#94a3b8', usePointStyle:true,
+                filter: item => item.datasetIndex <= 1 } },
+            tooltip:{
+              callbacks:{
+                title: items => {
+                  const woy = items[0].dataIndex;
+                  return [wt25[woy]?.date, wt26[woy]?.date].filter(Boolean).join(' / ') || `Week ${woy}`;
+                },
+                label: items => {
+                  const woy = items.dataIndex;
+                  const d = items.datasetIndex===0 ? wt26[woy] : wt25[woy];
+                  const yr = items.datasetIndex===0 ? 2026 : 2025;
+                  return d ? `${yr}: ${d.status} · Load ${d.load} · ${d.fitnessTrend}` : null;
+                },
               },
-            }},
+            },
           },
           scales:{
-            x:{ grid:{display:false},
-                ticks:{color:'#64748b', autoSkip:false, maxRotation:45, callback:tickCb} },
-            y:{ display:false, min:0, max:1 },
+            x:{ stacked:true, grid:{display:false},
+                ticks:{ color:'#64748b', autoSkip:false, maxRotation:0,
+                  callback: (_,idx) => { const mi=MONTH_WOY.indexOf(idx); return mi>=0?MONTHS[mi]:''; } } },
+            y:{ stacked:true, display:false, min:0, max:2 },
           },
         },
       });
 
-      // Status legend (only statuses that actually appear in the data)
-      const seen = [...new Set(tld.map(d => d.status))];
+      // Status legend from statuses present in the data
+      const seen = [...new Set(trainingData.map(d=>d.status))];
       document.getElementById('status-legend').innerHTML = seen
-        .map(s => `<span class="sl-item"><span class="sl-dot" style="background:${STATUS_COLORS[s]||'#1e2535'}"></span>${s}</span>`)
+        .map(s=>`<span class="sl-item"><span class="sl-dot" style="background:${STATUS_COLORS[s]}"></span>${s}</span>`)
         .join('');
     }
   }
