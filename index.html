@@ -171,7 +171,6 @@ tbody td{padding:8px 12px}
 
 <!-- ── Health ─────────────────────────────────────────────── -->
 <div id="pane-health" class="tab-pane">
-  <div class="sp"><div class="race-card"><h3>Race Predictions</h3><div class="race-grid" id="race-grid"></div></div></div>
   <div class="sp" id="health-status-cards"></div>
   <div class="sp charts-2col">
     <div class="chart-card">
@@ -185,21 +184,9 @@ tbody td{padding:8px 12px}
   </div>
   <div class="sp charts-2col">
     <div class="chart-card">
-      <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
-      <canvas id="bbPeakChart" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
-      <canvas id="bbDrawChart" height="200"></canvas>
-    </div>
-  </div>
-  <div class="sp">
-    <div class="chart-card">
       <h3>Weekly Training Load <span style="font-weight:400;color:var(--muted)">· shaded band = optimal range</span></h3>
       <canvas id="trainingLoadChart" height="200"></canvas>
     </div>
-  </div>
-  <div class="sp">
     <div class="chart-card">
       <h3>Training Status Timeline</h3>
       <div style="display:flex;align-items:stretch;gap:6px">
@@ -209,6 +196,17 @@ tbody td{padding:8px 12px}
       <div class="status-legend" id="status-legend"></div>
     </div>
   </div>
+  <div class="sp charts-2col">
+    <div class="chart-card">
+      <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
+      <canvas id="bbPeakChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
+      <canvas id="bbDrawChart" height="200"></canvas>
+    </div>
+  </div>
+  <div class="sp"><div class="race-card"><h3>Race Predictions</h3><div class="race-grid" id="race-grid"></div></div></div>
 </div>
 
 <!-- ── Run Log ─────────────────────────────────────────────── -->
@@ -594,7 +592,7 @@ tbody td{padding:8px 12px}
         data: {
           labels: DOY_LABELS,
           datasets: [
-            { label:'2025', data:v25, spanGaps:true, borderColor:'#888780', borderDash:[5,4],
+            { label:'2025', data:v25, spanGaps:true, borderColor:'#888780',
               tension:.4, pointRadius:0, fill:false, borderWidth:1.5 },
             { label:'2026', data:v26, spanGaps:true, borderColor:'#378ADD',
               tension:.4, pointRadius:0, fill:false, borderWidth:2 },
@@ -733,7 +731,7 @@ tbody td{padding:8px 12px}
             { label:'2026', data:tl26, spanGaps:true, borderColor:'#378ADD',
               fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:2 },
             // 2025 load (grey dashed)
-            { label:'2025', data:tl25, spanGaps:true, borderColor:'#888780', borderDash:[5,4],
+            { label:'2025', data:tl25, spanGaps:true, borderColor:'#888780',
               fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:1.5 },
           ],
         },
