@@ -594,10 +594,10 @@ tbody td{padding:8px 12px}
         data: {
           labels: DOY_LABELS,
           datasets: [
-            { label:'2025', data:v25, spanGaps:true, borderColor:'#94a3b8', borderDash:[5,4],
-              tension:.4, pointRadius:4, fill:false, borderWidth:1.5 },
-            { label:'2026', data:v26, spanGaps:true, borderColor:'#3b82f6',
-              tension:.4, pointRadius:4, fill:false, borderWidth:2 },
+            { label:'2025', data:v25, spanGaps:true, borderColor:'#888780', borderDash:[5,4],
+              tension:.4, pointRadius:0, fill:false, borderWidth:1.5 },
+            { label:'2026', data:v26, spanGaps:true, borderColor:'#378ADD',
+              tension:.4, pointRadius:0, fill:false, borderWidth:2 },
           ],
         },
         options:{
@@ -642,9 +642,9 @@ tbody td{padding:8px 12px}
         data: {
           labels: DOY_LABELS,
           datasets: [
-            { label:'2025', data:r25, spanGaps:false, borderColor:'#94a3b8', borderDash:[5,4],
+            { label:'2025', data:r25, spanGaps:false, borderColor:'#888780',
               tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
-            { label:'2026', data:r26, spanGaps:false, borderColor:'#f43f5e',
+            { label:'2026', data:r26, spanGaps:false, borderColor:'#378ADD',
               tension:.1, pointRadius:0, fill:false, borderWidth:2 },
           ],
         },
@@ -730,11 +730,11 @@ tbody td{padding:8px 12px}
             { data:tlMax, spanGaps:true, fill:false,
               borderColor:'transparent', pointRadius:0, tension:.3, borderWidth:0 },
             // 2026 load (blue solid)
-            { label:'2026', data:tl26, spanGaps:false, borderColor:'#3b82f6',
-              fill:false, pointRadius:3, tension:.3, borderWidth:2 },
+            { label:'2026', data:tl26, spanGaps:true, borderColor:'#378ADD',
+              fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:2 },
             // 2025 load (grey dashed)
-            { label:'2025', data:tl25, spanGaps:false, borderColor:'#94a3b8', borderDash:[5,4],
-              fill:false, pointRadius:3, tension:.3, borderWidth:1.5 },
+            { label:'2025', data:tl25, spanGaps:true, borderColor:'#888780', borderDash:[5,4],
+              fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:1.5 },
           ],
         },
         options:{
