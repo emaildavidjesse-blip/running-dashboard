@@ -30,29 +30,43 @@ jobs:
         run: |
           echo "GARMIN_EMAIL=${{ secrets.GARMIN_EMAIL }}" >> .env
           echo "GARMIN_PASSWORD=${{ secrets.GARMIN_PASSWORD }}" >> .env
-          # Optional: pre-saved tokens bypass the SSO login entirely.
-          # Generate locally with: python3 -c "import garth; print(garth.client.dumps())"
-          # then store the output as the GARMIN_TOKENSTORE repository secret.
           if [ -n "${{ secrets.GARMIN_TOKENSTORE }}" ]; then
             echo "GARMIN_TOKENSTORE=${{ secrets.GARMIN_TOKENSTORE }}" >> .env
           fi
 
-      - name: Restore cached Garmin tokens
-        id: token-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.garth
-          key: garmin-tokens-${{ github.repository_owner }}
+      - name: Check token expiry
+        env:
+          GARMIN_TOKENSTORE: ${{ secrets.GARMIN_TOKENSTORE }}
+        run: |
+          python3 - <<'EOF'
+          import os, json, base64, time, sys
+          from datetime import datetime
+
+          s = os.environ.get('GARMIN_TOKENSTORE', '').strip()
+          if not s:
+              print('::warning::GARMIN_TOKENSTORE secret is not set — sync will attempt SSO login')
+              sys.exit(0)
+
+          try:
+              decoded = json.loads(base64.b64decode(s))
+              oauth2 = decoded[1] if isinstance(decoded, list) else decoded
+              expires_at = oauth2.get('expires_at', 0)
+              days_left  = (expires_at - time.time()) / 86400
+              expires_str = datetime.fromtimestamp(expires_at).strftime('%Y-%m-%d')
+
+              if days_left < 0:
+                  print(f'::error::Garmin token expired {expires_str} — run export_tokens.py locally and update GARMIN_TOKENSTORE secret')
+                  sys.exit(1)
+              elif days_left < 14:
+                  print(f'::warning::Garmin token expires {expires_str} ({days_left:.0f} days) — run export_tokens.py soon to avoid sync failures')
+              else:
+                  print(f'Garmin token valid until {expires_str} ({days_left:.0f} days remaining)')
+          except Exception as e:
+              print(f'::warning::Could not parse token expiry: {e}')
+          EOF
 
       - name: Sync Garmin data
         run: python sync_garmin.py
-
-      - name: Save Garmin tokens
-        uses: actions/cache/save@v4
-        if: steps.token-cache.outputs.cache-hit != 'true'
-        with:
-          path: ~/.garth
-          key: garmin-tokens-${{ github.repository_owner }}
 
       - name: Build dashboard
         run: python build_dashboard.py

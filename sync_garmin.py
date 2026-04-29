@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import os
+import sys
 import json
+import base64
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from dotenv import load_dotenv
 import garth
+from garth.auth_tokens import OAuth1Token, OAuth2Token
 
 load_dotenv()
 
@@ -18,6 +21,50 @@ RUNNING_TYPE_KEYS = {
 }
 
 
+def _check_and_arm_oauth2():
+    """Verify OAuth2 token expiry and block mid-run refresh attempts.
+
+    Must be called immediately after loading tokens.  Exits with a clear
+    message if the token is already expired; prints a warning if it expires
+    within 7 days; patches refresh_oauth2() so any accidental call from
+    garth internals aborts the run rather than hitting the rate-limited
+    exchange endpoint.
+    """
+    oauth2 = garth.client.oauth2_token
+    if not oauth2:
+        sys.exit(
+            'No OAuth2 token — run export_tokens.py locally and update '
+            'GARMIN_TOKENSTORE secret'
+        )
+
+    now = time.time()
+    expires_str = datetime.fromtimestamp(oauth2.expires_at).strftime('%Y-%m-%d')
+
+    if oauth2.expires_at < now:
+        sys.exit(
+            f'Token expired on {expires_str} — run export_tokens.py locally '
+            'and update GARMIN_TOKENSTORE secret'
+        )
+
+    days_left = (oauth2.expires_at - now) / 86400
+    if days_left < 7:
+        print(
+            f'WARNING: Garmin token expires {expires_str} ({days_left:.1f} days) '
+            '— run export_tokens.py soon to avoid sync failures'
+        )
+    else:
+        print(f'Token valid until {expires_str} ({days_left:.1f} days remaining)')
+
+    # Block any path that would call sso.exchange() from GitHub Actions IPs.
+    def _refresh_blocked():
+        sys.exit(
+            'Token refresh attempted mid-run — run export_tokens.py locally '
+            'and update GARMIN_TOKENSTORE secret'
+        )
+
+    garth.client.refresh_oauth2 = _refresh_blocked
+
+
 def authenticate():
     email = os.getenv('GARMIN_EMAIL')
     password = os.getenv('GARMIN_PASSWORD')
@@ -25,17 +72,36 @@ def authenticate():
 
     if tokenstore_b64:
         try:
-            garth.client.loads(tokenstore_b64)
-            print('Authenticated via GARMIN_TOKENSTORE (no SSO)')
+            decoded = json.loads(base64.b64decode(tokenstore_b64))
+            if isinstance(decoded, list):
+                # Old format exported by garth.client.dumps(): [oauth1, oauth2]
+                print('NOTE: Old token format — re-run export_tokens.py to export only OAuth2')
+                oauth2_dict = decoded[1]
+            else:
+                # New format: just the OAuth2 dict
+                oauth2_dict = decoded
+
+            oauth2 = OAuth2Token(**oauth2_dict)
+            # A dummy OAuth1 satisfies garth's internal assertion without
+            # enabling the real exchange/refresh path (which we block below).
+            dummy_oauth1 = OAuth1Token(oauth_token='disabled', oauth_token_secret='disabled')
+            garth.client.configure(oauth1_token=dummy_oauth1, oauth2_token=oauth2)
+            _check_and_arm_oauth2()
+            print('Authenticated via GARMIN_TOKENSTORE (no token exchange)')
             return
+        except SystemExit:
+            raise
         except Exception as exc:
             print(f'GARMIN_TOKENSTORE load failed: {exc}')
 
     if os.path.isdir(TOKEN_DIR):
         try:
             garth.resume(TOKEN_DIR)
+            _check_and_arm_oauth2()
             print(f'Authenticated via cached tokens at {TOKEN_DIR}')
             return
+        except SystemExit:
+            raise
         except Exception as exc:
             print(f'Cached token load failed: {exc}')
 
@@ -44,8 +110,11 @@ def authenticate():
             print(f'Logging in as {email} (attempt {attempt})...')
             garth.login(email, password)
             garth.save(TOKEN_DIR)
+            _check_and_arm_oauth2()
             print(f'Login successful; tokens saved to {TOKEN_DIR}')
             return
+        except SystemExit:
+            raise
         except Exception as exc:
             if '429' in str(exc) and attempt < 4:
                 wait = 30 * attempt
