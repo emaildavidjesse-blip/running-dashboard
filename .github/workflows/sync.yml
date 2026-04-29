@@ -1,12 +1,7 @@
 name: Sync Garmin & Deploy Dashboard
 
 on:
-  schedule:
-    # 6:00 AM Chicago time — UTC-5 (CST) / UTC-6 (CDT)
-    # Use 11:00 UTC to cover CST (Chicago standard time = UTC-5)
-    # In CDT (summer, UTC-6) this fires at 5:00 AM Chicago — acceptable
-    - cron: '0 11 * * *'
-  workflow_dispatch:   # allow manual trigger from GitHub UI
+  workflow_dispatch:   # manual trigger only — daily sync runs via local launchd (run_sync.sh)
 
 jobs:
   sync:
