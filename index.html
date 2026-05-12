@@ -209,8 +209,8 @@ tbody td{padding:8px 12px}
     <div class="chart-card">
       <h3>Training Status Timeline</h3>
       <div style="display:flex;align-items:stretch;gap:6px">
-        <div class="status-row-labels"><span>2025</span><span>2026</span></div>
-        <div style="flex:1;min-width:0;height:70px;position:relative"><canvas id="statusChart"></canvas></div>
+        <div class="status-row-labels" style="padding-bottom:22px"><span>2025</span><span>2026</span></div>
+        <div style="flex:1;min-width:0;height:90px;position:relative"><canvas id="statusChart"></canvas></div>
       </div>
       <div class="status-legend" id="status-legend"></div>
     </div>
@@ -605,6 +605,13 @@ tbody td{padding:8px 12px}
       return Math.floor((dt - new Date(dt.getFullYear(), 0, 1)) / 86400000);
     }
 
+    function sevenDayAvg(arr) {
+      return arr.map((_, i) => {
+        const slice = arr.slice(Math.max(0, i - 6), i + 1).filter(x => x != null);
+        return slice.length >= 4 ? +(slice.reduce((a, b) => a + b) / slice.length).toFixed(1) : null;
+      });
+    }
+
     // Shared DOY x-axis tick config (shows "Jan","Feb"... at month-start positions)
     const doyTicks = {
       color: '#64748b', autoSkip: false, maxRotation: 0,
@@ -670,6 +677,7 @@ tbody td{padding:8px 12px}
         if (d.date.startsWith('2025')) { r25[di] = d.rhr; r25date[di] = d.date; }
         else                           { r26[di] = d.rhr; r26date[di] = d.date; }
       });
+      const r26avg = sevenDayAvg(r26);
 
       new Chart(document.getElementById('rhrChart'), {
         type: 'line',
@@ -679,6 +687,8 @@ tbody td{padding:8px 12px}
             { label:'2025', data:r25, spanGaps:false, borderColor:'#888780',
               tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
             { label:'2026', data:r26, spanGaps:false, borderColor:'#378ADD',
+              tension:.1, pointRadius:0, fill:false, borderWidth:2 },
+            { label:'7d avg', data:r26avg, spanGaps:true, borderColor:'#EF9F27',
               tension:.1, pointRadius:0, fill:false, borderWidth:2 },
           ],
         },
@@ -708,18 +718,27 @@ tbody td{padding:8px 12px}
 
     // ── Body Battery (2026 only) ───────────────────────────
     if (bbData.length) {
-      const mkBB = (id, key, color, label) =>
-        new Chart(document.getElementById(id), {
+      const mkBB = (id, key, color, label) => {
+        const rawData = bbData.map(d => d[key]);
+        const avgData = sevenDayAvg(rawData);
+        return new Chart(document.getElementById(id), {
           type:'line',
           data:{
             labels: bbData.map(d => d.date.slice(5)),
-            datasets:[{ data:bbData.map(d=>d[key]),
-              borderColor:color, backgroundColor:color+'18',
-              tension:.2, pointRadius:0, fill:true, borderWidth:1.5 }],
+            datasets:[
+              { data:rawData,
+                borderColor:color, backgroundColor:color+'18',
+                tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
+              { label:'7d avg', data:avgData,
+                borderColor:'#EF9F27', backgroundColor:'transparent',
+                tension:.2, pointRadius:0, fill:false, borderWidth:2 },
+            ],
           },
           options:{
             ...BASE,
-            plugins:{ legend:{display:false},
+            plugins:{
+              legend:{display:true, labels:{color:'#94a3b8',usePointStyle:true,
+                filter: item => item.text === '7d avg'}},
               tooltip:{callbacks:{title:items=>bbData[items[0].dataIndex]?.date??''}} },
             scales:{
               x:{...BASE.scales.x, ticks:{color:'#64748b',maxTicksLimit:10,maxRotation:45}},
@@ -727,6 +746,7 @@ tbody td{padding:8px 12px}
             },
           },
         });
+      };
       mkBB('bbPeakChart',   'peak',     '#10b981', 'Peak level (0–100)');
       mkBB('bbDrawChart',   'drawdown', '#f59e0b', 'Points lost after peak');
       mkBB('bbChargeChart', 'charged',  '#378ADD', 'Points charged overnight');
@@ -764,12 +784,12 @@ tbody td{padding:8px 12px}
               backgroundColor:'rgba(16,185,129,0.10)', borderColor:'transparent', pointRadius:0, tension:.3, borderWidth:0 },
             { data:tlMax, spanGaps:true, fill:false,
               borderColor:'transparent', pointRadius:0, tension:.3, borderWidth:0 },
-            // 2026 load (blue solid)
-            { label:'2026', data:tl26, spanGaps:true, borderColor:'#378ADD',
-              fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:2 },
             // 2025 load (grey dashed)
             { label:'2025', data:tl25, spanGaps:true, borderColor:'#888780',
               fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:1.5 },
+            // 2026 load (blue solid)
+            { label:'2026', data:tl26, spanGaps:true, borderColor:'#378ADD',
+              fill:false, pointRadius:0, showLine:true, tension:.3, borderWidth:2 },
           ],
         },
         options:{
@@ -786,12 +806,12 @@ tbody td{padding:8px 12px}
               callbacks:{
                 title: items => {
                   const di = items[0].dataIndex;
-                  const d = items[0].datasetIndex===2 ? tlMeta26[di] : tlMeta25[di];
+                  const d = items[0].datasetIndex===3 ? tlMeta26[di] : tlMeta25[di];
                   return d?.date ?? `DOY ${di}`;
                 },
                 label: items => {
                   const di = items.dataIndex;
-                  if (items.datasetIndex === 2) {
+                  if (items.datasetIndex === 3) {
                     const d = tlMeta26[di];
                     return d ? `2026: Load ${d.load} · ${d.status} · tunnel ${d.tunnelMin}–${d.tunnelMax}` : null;
                   }
@@ -829,18 +849,18 @@ tbody td{padding:8px 12px}
         data:{
           labels: Array.from({length:53},(_,i)=>i),
           datasets:[
-            { label:'2026', data:Array(53).fill(1), backgroundColor:wc26,
+            { label:'2026', data:Array(53).fill(0.9), backgroundColor:wc26,
               stack:'rows', borderWidth:0, barPercentage:1.0, categoryPercentage:1.0 },
-            { label:'2025', data:Array(53).fill(1), backgroundColor:wc25,
+            { data:Array(53).fill(0.2), backgroundColor:'rgba(0,0,0,0)',
+              stack:'rows', borderWidth:0, barPercentage:1.0, categoryPercentage:1.0 },
+            { label:'2025', data:Array(53).fill(0.9), backgroundColor:wc25,
               stack:'rows', borderWidth:0, barPercentage:1.0, categoryPercentage:1.0 },
           ],
         },
         options:{
           responsive:true, animation:false, maintainAspectRatio:false,
           plugins:{
-            legend:{ display:true, position:'bottom',
-              labels:{ color:'#94a3b8', usePointStyle:true,
-                filter: item => item.datasetIndex <= 1 } },
+            legend:{ display:false },
             tooltip:{
               callbacks:{
                 title: items => {
@@ -849,8 +869,10 @@ tbody td{padding:8px 12px}
                 },
                 label: items => {
                   const woy = items.dataIndex;
-                  const d = items.datasetIndex===0 ? wt26[woy] : wt25[woy];
-                  const yr = items.datasetIndex===0 ? 2026 : 2025;
+                  if (items.datasetIndex === 1) return null;
+                  const isY26 = items.datasetIndex === 0;
+                  const d = isY26 ? wt26[woy] : wt25[woy];
+                  const yr = isY26 ? 2026 : 2025;
                   return d ? `${yr}: ${d.status} · Load ${d.load} · ${d.fitnessTrend}` : null;
                 },
               },
