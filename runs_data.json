@@ -1,6 +1,38 @@
 {
   "2026": [
     {
+      "date": "2026-05-10",
+      "miles": 6.2,
+      "pace": 9.21,
+      "hr": 126,
+      "title": "Wilmette - Base",
+      "soccer": false
+    },
+    {
+      "date": "2026-05-09",
+      "miles": 4.59,
+      "pace": 8.5,
+      "hr": 135,
+      "title": "Wilmette - Base",
+      "soccer": false
+    },
+    {
+      "date": "2026-05-07",
+      "miles": 4.25,
+      "pace": 9.13,
+      "hr": 133,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
+      "date": "2026-05-06",
+      "miles": 2.94,
+      "pace": 9.54,
+      "hr": 145,
+      "title": "Wilmette - Recovery",
+      "soccer": false
+    },
+    {
       "date": "2026-04-26",
       "miles": 2.73,
       "pace": 16.73,
@@ -2408,6 +2440,11 @@
       "date": "2026-04-25",
       "vo2max": 52.6,
       "fitnessAge": 20
+    },
+    {
+      "date": "2026-05-10",
+      "vo2max": 52.7,
+      "fitnessAge": 20
     }
   ],
   "rhr": [
@@ -4350,608 +4387,848 @@
     {
       "date": "2026-04-30",
       "rhr": 55
+    },
+    {
+      "date": "2026-05-01",
+      "rhr": 55
+    },
+    {
+      "date": "2026-05-02",
+      "rhr": 56
+    },
+    {
+      "date": "2026-05-03",
+      "rhr": 56
+    },
+    {
+      "date": "2026-05-04",
+      "rhr": 52
+    },
+    {
+      "date": "2026-05-05",
+      "rhr": 57
+    },
+    {
+      "date": "2026-05-06",
+      "rhr": 55
+    },
+    {
+      "date": "2026-05-07",
+      "rhr": 52
+    },
+    {
+      "date": "2026-05-08",
+      "rhr": 60
+    },
+    {
+      "date": "2026-05-09",
+      "rhr": 57
+    },
+    {
+      "date": "2026-05-10",
+      "rhr": 53
+    },
+    {
+      "date": "2026-05-11",
+      "rhr": 51
+    },
+    {
+      "date": "2026-05-12",
+      "rhr": 54
     }
   ],
   "bodyBattery": [
     {
       "date": "2026-01-01",
       "peak": 66,
-      "drawdown": 35
+      "drawdown": 35,
+      "charged": 42
     },
     {
       "date": "2026-01-02",
       "peak": 59,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 32
     },
     {
       "date": "2026-01-03",
       "peak": 81,
-      "drawdown": 49
+      "drawdown": 49,
+      "charged": 55
     },
     {
       "date": "2026-01-04",
       "peak": 78,
-      "drawdown": 40
+      "drawdown": 40,
+      "charged": 54
     },
     {
       "date": "2026-01-05",
       "peak": 84,
-      "drawdown": 49
+      "drawdown": 49,
+      "charged": 44
     },
     {
       "date": "2026-01-06",
       "peak": 85,
-      "drawdown": 63
+      "drawdown": 63,
+      "charged": 53
     },
     {
       "date": "2026-01-07",
       "peak": 73,
-      "drawdown": 46
+      "drawdown": 46,
+      "charged": 53
     },
     {
       "date": "2026-01-08",
       "peak": 58,
-      "drawdown": 29
+      "drawdown": 29,
+      "charged": 40
     },
     {
       "date": "2026-01-09",
       "peak": 71,
-      "drawdown": 48
+      "drawdown": 48,
+      "charged": 45
     },
     {
       "date": "2026-01-10",
       "peak": 63,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 47
     },
     {
       "date": "2026-01-11",
       "peak": 50,
-      "drawdown": 26
+      "drawdown": 26,
+      "charged": 46
     },
     {
       "date": "2026-01-12",
       "peak": 68,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 45
     },
     {
       "date": "2026-01-13",
       "peak": 61,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 24
     },
     {
       "date": "2026-01-14",
       "peak": 81,
-      "drawdown": 41
+      "drawdown": 41,
+      "charged": 65
     },
     {
       "date": "2026-01-15",
       "peak": 90,
-      "drawdown": 60
+      "drawdown": 60,
+      "charged": 56
     },
     {
       "date": "2026-01-16",
       "peak": 94,
-      "drawdown": 66
+      "drawdown": 66,
+      "charged": 55
     },
     {
       "date": "2026-01-17",
       "peak": 70,
-      "drawdown": 36
+      "drawdown": 36,
+      "charged": 49
     },
     {
       "date": "2026-01-18",
       "peak": 79,
-      "drawdown": 46
+      "drawdown": 46,
+      "charged": 53
     },
     {
       "date": "2026-01-19",
       "peak": 75,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 40
     },
     {
       "date": "2026-01-20",
       "peak": 90,
-      "drawdown": 65
+      "drawdown": 65,
+      "charged": 52
     },
     {
       "date": "2026-01-21",
       "peak": 61,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 40
     },
     {
       "date": "2026-01-22",
       "peak": 56,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 41
     },
     {
       "date": "2026-01-23",
       "peak": 62,
-      "drawdown": 39
+      "drawdown": 39,
+      "charged": 43
     },
     {
       "date": "2026-01-24",
       "peak": 59,
-      "drawdown": 32
+      "drawdown": 32,
+      "charged": 43
     },
     {
       "date": "2026-01-25",
       "peak": 74,
-      "drawdown": 60
+      "drawdown": 60,
+      "charged": 48
     },
     {
       "date": "2026-01-26",
       "peak": 46,
-      "drawdown": 34
+      "drawdown": 34,
+      "charged": 26
     },
     {
       "date": "2026-01-27",
       "peak": 40,
-      "drawdown": 27
+      "drawdown": 27,
+      "charged": 34
     },
     {
       "date": "2026-01-28",
       "peak": 62,
-      "drawdown": 26
+      "drawdown": 26,
+      "charged": 64
     },
     {
       "date": "2026-01-29",
       "peak": 87,
-      "drawdown": 55
+      "drawdown": 55,
+      "charged": 47
     },
     {
       "date": "2026-01-30",
       "peak": 71,
-      "drawdown": 42
+      "drawdown": 42,
+      "charged": 42
     },
     {
       "date": "2026-01-31",
       "peak": 61,
-      "drawdown": 39
+      "drawdown": 39,
+      "charged": 30
     },
     {
       "date": "2026-02-01",
       "peak": 93,
-      "drawdown": 56
+      "drawdown": 56,
+      "charged": 72
     },
     {
       "date": "2026-02-02",
       "peak": 90,
-      "drawdown": 60
+      "drawdown": 60,
+      "charged": 54
     },
     {
       "date": "2026-02-03",
       "peak": 55,
-      "drawdown": 42
+      "drawdown": 42,
+      "charged": 31
     },
     {
       "date": "2026-02-04",
       "peak": 77,
-      "drawdown": 46
+      "drawdown": 46,
+      "charged": 57
     },
     {
       "date": "2026-02-05",
       "peak": 69,
-      "drawdown": 32
+      "drawdown": 32,
+      "charged": 49
     },
     {
       "date": "2026-02-06",
       "peak": 78,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 47
     },
     {
       "date": "2026-02-07",
       "peak": 84,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 55
     },
     {
       "date": "2026-02-08",
       "peak": 100,
-      "drawdown": 74
+      "drawdown": 74,
+      "charged": 54
     },
     {
       "date": "2026-02-09",
       "peak": 60,
-      "drawdown": 34
+      "drawdown": 34,
+      "charged": 44
     },
     {
       "date": "2026-02-10",
       "peak": 60,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 30
     },
     {
       "date": "2026-02-11",
       "peak": 67,
-      "drawdown": 53
+      "drawdown": 53,
+      "charged": 43
     },
     {
       "date": "2026-02-12",
       "peak": 59,
-      "drawdown": 20
+      "drawdown": 20,
+      "charged": 58
     },
     {
       "date": "2026-02-13",
       "peak": 63,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 21
     },
     {
       "date": "2026-02-14",
       "peak": 55,
-      "drawdown": 33
+      "drawdown": 33,
+      "charged": 39
     },
     {
       "date": "2026-02-15",
       "peak": 61,
-      "drawdown": 40
+      "drawdown": 40,
+      "charged": 44
     },
     {
       "date": "2026-02-16",
       "peak": 84,
-      "drawdown": 45
+      "drawdown": 45,
+      "charged": 61
     },
     {
       "date": "2026-02-17",
       "peak": 72,
-      "drawdown": 59
+      "drawdown": 59,
+      "charged": 35
     },
     {
       "date": "2026-02-18",
       "peak": 54,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 41
     },
     {
       "date": "2026-02-19",
       "peak": 59,
-      "drawdown": 14
+      "drawdown": 14,
+      "charged": 52
     },
     {
       "date": "2026-02-20",
       "peak": 84,
-      "drawdown": 59
+      "drawdown": 59,
+      "charged": 44
     },
     {
       "date": "2026-02-21",
       "peak": 73,
-      "drawdown": 42
+      "drawdown": 42,
+      "charged": 48
     },
     {
       "date": "2026-02-22",
       "peak": 67,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 43
     },
     {
       "date": "2026-02-23",
       "peak": 82,
-      "drawdown": 44
+      "drawdown": 44,
+      "charged": 51
     },
     {
       "date": "2026-02-24",
       "peak": 69,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 35
     },
     {
       "date": "2026-02-25",
       "peak": 93,
-      "drawdown": 61
+      "drawdown": 61,
+      "charged": 63
     },
     {
       "date": "2026-02-26",
       "peak": 62,
-      "drawdown": 31
+      "drawdown": 31,
+      "charged": 41
     },
     {
       "date": "2026-02-27",
       "peak": 78,
-      "drawdown": 55
+      "drawdown": 55,
+      "charged": 48
     },
     {
       "date": "2026-02-28",
       "peak": 78,
-      "drawdown": 42
+      "drawdown": 42,
+      "charged": 67
     },
     {
       "date": "2026-03-01",
       "peak": 96,
-      "drawdown": 61
+      "drawdown": 61,
+      "charged": 59
     },
     {
       "date": "2026-03-02",
       "peak": 79,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 53
     },
     {
       "date": "2026-03-03",
       "peak": 96,
-      "drawdown": 67
+      "drawdown": 67,
+      "charged": 63
     },
     {
       "date": "2026-03-04",
       "peak": 91,
-      "drawdown": 58
+      "drawdown": 58,
+      "charged": 50
     },
     {
       "date": "2026-03-05",
       "peak": 68,
-      "drawdown": 25
+      "drawdown": 25,
+      "charged": 45
     },
     {
       "date": "2026-03-06",
       "peak": 100,
-      "drawdown": 66
+      "drawdown": 66,
+      "charged": 55
     },
     {
       "date": "2026-03-07",
       "peak": 58,
-      "drawdown": 24
+      "drawdown": 24,
+      "charged": 42
     },
     {
       "date": "2026-03-08",
       "peak": 71,
-      "drawdown": 32
+      "drawdown": 32,
+      "charged": 42
     },
     {
       "date": "2026-03-09",
       "peak": 89,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 56
     },
     {
       "date": "2026-03-10",
       "peak": 96,
-      "drawdown": 67
+      "drawdown": 67,
+      "charged": 55
     },
     {
       "date": "2026-03-11",
       "peak": 69,
-      "drawdown": 51
+      "drawdown": 51,
+      "charged": 35
     },
     {
       "date": "2026-03-12",
       "peak": 65,
-      "drawdown": 27
+      "drawdown": 27,
+      "charged": 61
     },
     {
       "date": "2026-03-13",
       "peak": 99,
-      "drawdown": 54
+      "drawdown": 54,
+      "charged": 61
     },
     {
       "date": "2026-03-14",
       "peak": 76,
-      "drawdown": 51
+      "drawdown": 51,
+      "charged": 45
     },
     {
       "date": "2026-03-15",
       "peak": 65,
-      "drawdown": 27
+      "drawdown": 27,
+      "charged": 55
     },
     {
       "date": "2026-03-16",
       "peak": 100,
-      "drawdown": 50
+      "drawdown": 50,
+      "charged": 50
     },
     {
       "date": "2026-03-17",
       "peak": 82,
-      "drawdown": 40
+      "drawdown": 40,
+      "charged": 36
     },
     {
       "date": "2026-03-18",
       "peak": 74,
-      "drawdown": 46
+      "drawdown": 46,
+      "charged": 28
     },
     {
       "date": "2026-03-19",
       "peak": 76,
-      "drawdown": 41
+      "drawdown": 41,
+      "charged": 55
     },
     {
       "date": "2026-03-20",
       "peak": 67,
-      "drawdown": 48
+      "drawdown": 48,
+      "charged": 28
     },
     {
       "date": "2026-03-21",
       "peak": 52,
-      "drawdown": 22
+      "drawdown": 22,
+      "charged": 46
     },
     {
       "date": "2026-03-22",
       "peak": 93,
-      "drawdown": 57
+      "drawdown": 57,
+      "charged": 61
     },
     {
       "date": "2026-03-23",
       "peak": 77,
-      "drawdown": 32
+      "drawdown": 32,
+      "charged": 52
     },
     {
       "date": "2026-03-24",
       "peak": 89,
-      "drawdown": 53
+      "drawdown": 53,
+      "charged": 44
     },
     {
       "date": "2026-03-25",
       "peak": 80,
-      "drawdown": 62
+      "drawdown": 62,
+      "charged": 41
     },
     {
       "date": "2026-03-26",
       "peak": 42,
-      "drawdown": 12
+      "drawdown": 12,
+      "charged": 41
     },
     {
       "date": "2026-03-27",
       "peak": 69,
-      "drawdown": 45
+      "drawdown": 45,
+      "charged": 37
     },
     {
       "date": "2026-03-28",
       "peak": 74,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 65
     },
     {
       "date": "2026-03-29",
       "peak": 68,
-      "drawdown": 34
+      "drawdown": 34,
+      "charged": 43
     },
     {
       "date": "2026-03-30",
       "peak": 83,
-      "drawdown": 37
+      "drawdown": 37,
+      "charged": 46
     },
     {
       "date": "2026-03-31",
       "peak": 82,
-      "drawdown": 56
+      "drawdown": 56,
+      "charged": 46
     },
     {
       "date": "2026-04-01",
       "peak": 85,
-      "drawdown": 66
+      "drawdown": 66,
+      "charged": 57
     },
     {
       "date": "2026-04-02",
       "peak": 66,
-      "drawdown": 27
+      "drawdown": 27,
+      "charged": 55
     },
     {
       "date": "2026-04-03",
       "peak": 79,
-      "drawdown": 39
+      "drawdown": 39,
+      "charged": 44
     },
     {
       "date": "2026-04-04",
       "peak": 66,
-      "drawdown": 29
+      "drawdown": 29,
+      "charged": 32
     },
     {
       "date": "2026-04-05",
       "peak": 100,
-      "drawdown": 58
+      "drawdown": 58,
+      "charged": 58
     },
     {
       "date": "2026-04-06",
       "peak": 78,
-      "drawdown": 34
+      "drawdown": 34,
+      "charged": 42
     },
     {
       "date": "2026-04-07",
       "peak": 79,
-      "drawdown": 54
+      "drawdown": 54,
+      "charged": 36
     },
     {
       "date": "2026-04-08",
       "peak": 64,
-      "drawdown": 33
+      "drawdown": 33,
+      "charged": 42
     },
     {
       "date": "2026-04-09",
       "peak": 60,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 32
     },
     {
       "date": "2026-04-10",
       "peak": 61,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 45
     },
     {
       "date": "2026-04-11",
       "peak": 74,
-      "drawdown": 51
+      "drawdown": 51,
+      "charged": 52
     },
     {
       "date": "2026-04-12",
       "peak": 82,
-      "drawdown": 59
+      "drawdown": 59,
+      "charged": 60
     },
     {
       "date": "2026-04-13",
       "peak": 73,
-      "drawdown": 32
+      "drawdown": 32,
+      "charged": 57
     },
     {
       "date": "2026-04-14",
       "peak": 66,
-      "drawdown": 58
+      "drawdown": 58,
+      "charged": 19
     },
     {
       "date": "2026-04-15",
       "peak": 63,
-      "drawdown": 38
+      "drawdown": 38,
+      "charged": 62
     },
     {
       "date": "2026-04-16",
       "peak": 80,
-      "drawdown": 43
+      "drawdown": 43,
+      "charged": 61
     },
     {
       "date": "2026-04-17",
       "peak": 58,
-      "drawdown": 33
+      "drawdown": 33,
+      "charged": 20
     },
     {
       "date": "2026-04-18",
       "peak": 76,
-      "drawdown": 36
+      "drawdown": 36,
+      "charged": 58
     },
     {
       "date": "2026-04-19",
       "peak": 97,
-      "drawdown": 75
+      "drawdown": 75,
+      "charged": 57
     },
     {
       "date": "2026-04-20",
       "peak": 75,
-      "drawdown": 27
+      "drawdown": 27,
+      "charged": 65
     },
     {
       "date": "2026-04-21",
       "peak": 92,
-      "drawdown": 58
+      "drawdown": 58,
+      "charged": 45
     },
     {
       "date": "2026-04-22",
       "peak": 68,
-      "drawdown": 54
+      "drawdown": 54,
+      "charged": 35
     },
     {
       "date": "2026-04-23",
       "peak": 55,
-      "drawdown": 18
+      "drawdown": 18,
+      "charged": 49
     },
     {
       "date": "2026-04-24",
       "peak": 79,
-      "drawdown": 61
+      "drawdown": 61,
+      "charged": 42
     },
     {
       "date": "2026-04-25",
       "peak": 68,
-      "drawdown": 28
+      "drawdown": 28,
+      "charged": 49
     },
     {
       "date": "2026-04-26",
       "peak": 89,
-      "drawdown": 55
+      "drawdown": 55,
+      "charged": 59
     },
     {
       "date": "2026-04-27",
       "peak": 92,
-      "drawdown": 33
+      "drawdown": 33,
+      "charged": 63
     },
     {
       "date": "2026-04-28",
       "peak": 85,
-      "drawdown": 47
+      "drawdown": 47,
+      "charged": 29
     },
     {
       "date": "2026-04-29",
       "peak": 66,
-      "drawdown": 18
+      "drawdown": 18,
+      "charged": 41
     },
     {
       "date": "2026-04-30",
       "peak": 74,
-      "drawdown": 0
+      "drawdown": 38,
+      "charged": 30
+    },
+    {
+      "date": "2026-05-01",
+      "peak": 62,
+      "drawdown": 35,
+      "charged": 21
+    },
+    {
+      "date": "2026-05-02",
+      "peak": 47,
+      "drawdown": 29,
+      "charged": 34
+    },
+    {
+      "date": "2026-05-03",
+      "peak": 52,
+      "drawdown": 22,
+      "charged": 37
+    },
+    {
+      "date": "2026-05-04",
+      "peak": 76,
+      "drawdown": 42,
+      "charged": 41
+    },
+    {
+      "date": "2026-05-05",
+      "peak": 60,
+      "drawdown": 38,
+      "charged": 30
+    },
+    {
+      "date": "2026-05-06",
+      "peak": 56,
+      "drawdown": 21,
+      "charged": 39
+    },
+    {
+      "date": "2026-05-07",
+      "peak": 79,
+      "drawdown": 43,
+      "charged": 51
+    },
+    {
+      "date": "2026-05-08",
+      "peak": 61,
+      "drawdown": 50,
+      "charged": 19
+    },
+    {
+      "date": "2026-05-09",
+      "peak": 49,
+      "drawdown": 31,
+      "charged": 46
+    },
+    {
+      "date": "2026-05-10",
+      "peak": 72,
+      "drawdown": 39,
+      "charged": 64
+    },
+    {
+      "date": "2026-05-11",
+      "peak": 78,
+      "drawdown": 32,
+      "charged": 50
+    },
+    {
+      "date": "2026-05-12",
+      "peak": 72,
+      "drawdown": 19,
+      "charged": 23
     }
   ],
   "trainingLoad": [
@@ -5506,12 +5783,28 @@
       "tunnelMax": 1258,
       "status": "Maintaining",
       "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-05-04",
+      "load": 39,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Recovery",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-05-11",
+      "load": 407,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "20:02",
-    "10k": "42:55",
-    "half": "1:40:47",
-    "marathon": "3:53:53"
+    "5k": "20:19",
+    "10k": "43:29",
+    "half": "1:42:04",
+    "marathon": "3:56:39"
   }
 }

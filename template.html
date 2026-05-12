@@ -24,9 +24,16 @@
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
      background:var(--bg);color:var(--text);min-height:100vh}
 
-header{padding:20px 28px 14px;border-bottom:1px solid var(--border)}
+header{display:flex;justify-content:space-between;align-items:center;
+       padding:20px 28px 14px;border-bottom:1px solid var(--border)}
 header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
 header p{font-size:.82rem;color:var(--muted);margin-top:2px}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);
+             border-radius:6px;padding:6px 14px;font-size:.8rem;cursor:pointer;
+             text-decoration:none;transition:background .15s,border-color .15s}
+.refresh-btn:hover{background:#1e2535;border-color:var(--blue)}
+.sync-meta{font-size:.7rem;color:var(--muted);text-align:right;line-height:1.6}
 
 .tab-nav{display:flex;padding:0 28px;border-bottom:1px solid var(--border);
          overflow-x:auto;scrollbar-width:none}
@@ -65,6 +72,8 @@ header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 .chart-card canvas{width:100%!important}
 .charts-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:720px){.charts-2col{grid-template-columns:1fr}}
+.charts-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media(max-width:900px){.charts-3col{grid-template-columns:1fr}}
 
 .month-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
 .mc{background:var(--surface);border:1px solid var(--border);border-left:3px solid;
@@ -75,6 +84,10 @@ header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 .mc-delta{font-size:.8rem;font-weight:600}
 .mc-delta.pos{color:var(--green)}.mc-delta.neg{color:var(--red)}
 .mc-target{font-size:.68rem;color:var(--muted)}
+.mc-mo-delta{font-size:1.15rem;font-weight:700;margin:4px 0 1px}
+.mc-mo-delta.pos{color:var(--green)}.mc-mo-delta.neg{color:var(--red)}
+.mc-cumul{font-size:.74rem;font-weight:600;margin-top:5px}
+.mc-cumul.pos{color:var(--green)}.mc-cumul.neg{color:var(--red)}
 
 .race-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px}
 .race-card h3{font-size:.8rem;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px}
@@ -104,8 +117,14 @@ tbody td{padding:8px 12px}
 <script>const RUNS_DATA_PLACEHOLDER = null;</script>
 
 <header>
-  <h1>Running Dashboard</h1>
-  <p id="hdr-sub">Loading…</p>
+  <div>
+    <h1>Running Dashboard</h1>
+    <p id="hdr-sub">Loading…</p>
+  </div>
+  <div class="hdr-right">
+    <a class="refresh-btn" href="https://github.com/emaildavidjesse-blip/running-dashboard/actions/workflows/sync.yml" target="_blank" rel="noopener">Refresh</a>
+    <div class="sync-meta">Opens GitHub Actions to trigger a sync<br><span id="last-sync"></span></div>
+  </div>
 </header>
 
 <nav class="tab-nav">
@@ -196,7 +215,7 @@ tbody td{padding:8px 12px}
       <div class="status-legend" id="status-legend"></div>
     </div>
   </div>
-  <div class="sp charts-2col">
+  <div class="sp charts-3col">
     <div class="chart-card">
       <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
       <canvas id="bbPeakChart" height="200"></canvas>
@@ -204,6 +223,11 @@ tbody td{padding:8px 12px}
     <div class="chart-card">
       <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
       <canvas id="bbDrawChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Body Battery Charged <span style="font-weight:400;color:var(--muted)">(sleep recovery)</span></h3>
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">Charged reflects overnight sleep recovery</p>
+      <canvas id="bbChargeChart" height="200"></canvas>
     </div>
   </div>
   <div class="sp"><div class="race-card"><h3>Race Predictions</h3><div class="race-grid" id="race-grid"></div></div></div>
@@ -260,6 +284,15 @@ tbody td{padding:8px 12px}
 
   document.getElementById('hdr-sub').textContent =
     `2026 · ${miles26.toFixed(1)} mi · ${runs26.length} runs · synced ${now.toLocaleDateString()}`;
+
+  // Last sync date — use most recent BB entry (daily), fall back to most recent run
+  const lastSyncDate = (RUNS.bodyBattery||[]).map(d => d.date).filter(Boolean).sort().pop()
+    || runs26.filter(r => r.date).map(r => r.date).sort().pop();
+  if (lastSyncDate) {
+    const lsd = new Date(lastSyncDate + 'T12:00:00');
+    document.getElementById('last-sync').textContent =
+      `Last synced: ${MONTHS[lsd.getMonth()]} ${lsd.getDate()}`;
+  }
 
   // ── Helpers ──────────────────────────────────────────────
   function fmtPace(p) {
@@ -434,13 +467,16 @@ tbody td{padding:8px 12px}
   // ── MONTHLY ──────────────────────────────────────────────
   function initMonthly() {
     const months = monthlyStats26();
+    let cumAcc = 0;
     document.getElementById('month-cards').innerHTML = months.map(m => {
+      cumAcc = +(cumAcc + m.gain).toFixed(1);
       const pos = m.gain >= 0;
+      const cumPos = cumAcc >= 0;
       return `<div class="mc ${pos?'gain':'loss'}">
         <div class="mc-name">${m.month}${m.isCurrent?' *':''}</div>
-        <div class="mc-miles">${m.actual.toFixed(1)}</div>
-        <div class="mc-delta ${pos?'pos':'neg'}">${pos?'+':''}${m.gain.toFixed(1)} mi</div>
-        <div class="mc-target">target ${m.target.toFixed(1)}</div>
+        <div class="mc-mo-delta ${pos?'pos':'neg'}">${pos?'+':''}${m.gain.toFixed(1)} mi</div>
+        <div class="mc-target">this month</div>
+        <div class="mc-cumul ${cumPos?'pos':'neg'}">${cumPos?'+':''}${cumAcc.toFixed(1)} overall</div>
       </div>`;
     }).join('');
 
@@ -691,10 +727,11 @@ tbody td{padding:8px 12px}
             },
           },
         });
-      mkBB('bbPeakChart', 'peak',     '#10b981', 'Peak level (0–100)');
-      mkBB('bbDrawChart', 'drawdown', '#f59e0b', 'Points lost after peak');
+      mkBB('bbPeakChart',   'peak',     '#10b981', 'Peak level (0–100)');
+      mkBB('bbDrawChart',   'drawdown', '#f59e0b', 'Points lost after peak');
+      mkBB('bbChargeChart', 'charged',  '#378ADD', 'Points charged overnight');
     } else {
-      ['bbPeakChart','bbDrawChart'].forEach(id => {
+      ['bbPeakChart','bbDrawChart','bbChargeChart'].forEach(id => {
         const ctx = document.getElementById(id).getContext('2d');
         document.getElementById(id).height = 60;
         ctx.fillStyle = '#64748b'; ctx.font = '13px sans-serif'; ctx.textAlign = 'center';

@@ -287,7 +287,7 @@ def fetch_body_battery():
             after_peak = levels[peak_idx:]
             drawdown = peak - min(after_peak)
 
-            result.append({'date': day['date'], 'peak': peak, 'drawdown': drawdown})
+            result.append({'date': day['date'], 'peak': peak, 'drawdown': drawdown, 'charged': day.get('charged')})
 
     result.sort(key=lambda x: x['date'])
     print(f'  bodyBattery: {len(result)} days with intraday data'
