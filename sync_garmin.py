@@ -291,21 +291,36 @@ def fetch_body_battery():
     print(f'  bodyBattery 2026: {len(result)} days with intraday data'
           + (f' ({skipped} skipped)' if skipped else ''))
 
-    # 2025 charged via userstats (WELLNESS_BODYBATTERY_CHARGED)
+    # 2025 charged + drained from userstats (intraday endpoint returns 400 for 2025)
     try:
         r = garth.connectapi(
             f'/userstats-service/wellness/daily/{username}',
             params={'fromDate': '2025-01-01', 'untilDate': '2025-12-31'},
         )
-        metrics      = (r or {}).get('allMetrics', {}).get('metricsMap', {})
+        metrics = (r or {}).get('allMetrics', {}).get('metricsMap', {})
+
+        # WELLNESS_BODYBATTERY_DRAINED — daily total drain (different from intraday drawdown)
+        drained_by_date = {
+            e['calendarDate']: int(round(e['value']))
+            for e in metrics.get('WELLNESS_BODYBATTERY_DRAINED', [])
+            if e.get('value') is not None
+        }
+
         charged_2025 = [
-            {'date': e['calendarDate'], 'peak': None, 'drawdown': None,
-             'charged': int(round(e['value']))}
+            {
+                'date':     e['calendarDate'],
+                'peak':     None,
+                'drawdown': None,
+                'charged':  int(round(e['value'])),
+                'drained':  drained_by_date.get(e['calendarDate']),
+            }
             for e in metrics.get('WELLNESS_BODYBATTERY_CHARGED', [])
             if e.get('value') is not None
         ]
         result.extend(charged_2025)
-        print(f'  bodyBattery 2025: {len(charged_2025)} days with charged data from userstats')
+        drained_ct = len(drained_by_date)
+        print(f'  bodyBattery 2025: {len(charged_2025)} days charged, '
+              f'{drained_ct} days drained from userstats')
     except Exception as exc:
         print(f'  BB 2025 userstats fetch error: {exc}')
 

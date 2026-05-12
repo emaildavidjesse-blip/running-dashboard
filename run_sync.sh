@@ -21,6 +21,9 @@ log "Sync started"
 
 cd "$PROJECT_DIR" || fail "Could not cd to $PROJECT_DIR"
 
+log "--- refresh_token.py ---"
+"$PYTHON" refresh_token.py || log "WARNING: refresh_token.py exited non-zero (see above)"
+
 log "--- sync_garmin.py ---"
 "$PYTHON" sync_garmin.py || fail "sync_garmin.py exited non-zero"
 

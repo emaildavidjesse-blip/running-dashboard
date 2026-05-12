@@ -1,2 +1,4 @@
 garth
 python-dotenv
+requests
+PyNaCl

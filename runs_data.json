@@ -4442,2191 +4442,2556 @@
       "date": "2025-01-01",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 58
     },
     {
       "date": "2025-01-02",
       "peak": null,
       "drawdown": null,
-      "charged": 65
+      "charged": 65,
+      "drained": 47
     },
     {
       "date": "2025-01-03",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 50
     },
     {
       "date": "2025-01-04",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 43
     },
     {
       "date": "2025-01-05",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 48
     },
     {
       "date": "2025-01-06",
       "peak": null,
       "drawdown": null,
-      "charged": 60
+      "charged": 60,
+      "drained": 44
     },
     {
       "date": "2025-01-07",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 74
     },
     {
       "date": "2025-01-08",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 20
     },
     {
       "date": "2025-01-09",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 63
     },
     {
       "date": "2025-01-10",
       "peak": null,
       "drawdown": null,
-      "charged": 59
+      "charged": 59,
+      "drained": 49
     },
     {
       "date": "2025-01-11",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 56
     },
     {
       "date": "2025-01-12",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 49
     },
     {
       "date": "2025-01-13",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 22
     },
     {
       "date": "2025-01-14",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 79
     },
     {
       "date": "2025-01-15",
       "peak": null,
       "drawdown": null,
-      "charged": 61
+      "charged": 61,
+      "drained": 27
     },
     {
       "date": "2025-01-16",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 57
     },
     {
       "date": "2025-01-17",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 50
     },
     {
       "date": "2025-01-18",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 36
     },
     {
       "date": "2025-01-19",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 48
     },
     {
       "date": "2025-01-20",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 34
     },
     {
       "date": "2025-01-21",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 62
     },
     {
       "date": "2025-01-22",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 44
     },
     {
       "date": "2025-01-23",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 38
     },
     {
       "date": "2025-01-24",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 51
     },
     {
       "date": "2025-01-25",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 25
     },
     {
       "date": "2025-01-26",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 44
     },
     {
       "date": "2025-01-27",
       "peak": null,
       "drawdown": null,
-      "charged": 59
+      "charged": 59,
+      "drained": 64
     },
     {
       "date": "2025-01-28",
       "peak": null,
       "drawdown": null,
-      "charged": 30
+      "charged": 30,
+      "drained": 53
     },
     {
       "date": "2025-01-29",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 10
     },
     {
       "date": "2025-01-30",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 51
     },
     {
       "date": "2025-01-31",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 39
     },
     {
       "date": "2025-02-01",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 47
     },
     {
       "date": "2025-02-02",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 58
     },
     {
       "date": "2025-02-03",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 37
     },
     {
       "date": "2025-02-04",
       "peak": null,
       "drawdown": null,
-      "charged": 30
+      "charged": 30,
+      "drained": 59
     },
     {
       "date": "2025-02-05",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 21
     },
     {
       "date": "2025-02-06",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 53
     },
     {
       "date": "2025-02-07",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 30
     },
     {
       "date": "2025-02-08",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 30
     },
     {
       "date": "2025-02-09",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 72
     },
     {
       "date": "2025-02-10",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 31
     },
     {
       "date": "2025-02-11",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 51
     },
     {
       "date": "2025-02-12",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 29
     },
     {
       "date": "2025-02-13",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 35
     },
     {
       "date": "2025-02-14",
       "peak": null,
       "drawdown": null,
-      "charged": 23
+      "charged": 23,
+      "drained": 47
     },
     {
       "date": "2025-02-15",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 55
     },
     {
       "date": "2025-02-16",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 50
     },
     {
       "date": "2025-02-17",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 53
     },
     {
       "date": "2025-02-18",
       "peak": null,
       "drawdown": null,
-      "charged": 66
+      "charged": 66,
+      "drained": 66
     },
     {
       "date": "2025-02-19",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 27
     },
     {
       "date": "2025-02-20",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 42
     },
     {
       "date": "2025-02-21",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 66
     },
     {
       "date": "2025-02-22",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 35
     },
     {
       "date": "2025-02-23",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 48
     },
     {
       "date": "2025-02-24",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 40
     },
     {
       "date": "2025-02-25",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 48
     },
     {
       "date": "2025-02-26",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 60
     },
     {
       "date": "2025-02-27",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 23
     },
     {
       "date": "2025-02-28",
       "peak": null,
       "drawdown": null,
-      "charged": 27
+      "charged": 27,
+      "drained": 58
     },
     {
       "date": "2025-03-01",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 58
     },
     {
       "date": "2025-03-02",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 50
     },
     {
       "date": "2025-03-03",
       "peak": null,
       "drawdown": null,
-      "charged": 74
+      "charged": 74,
+      "drained": 46
     },
     {
       "date": "2025-03-04",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 72
     },
     {
       "date": "2025-03-05",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 36
     },
     {
       "date": "2025-03-06",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 46
     },
     {
       "date": "2025-03-07",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 32
     },
     {
       "date": "2025-03-08",
       "peak": null,
       "drawdown": null,
-      "charged": 24
+      "charged": 24,
+      "drained": 43
     },
     {
       "date": "2025-03-09",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 32
     },
     {
       "date": "2025-03-10",
       "peak": null,
       "drawdown": null,
-      "charged": 59
+      "charged": 59,
+      "drained": 55
     },
     {
       "date": "2025-03-11",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 55
     },
     {
       "date": "2025-03-12",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 34
     },
     {
       "date": "2025-03-13",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 42
     },
     {
       "date": "2025-03-14",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 66
     },
     {
       "date": "2025-03-15",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 34
     },
     {
       "date": "2025-03-16",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 41
     },
     {
       "date": "2025-03-17",
       "peak": null,
       "drawdown": null,
-      "charged": 60
+      "charged": 60,
+      "drained": 71
     },
     {
       "date": "2025-03-18",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 67
     },
     {
       "date": "2025-03-19",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 19
     },
     {
       "date": "2025-03-20",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 34
     },
     {
       "date": "2025-03-21",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 39
     },
     {
       "date": "2025-03-22",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 50
     },
     {
       "date": "2025-03-23",
       "peak": null,
       "drawdown": null,
-      "charged": 64
+      "charged": 64,
+      "drained": 50
     },
     {
       "date": "2025-03-24",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 68
     },
     {
       "date": "2025-03-25",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 37
     },
     {
       "date": "2025-03-26",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 56
     },
     {
       "date": "2025-03-27",
       "peak": null,
       "drawdown": null,
-      "charged": 65
+      "charged": 65,
+      "drained": 51
     },
     {
       "date": "2025-03-28",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 59
     },
     {
       "date": "2025-03-29",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 34
     },
     {
       "date": "2025-03-30",
       "peak": null,
       "drawdown": null,
-      "charged": 73
+      "charged": 73,
+      "drained": 52
     },
     {
       "date": "2025-03-31",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 32
     },
     {
       "date": "2025-04-01",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 60
     },
     {
       "date": "2025-04-02",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 54
     },
     {
       "date": "2025-04-03",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 38
     },
     {
       "date": "2025-04-04",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 47
     },
     {
       "date": "2025-04-05",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 36
     },
     {
       "date": "2025-04-06",
       "peak": null,
       "drawdown": null,
-      "charged": 64
+      "charged": 64,
+      "drained": 66
     },
     {
       "date": "2025-04-07",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 26
     },
     {
       "date": "2025-04-08",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 74
     },
     {
       "date": "2025-04-09",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 26
     },
     {
       "date": "2025-04-10",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 48
     },
     {
       "date": "2025-04-11",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 34
     },
     {
       "date": "2025-04-12",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 60
     },
     {
       "date": "2025-04-13",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 37
     },
     {
       "date": "2025-04-14",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 49
     },
     {
       "date": "2025-04-15",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 53
     },
     {
       "date": "2025-04-16",
       "peak": null,
       "drawdown": null,
-      "charged": 73
+      "charged": 73,
+      "drained": 62
     },
     {
       "date": "2025-04-17",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 31
     },
     {
       "date": "2025-04-18",
       "peak": null,
       "drawdown": null,
-      "charged": 27
+      "charged": 27,
+      "drained": 47
     },
     {
       "date": "2025-04-19",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 34
     },
     {
       "date": "2025-04-20",
       "peak": null,
       "drawdown": null,
-      "charged": 59
+      "charged": 59,
+      "drained": 31
     },
     {
       "date": "2025-04-21",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 51
     },
     {
       "date": "2025-04-22",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 66
     },
     {
       "date": "2025-04-23",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 53
     },
     {
       "date": "2025-04-24",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 36
     },
     {
       "date": "2025-04-25",
       "peak": null,
       "drawdown": null,
-      "charged": 64
+      "charged": 64,
+      "drained": 62
     },
     {
       "date": "2025-04-26",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 37
     },
     {
       "date": "2025-04-27",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 58
     },
     {
       "date": "2025-04-28",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 43
     },
     {
       "date": "2025-04-29",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 39
     },
     {
       "date": "2025-04-30",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 52
     },
     {
       "date": "2025-05-01",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 39
     },
     {
       "date": "2025-05-02",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 56
     },
     {
       "date": "2025-05-03",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 35
     },
     {
       "date": "2025-05-04",
       "peak": null,
       "drawdown": null,
-      "charged": 27
+      "charged": 27,
+      "drained": 40
     },
     {
       "date": "2025-05-05",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 27
     },
     {
       "date": "2025-05-06",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 54
     },
     {
       "date": "2025-05-07",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 47
     },
     {
       "date": "2025-05-08",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 18
     },
     {
       "date": "2025-05-09",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 38
     },
     {
       "date": "2025-05-10",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 46
     },
     {
       "date": "2025-05-11",
       "peak": null,
       "drawdown": null,
-      "charged": 64
+      "charged": 64,
+      "drained": 40
     },
     {
       "date": "2025-05-12",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 39
     },
     {
       "date": "2025-05-13",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 52
     },
     {
       "date": "2025-05-14",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 42
     },
     {
       "date": "2025-05-15",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 50
     },
     {
       "date": "2025-05-16",
       "peak": null,
       "drawdown": null,
-      "charged": 23
+      "charged": 23,
+      "drained": 40
     },
     {
       "date": "2025-05-17",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 39
     },
     {
       "date": "2025-05-18",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 30
     },
     {
       "date": "2025-05-19",
       "peak": null,
       "drawdown": null,
-      "charged": 70
+      "charged": 70,
+      "drained": 59
     },
     {
       "date": "2025-05-20",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 50
     },
     {
       "date": "2025-05-21",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 60
     },
     {
       "date": "2025-05-22",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 42
     },
     {
       "date": "2025-05-23",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 42
     },
     {
       "date": "2025-05-24",
       "peak": null,
       "drawdown": null,
-      "charged": 65
+      "charged": 65,
+      "drained": 54
     },
     {
       "date": "2025-05-25",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 56
     },
     {
       "date": "2025-05-26",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 49
     },
     {
       "date": "2025-05-27",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 61
     },
     {
       "date": "2025-05-28",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 45
     },
     {
       "date": "2025-05-29",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 44
     },
     {
       "date": "2025-05-30",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 43
     },
     {
       "date": "2025-05-31",
       "peak": null,
       "drawdown": null,
-      "charged": 67
+      "charged": 67,
+      "drained": 59
     },
     {
       "date": "2025-06-01",
       "peak": null,
       "drawdown": null,
-      "charged": 25
+      "charged": 25,
+      "drained": 29
     },
     {
       "date": "2025-06-02",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 45
     },
     {
       "date": "2025-06-03",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 66
     },
     {
       "date": "2025-06-04",
       "peak": null,
       "drawdown": null,
-      "charged": 60
+      "charged": 60,
+      "drained": 46
     },
     {
       "date": "2025-06-05",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 37
     },
     {
       "date": "2025-06-06",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 58
     },
     {
       "date": "2025-06-07",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 21
     },
     {
       "date": "2025-06-08",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 65
     },
     {
       "date": "2025-06-09",
       "peak": null,
       "drawdown": null,
-      "charged": 69
+      "charged": 69,
+      "drained": 34
     },
     {
       "date": "2025-06-10",
       "peak": null,
       "drawdown": null,
-      "charged": 22
+      "charged": 22,
+      "drained": 53
     },
     {
       "date": "2025-06-11",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 52
     },
     {
       "date": "2025-06-12",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 57
     },
     {
       "date": "2025-06-13",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 53
     },
     {
       "date": "2025-06-14",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 35
     },
     {
       "date": "2025-06-15",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 59
     },
     {
       "date": "2025-06-16",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 50
     },
     {
       "date": "2025-06-17",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 69
     },
     {
       "date": "2025-06-18",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 38
     },
     {
       "date": "2025-06-19",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 64
     },
     {
       "date": "2025-06-20",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 58
     },
     {
       "date": "2025-06-21",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 30
     },
     {
       "date": "2025-06-22",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 58
     },
     {
       "date": "2025-06-23",
       "peak": null,
       "drawdown": null,
-      "charged": 68
+      "charged": 68,
+      "drained": 51
     },
     {
       "date": "2025-06-24",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 54
     },
     {
       "date": "2025-06-25",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 74
     },
     {
       "date": "2025-06-26",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 43
     },
     {
       "date": "2025-06-27",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 52
     },
     {
       "date": "2025-06-28",
       "peak": null,
       "drawdown": null,
-      "charged": 72
+      "charged": 72,
+      "drained": 55
     },
     {
       "date": "2025-06-29",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 73
     },
     {
       "date": "2025-06-30",
       "peak": null,
       "drawdown": null,
-      "charged": 77
+      "charged": 77,
+      "drained": 53
     },
     {
       "date": "2025-07-01",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 68
     },
     {
       "date": "2025-07-02",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 60
     },
     {
       "date": "2025-07-03",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 62
     },
     {
       "date": "2025-07-04",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 36
     },
     {
       "date": "2025-07-05",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 39
     },
     {
       "date": "2025-07-06",
       "peak": null,
       "drawdown": null,
-      "charged": 67
+      "charged": 67,
+      "drained": 60
     },
     {
       "date": "2025-07-07",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 67
     },
     {
       "date": "2025-07-08",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 38
     },
     {
       "date": "2025-07-09",
       "peak": null,
       "drawdown": null,
-      "charged": 69
+      "charged": 69,
+      "drained": 71
     },
     {
       "date": "2025-07-10",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 28
     },
     {
       "date": "2025-07-11",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 84
     },
     {
       "date": "2025-07-12",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 48
     },
     {
       "date": "2025-07-13",
       "peak": null,
       "drawdown": null,
-      "charged": 61
+      "charged": 61,
+      "drained": 45
     },
     {
       "date": "2025-07-14",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 51
     },
     {
       "date": "2025-07-15",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 56
     },
     {
       "date": "2025-07-16",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 46
     },
     {
       "date": "2025-07-17",
       "peak": null,
       "drawdown": null,
-      "charged": 69
+      "charged": 69,
+      "drained": 58
     },
     {
       "date": "2025-07-18",
       "peak": null,
       "drawdown": null,
-      "charged": 27
+      "charged": 27,
+      "drained": 53
     },
     {
       "date": "2025-07-19",
       "peak": null,
       "drawdown": null,
-      "charged": 90
+      "charged": 90,
+      "drained": 60
     },
     {
       "date": "2025-07-20",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 53
     },
     {
       "date": "2025-07-21",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 46
     },
     {
       "date": "2025-07-22",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 63
     },
     {
       "date": "2025-07-23",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 46
     },
     {
       "date": "2025-07-24",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 33
     },
     {
       "date": "2025-07-25",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 45
     },
     {
       "date": "2025-07-26",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 35
     },
     {
       "date": "2025-07-27",
       "peak": null,
       "drawdown": null,
-      "charged": 30
+      "charged": 30,
+      "drained": 33
     },
     {
       "date": "2025-07-28",
       "peak": null,
       "drawdown": null,
-      "charged": 57
+      "charged": 57,
+      "drained": 59
     },
     {
       "date": "2025-07-29",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 67
     },
     {
       "date": "2025-07-30",
       "peak": null,
       "drawdown": null,
-      "charged": 61
+      "charged": 61,
+      "drained": 48
     },
     {
       "date": "2025-07-31",
       "peak": null,
       "drawdown": null,
-      "charged": 60
+      "charged": 60,
+      "drained": 66
     },
     {
       "date": "2025-08-01",
       "peak": null,
       "drawdown": null,
-      "charged": 17
+      "charged": 17,
+      "drained": 35
     },
     {
       "date": "2025-08-02",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 58
     },
     {
       "date": "2025-08-03",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 31
     },
     {
       "date": "2025-08-04",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 37
     },
     {
       "date": "2025-08-05",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 45
     },
     {
       "date": "2025-08-06",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 45
     },
     {
       "date": "2025-08-07",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 43
     },
     {
       "date": "2025-08-08",
       "peak": null,
       "drawdown": null,
-      "charged": 2
+      "charged": 2,
+      "drained": 63
     },
     {
       "date": "2025-08-09",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 58
     },
     {
       "date": "2025-08-10",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 36
     },
     {
       "date": "2025-08-11",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 55
     },
     {
       "date": "2025-08-12",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 39
     },
     {
       "date": "2025-08-13",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 52
     },
     {
       "date": "2025-08-14",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 30
     },
     {
       "date": "2025-08-15",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 53
     },
     {
       "date": "2025-08-16",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 34
     },
     {
       "date": "2025-08-17",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 45
     },
     {
       "date": "2025-08-18",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 34
     },
     {
       "date": "2025-08-19",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 55
     },
     {
       "date": "2025-08-20",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 41
     },
     {
       "date": "2025-08-21",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 53
     },
     {
       "date": "2025-08-22",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 36
     },
     {
       "date": "2025-08-23",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 36
     },
     {
       "date": "2025-08-24",
       "peak": null,
       "drawdown": null,
-      "charged": 64
+      "charged": 64,
+      "drained": 54
     },
     {
       "date": "2025-08-25",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 41
     },
     {
       "date": "2025-08-26",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 66
     },
     {
       "date": "2025-08-27",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 21
     },
     {
       "date": "2025-08-28",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 49
     },
     {
       "date": "2025-08-29",
       "peak": null,
       "drawdown": null,
-      "charged": 30
+      "charged": 30,
+      "drained": 27
     },
     {
       "date": "2025-08-30",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 33
     },
     {
       "date": "2025-08-31",
       "peak": null,
       "drawdown": null,
-      "charged": 61
+      "charged": 61,
+      "drained": 65
     },
     {
       "date": "2025-09-01",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 43
     },
     {
       "date": "2025-09-02",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 38
     },
     {
       "date": "2025-09-03",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 43
     },
     {
       "date": "2025-09-04",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 22
     },
     {
       "date": "2025-09-05",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 40
     },
     {
       "date": "2025-09-06",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 39
     },
     {
       "date": "2025-09-07",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 20
     },
     {
       "date": "2025-09-08",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 56
     },
     {
       "date": "2025-09-09",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 56
     },
     {
       "date": "2025-09-10",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 42
     },
     {
       "date": "2025-09-11",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 31
     },
     {
       "date": "2025-09-12",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 56
     },
     {
       "date": "2025-09-13",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 37
     },
     {
       "date": "2025-09-14",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 45
     },
     {
       "date": "2025-09-15",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 24
     },
     {
       "date": "2025-09-16",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 62
     },
     {
       "date": "2025-09-17",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 32
     },
     {
       "date": "2025-09-18",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 44
     },
     {
       "date": "2025-09-19",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 41
     },
     {
       "date": "2025-09-20",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 40
     },
     {
       "date": "2025-09-21",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 58
     },
     {
       "date": "2025-09-22",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 65
     },
     {
       "date": "2025-09-23",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 30
     },
     {
       "date": "2025-09-24",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 57
     },
     {
       "date": "2025-09-25",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 30
     },
     {
       "date": "2025-09-26",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 49
     },
     {
       "date": "2025-09-27",
       "peak": null,
       "drawdown": null,
-      "charged": 30
+      "charged": 30,
+      "drained": 38
     },
     {
       "date": "2025-09-28",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 46
     },
     {
       "date": "2025-09-29",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 37
     },
     {
       "date": "2025-09-30",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 27
     },
     {
       "date": "2025-10-01",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 49
     },
     {
       "date": "2025-10-02",
       "peak": null,
       "drawdown": null,
-      "charged": 67
+      "charged": 67,
+      "drained": 64
     },
     {
       "date": "2025-10-03",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 43
     },
     {
       "date": "2025-10-04",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 37
     },
     {
       "date": "2025-10-05",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 42
     },
     {
       "date": "2025-10-06",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 30
     },
     {
       "date": "2025-10-07",
       "peak": null,
       "drawdown": null,
-      "charged": 46
+      "charged": 46,
+      "drained": 45
     },
     {
       "date": "2025-10-08",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 46
     },
     {
       "date": "2025-10-09",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 50
     },
     {
       "date": "2025-10-10",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 36
     },
     {
       "date": "2025-10-11",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 39
     },
     {
       "date": "2025-10-12",
       "peak": null,
       "drawdown": null,
-      "charged": 28
+      "charged": 28,
+      "drained": 32
     },
     {
       "date": "2025-10-13",
       "peak": null,
       "drawdown": null,
-      "charged": 62
+      "charged": 62,
+      "drained": 44
     },
     {
       "date": "2025-10-14",
       "peak": null,
       "drawdown": null,
-      "charged": 24
+      "charged": 24,
+      "drained": 51
     },
     {
       "date": "2025-10-15",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 32
     },
     {
       "date": "2025-10-16",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 47
     },
     {
       "date": "2025-10-17",
       "peak": null,
       "drawdown": null,
-      "charged": 40
+      "charged": 40,
+      "drained": 35
     },
     {
       "date": "2025-10-18",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 40
     },
     {
       "date": "2025-10-19",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 32
     },
     {
       "date": "2025-10-20",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 27
     },
     {
       "date": "2025-10-21",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 53
     },
     {
       "date": "2025-10-22",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 47
     },
     {
       "date": "2025-10-23",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 30
     },
     {
       "date": "2025-10-24",
       "peak": null,
       "drawdown": null,
-      "charged": 19
+      "charged": 19,
+      "drained": 35
     },
     {
       "date": "2025-10-25",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 35
     },
     {
       "date": "2025-10-26",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 40
     },
     {
       "date": "2025-10-27",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 43
     },
     {
       "date": "2025-10-28",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 46
     },
     {
       "date": "2025-10-29",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 32
     },
     {
       "date": "2025-10-30",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 40
     },
     {
       "date": "2025-10-31",
       "peak": null,
       "drawdown": null,
-      "charged": 41
+      "charged": 41,
+      "drained": 38
     },
     {
       "date": "2025-11-01",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 44
     },
     {
       "date": "2025-11-02",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 48
     },
     {
       "date": "2025-11-03",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 35
     },
     {
       "date": "2025-11-04",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 49
     },
     {
       "date": "2025-11-05",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 32
     },
     {
       "date": "2025-11-06",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 52
     },
     {
       "date": "2025-11-07",
       "peak": null,
       "drawdown": null,
-      "charged": 45
+      "charged": 45,
+      "drained": 27
     },
     {
       "date": "2025-11-08",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 51
     },
     {
       "date": "2025-11-09",
       "peak": null,
       "drawdown": null,
-      "charged": 43
+      "charged": 43,
+      "drained": 49
     },
     {
       "date": "2025-11-10",
       "peak": null,
       "drawdown": null,
-      "charged": 25
+      "charged": 25,
+      "drained": 38
     },
     {
       "date": "2025-11-11",
       "peak": null,
       "drawdown": null,
-      "charged": 58
+      "charged": 58,
+      "drained": 42
     },
     {
       "date": "2025-11-12",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 42
     },
     {
       "date": "2025-11-13",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 50
     },
     {
       "date": "2025-11-14",
       "peak": null,
       "drawdown": null,
-      "charged": 20
+      "charged": 20,
+      "drained": 34
     },
     {
       "date": "2025-11-15",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 24
     },
     {
       "date": "2025-11-16",
       "peak": null,
       "drawdown": null,
-      "charged": 22
+      "charged": 22,
+      "drained": 23
     },
     {
       "date": "2025-11-17",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 20
     },
     {
       "date": "2025-11-18",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 46
     },
     {
       "date": "2025-11-19",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 43
     },
     {
       "date": "2025-11-20",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 79
     },
     {
       "date": "2025-11-21",
       "peak": null,
       "drawdown": null,
-      "charged": 35
+      "charged": 35,
+      "drained": 32
     },
     {
       "date": "2025-11-22",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 30
     },
     {
       "date": "2025-11-23",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 34
     },
     {
       "date": "2025-11-24",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 56
     },
     {
       "date": "2025-11-25",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 39
     },
     {
       "date": "2025-11-26",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 34
     },
     {
       "date": "2025-11-27",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 51
     },
     {
       "date": "2025-11-28",
       "peak": null,
       "drawdown": null,
-      "charged": 48
+      "charged": 48,
+      "drained": 21
     },
     {
       "date": "2025-11-29",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 34
     },
     {
       "date": "2025-11-30",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 61
     },
     {
       "date": "2025-12-01",
       "peak": null,
       "drawdown": null,
-      "charged": 31
+      "charged": 31,
+      "drained": 30
     },
     {
       "date": "2025-12-02",
       "peak": null,
       "drawdown": null,
-      "charged": 54
+      "charged": 54,
+      "drained": 53
     },
     {
       "date": "2025-12-03",
       "peak": null,
       "drawdown": null,
-      "charged": 12
+      "charged": 12,
+      "drained": 48
     },
     {
       "date": "2025-12-04",
       "peak": null,
       "drawdown": null,
-      "charged": 19
+      "charged": 19,
+      "drained": 37
     },
     {
       "date": "2025-12-05",
       "peak": null,
       "drawdown": null,
-      "charged": 32
+      "charged": 32,
+      "drained": 27
     },
     {
       "date": "2025-12-06",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 24
     },
     {
       "date": "2025-12-07",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 43
     },
     {
       "date": "2025-12-08",
       "peak": null,
       "drawdown": null,
-      "charged": 47
+      "charged": 47,
+      "drained": 37
     },
     {
       "date": "2025-12-09",
       "peak": null,
       "drawdown": null,
-      "charged": 44
+      "charged": 44,
+      "drained": 55
     },
     {
       "date": "2025-12-10",
       "peak": null,
       "drawdown": null,
-      "charged": 53
+      "charged": 53,
+      "drained": 38
     },
     {
       "date": "2025-12-11",
       "peak": null,
       "drawdown": null,
-      "charged": 42
+      "charged": 42,
+      "drained": 61
     },
     {
       "date": "2025-12-12",
       "peak": null,
       "drawdown": null,
-      "charged": 24
+      "charged": 24,
+      "drained": 48
     },
     {
       "date": "2025-12-13",
       "peak": null,
       "drawdown": null,
-      "charged": 33
+      "charged": 33,
+      "drained": 18
     },
     {
       "date": "2025-12-14",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 47
     },
     {
       "date": "2025-12-15",
       "peak": null,
       "drawdown": null,
-      "charged": 50
+      "charged": 50,
+      "drained": 41
     },
     {
       "date": "2025-12-16",
       "peak": null,
       "drawdown": null,
-      "charged": 36
+      "charged": 36,
+      "drained": 48
     },
     {
       "date": "2025-12-17",
       "peak": null,
       "drawdown": null,
-      "charged": 34
+      "charged": 34,
+      "drained": 42
     },
     {
       "date": "2025-12-18",
       "peak": null,
       "drawdown": null,
-      "charged": 39
+      "charged": 39,
+      "drained": 38
     },
     {
       "date": "2025-12-19",
       "peak": null,
       "drawdown": null,
-      "charged": 37
+      "charged": 37,
+      "drained": 39
     },
     {
       "date": "2025-12-20",
       "peak": null,
       "drawdown": null,
-      "charged": 24
+      "charged": 24,
+      "drained": 30
     },
     {
       "date": "2025-12-21",
       "peak": null,
       "drawdown": null,
-      "charged": 29
+      "charged": 29,
+      "drained": 25
     },
     {
       "date": "2025-12-22",
       "peak": null,
       "drawdown": null,
-      "charged": 76
+      "charged": 76,
+      "drained": 57
     },
     {
       "date": "2025-12-23",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 56
     },
     {
       "date": "2025-12-24",
       "peak": null,
       "drawdown": null,
-      "charged": 59
+      "charged": 59,
+      "drained": 59
     },
     {
       "date": "2025-12-25",
       "peak": null,
       "drawdown": null,
-      "charged": 55
+      "charged": 55,
+      "drained": 35
     },
     {
       "date": "2025-12-26",
       "peak": null,
       "drawdown": null,
-      "charged": 52
+      "charged": 52,
+      "drained": 68
     },
     {
       "date": "2025-12-27",
       "peak": null,
       "drawdown": null,
-      "charged": 56
+      "charged": 56,
+      "drained": 54
     },
     {
       "date": "2025-12-28",
       "peak": null,
       "drawdown": null,
-      "charged": 38
+      "charged": 38,
+      "drained": 39
     },
     {
       "date": "2025-12-29",
       "peak": null,
       "drawdown": null,
-      "charged": 63
+      "charged": 63,
+      "drained": 50
     },
     {
       "date": "2025-12-30",
       "peak": null,
       "drawdown": null,
-      "charged": 51
+      "charged": 51,
+      "drained": 70
     },
     {
       "date": "2025-12-31",
       "peak": null,
       "drawdown": null,
-      "charged": 49
+      "charged": 49,
+      "drained": 45
     },
     {
       "date": "2026-01-01",

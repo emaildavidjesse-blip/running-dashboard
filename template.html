@@ -218,12 +218,12 @@ tbody td{padding:8px 12px}
   <div class="sp charts-3col">
     <div class="chart-card">
       <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
-      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025 data not available</p>
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025: only charged data available</p>
       <canvas id="bbPeakChart" height="200"></canvas>
     </div>
     <div class="chart-card">
       <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
-      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025 data not available</p>
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025: only charged data available</p>
       <canvas id="bbDrawChart" height="200"></canvas>
     </div>
     <div class="chart-card">
@@ -719,37 +719,32 @@ tbody td{padding:8px 12px}
     }
 
     // ── Body Battery ──────────────────────────────────────
-    // bbData contains 2026 (peak+drawdown+charged) and 2025 (charged only)
+    // bbData: 2026 entries have peak+drawdown+charged; 2025 entries have charged only
     if (bbData.length) {
       const bb25 = bbData.filter(d => d.date.startsWith('2025'));
       const bb26 = bbData.filter(d => d.date.startsWith('2026'));
 
-      // Peak & drawdown: 2026 intraday only
-      const mkBB = (id, key, label) => {
-        const rawData = bb26.map(d => d[key]);
-        const avgData = sevenDayAvg(rawData);
+      // Peak & drawdown: 7d avg line only (2026 intraday — no 2025 data available)
+      const mkBB = (id, key, yLabel) => {
+        const avgData = sevenDayAvg(bb26.map(d => d[key]));
         return new Chart(document.getElementById(id), {
           type:'line',
           data:{
             labels: bb26.map(d => d.date.slice(5)),
             datasets:[
-              { data:rawData,
-                borderColor:'#378ADD', backgroundColor:'#378ADD18',
-                tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
-              { label:'7d avg', data:avgData,
-                borderColor:'#EF9F27', backgroundColor:'transparent',
+              { label:'2026 avg', data:avgData,
+                borderColor:'#EF9F27',
                 tension:.2, pointRadius:0, fill:false, borderWidth:4 },
             ],
           },
           options:{
             ...BASE,
             plugins:{
-              legend:{display:true, labels:{color:'#94a3b8',usePointStyle:true,
-                filter: item => item.text === '7d avg'}},
+              legend:{display:true, labels:{color:'#94a3b8',usePointStyle:true}},
               tooltip:{callbacks:{title:items=>bb26[items[0].dataIndex]?.date??''}} },
             scales:{
               x:{...BASE.scales.x, ticks:{color:'#64748b',maxTicksLimit:10,maxRotation:45}},
-              y:{...BASE.scales.y, min:0, max:100, title:{display:true,text:label,color:'#64748b'}},
+              y:{...BASE.scales.y, min:0, max:100, title:{display:true,text:yLabel,color:'#64748b'}},
             },
           },
         });
@@ -757,7 +752,7 @@ tbody td{padding:8px 12px}
       mkBB('bbPeakChart',   'peak',     'Peak level (0–100)');
       mkBB('bbDrawChart',   'drawdown', 'Points lost after peak');
 
-      // Charged: 2025 (grey) + 2026 (blue), DOY-aligned, with 7d avg for 2026
+      // Charged: DOY-aligned 7d averages — 2025 grey, 2026 orange
       const bc25 = new Array(365).fill(null), bc26 = new Array(365).fill(null);
       const bc25date = {}, bc26date = {};
       bb25.forEach(d => {
@@ -766,6 +761,7 @@ tbody td{padding:8px 12px}
       bb26.forEach(d => {
         if (d.charged != null) { const di = doy(d.date); bc26[di] = d.charged; bc26date[di] = d.date; }
       });
+      const bc25avg = sevenDayAvg(bc25);
       const bc26avg = sevenDayAvg(bc26);
 
       new Chart(document.getElementById('bbChargeChart'), {
@@ -773,12 +769,9 @@ tbody td{padding:8px 12px}
         data:{
           labels: DOY_LABELS,
           datasets:[
-            { label:'2025', data:bc25, spanGaps:false, borderColor:'#888780',
-              tension:.2, pointRadius:0, fill:false, borderWidth:1.5 },
-            { label:'2026', data:bc26, spanGaps:false, borderColor:'#378ADD',
-              backgroundColor:'#378ADD18',
-              tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
-            { label:'7d avg', data:bc26avg, spanGaps:true, borderColor:'#EF9F27',
+            { label:'2025 avg', data:bc25avg, spanGaps:true, borderColor:'#888780',
+              tension:.2, pointRadius:0, fill:false, borderWidth:3 },
+            { label:'2026 avg', data:bc26avg, spanGaps:true, borderColor:'#EF9F27',
               tension:.2, pointRadius:0, fill:false, borderWidth:4 },
           ],
         },
