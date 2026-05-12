@@ -243,27 +243,25 @@ def fetch_rhr():
 # ── Body Battery ──────────────────────────────────────────────────────────────
 
 def fetch_body_battery():
-    """Fetch daily BB peak+drawdown from intraday data.
-
-    The reports/daily endpoint has a ~31-day range limit per request, so we
-    fetch month-by-month for 2026 only. 2025 returns 400 (no intraday data).
-    peak     = maximum BB level reached during the day
-    drawdown = peak minus the minimum level after the peak (daily cost)
+    """Fetch daily BB data:
+    - 2026: peak+drawdown+charged from intraday reports/daily endpoint
+      (month-by-month; endpoint has ~31-day range limit)
+    - 2025: charged only from userstats bulk endpoint (intraday returns 400)
     """
-    today_d = date.today()
-    today   = today_d.isoformat()
-
-    # One request per calendar month in 2026
     import calendar
+    username = garth.client.username
+    today_d  = date.today()
+    today    = today_d.isoformat()
+
+    # 2026 intraday — one request per calendar month
     ranges = []
     for month in range(1, today_d.month + 1):
-        start = f'2026-{month:02d}-01'
-        last_day = calendar.monthrange(2026, month)[1]
-        end_d = date(2026, month, last_day)
-        end   = min(end_d, today_d).isoformat()
+        start     = f'2026-{month:02d}-01'
+        last_day  = calendar.monthrange(2026, month)[1]
+        end       = min(date(2026, month, last_day), today_d).isoformat()
         ranges.append((start, end))
 
-    result = []
+    result  = []
     skipped = 0
     for start, end in ranges:
         try:
@@ -276,22 +274,43 @@ def fetch_body_battery():
             continue
 
         for day in (data or []):
-            vals = day.get('bodyBatteryValuesArray') or []
+            vals   = day.get('bodyBatteryValuesArray') or []
             levels = [v[1] for v in vals if v and v[1] is not None]
             if len(levels) < 2:
                 skipped += 1
                 continue
 
-            peak = max(levels)
-            peak_idx = levels.index(peak)
-            after_peak = levels[peak_idx:]
-            drawdown = peak - min(after_peak)
+            peak      = max(levels)
+            after_peak = levels[levels.index(peak):]
+            drawdown  = peak - min(after_peak)
+            result.append({
+                'date': day['date'], 'peak': peak,
+                'drawdown': drawdown, 'charged': day.get('charged'),
+            })
 
-            result.append({'date': day['date'], 'peak': peak, 'drawdown': drawdown, 'charged': day.get('charged')})
+    print(f'  bodyBattery 2026: {len(result)} days with intraday data'
+          + (f' ({skipped} skipped)' if skipped else ''))
+
+    # 2025 charged via userstats (WELLNESS_BODYBATTERY_CHARGED)
+    try:
+        r = garth.connectapi(
+            f'/userstats-service/wellness/daily/{username}',
+            params={'fromDate': '2025-01-01', 'untilDate': '2025-12-31'},
+        )
+        metrics      = (r or {}).get('allMetrics', {}).get('metricsMap', {})
+        charged_2025 = [
+            {'date': e['calendarDate'], 'peak': None, 'drawdown': None,
+             'charged': int(round(e['value']))}
+            for e in metrics.get('WELLNESS_BODYBATTERY_CHARGED', [])
+            if e.get('value') is not None
+        ]
+        result.extend(charged_2025)
+        print(f'  bodyBattery 2025: {len(charged_2025)} days with charged data from userstats')
+    except Exception as exc:
+        print(f'  BB 2025 userstats fetch error: {exc}')
 
     result.sort(key=lambda x: x['date'])
-    print(f'  bodyBattery: {len(result)} days with intraday data'
-          + (f' ({skipped} skipped — null intraday levels)' if skipped else ''))
+    print(f'  bodyBattery total: {len(result)} days')
     return result
 
 

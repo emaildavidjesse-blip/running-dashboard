@@ -218,10 +218,12 @@ tbody td{padding:8px 12px}
   <div class="sp charts-3col">
     <div class="chart-card">
       <h3>Body Battery Peak <span style="font-weight:400;color:var(--muted)">(higher = better recovery)</span></h3>
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025 data not available</p>
       <canvas id="bbPeakChart" height="200"></canvas>
     </div>
     <div class="chart-card">
       <h3>Body Battery Drawdown <span style="font-weight:400;color:var(--muted)">(how much the day cost you)</span></h3>
+      <p style="font-size:.68rem;color:var(--muted);margin-bottom:8px">2025 data not available</p>
       <canvas id="bbDrawChart" height="200"></canvas>
     </div>
     <div class="chart-card">
@@ -689,7 +691,7 @@ tbody td{padding:8px 12px}
             { label:'2026', data:r26, spanGaps:false, borderColor:'#378ADD',
               tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
             { label:'7d avg', data:r26avg, spanGaps:true, borderColor:'#EF9F27',
-              tension:.1, pointRadius:0, fill:false, borderWidth:3 },
+              tension:.1, pointRadius:0, fill:false, borderWidth:4 },
           ],
         },
         options:{
@@ -716,22 +718,27 @@ tbody td{padding:8px 12px}
       });
     }
 
-    // ── Body Battery (2026 only) ───────────────────────────
+    // ── Body Battery ──────────────────────────────────────
+    // bbData contains 2026 (peak+drawdown+charged) and 2025 (charged only)
     if (bbData.length) {
-      const mkBB = (id, key, color, label) => {
-        const rawData = bbData.map(d => d[key]);
+      const bb25 = bbData.filter(d => d.date.startsWith('2025'));
+      const bb26 = bbData.filter(d => d.date.startsWith('2026'));
+
+      // Peak & drawdown: 2026 intraday only
+      const mkBB = (id, key, label) => {
+        const rawData = bb26.map(d => d[key]);
         const avgData = sevenDayAvg(rawData);
         return new Chart(document.getElementById(id), {
           type:'line',
           data:{
-            labels: bbData.map(d => d.date.slice(5)),
+            labels: bb26.map(d => d.date.slice(5)),
             datasets:[
               { data:rawData,
-                borderColor:color, backgroundColor:color+'18',
+                borderColor:'#378ADD', backgroundColor:'#378ADD18',
                 tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
               { label:'7d avg', data:avgData,
                 borderColor:'#EF9F27', backgroundColor:'transparent',
-                tension:.2, pointRadius:0, fill:false, borderWidth:3 },
+                tension:.2, pointRadius:0, fill:false, borderWidth:4 },
             ],
           },
           options:{
@@ -739,7 +746,7 @@ tbody td{padding:8px 12px}
             plugins:{
               legend:{display:true, labels:{color:'#94a3b8',usePointStyle:true,
                 filter: item => item.text === '7d avg'}},
-              tooltip:{callbacks:{title:items=>bbData[items[0].dataIndex]?.date??''}} },
+              tooltip:{callbacks:{title:items=>bb26[items[0].dataIndex]?.date??''}} },
             scales:{
               x:{...BASE.scales.x, ticks:{color:'#64748b',maxTicksLimit:10,maxRotation:45}},
               y:{...BASE.scales.y, min:0, max:100, title:{display:true,text:label,color:'#64748b'}},
@@ -747,9 +754,56 @@ tbody td{padding:8px 12px}
           },
         });
       };
-      mkBB('bbPeakChart',   'peak',     '#378ADD', 'Peak level (0–100)');
-      mkBB('bbDrawChart',   'drawdown', '#378ADD', 'Points lost after peak');
-      mkBB('bbChargeChart', 'charged',  '#378ADD', 'Points charged overnight');
+      mkBB('bbPeakChart',   'peak',     'Peak level (0–100)');
+      mkBB('bbDrawChart',   'drawdown', 'Points lost after peak');
+
+      // Charged: 2025 (grey) + 2026 (blue), DOY-aligned, with 7d avg for 2026
+      const bc25 = new Array(365).fill(null), bc26 = new Array(365).fill(null);
+      const bc25date = {}, bc26date = {};
+      bb25.forEach(d => {
+        if (d.charged != null) { const di = doy(d.date); bc25[di] = d.charged; bc25date[di] = d.date; }
+      });
+      bb26.forEach(d => {
+        if (d.charged != null) { const di = doy(d.date); bc26[di] = d.charged; bc26date[di] = d.date; }
+      });
+      const bc26avg = sevenDayAvg(bc26);
+
+      new Chart(document.getElementById('bbChargeChart'), {
+        type:'line',
+        data:{
+          labels: DOY_LABELS,
+          datasets:[
+            { label:'2025', data:bc25, spanGaps:false, borderColor:'#888780',
+              tension:.2, pointRadius:0, fill:false, borderWidth:1.5 },
+            { label:'2026', data:bc26, spanGaps:false, borderColor:'#378ADD',
+              backgroundColor:'#378ADD18',
+              tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
+            { label:'7d avg', data:bc26avg, spanGaps:true, borderColor:'#EF9F27',
+              tension:.2, pointRadius:0, fill:false, borderWidth:4 },
+          ],
+        },
+        options:{
+          responsive:true, animation:false,
+          plugins:{
+            legend:{ display:true, labels:{color:'#94a3b8',usePointStyle:true} },
+            tooltip:{
+              mode:'index', intersect:false,
+              callbacks:{
+                title: items => {
+                  const di = items[0].dataIndex;
+                  return [bc25date[di], bc26date[di]].filter(Boolean).join(' / ') || `Day ${di+1}`;
+                },
+                label: items => items.raw != null ? `${items.dataset.label}: ${items.raw}` : null,
+              },
+            },
+          },
+          scales:{
+            x:{ grid:{color:'#1e2535'}, ticks:doyTicks },
+            y:{ grid:{color:'#1e2535'}, ticks:{color:'#64748b'}, min:0, max:100,
+                title:{display:true, text:'Points charged overnight', color:'#64748b'} },
+          },
+        },
+      });
     } else {
       ['bbPeakChart','bbDrawChart','bbChargeChart'].forEach(id => {
         const ctx = document.getElementById(id).getContext('2d');
