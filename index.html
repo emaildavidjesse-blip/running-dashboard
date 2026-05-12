@@ -687,9 +687,9 @@ tbody td{padding:8px 12px}
             { label:'2025', data:r25, spanGaps:false, borderColor:'#888780',
               tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
             { label:'2026', data:r26, spanGaps:false, borderColor:'#378ADD',
-              tension:.1, pointRadius:0, fill:false, borderWidth:2 },
+              tension:.1, pointRadius:0, fill:false, borderWidth:1.5 },
             { label:'7d avg', data:r26avg, spanGaps:true, borderColor:'#EF9F27',
-              tension:.1, pointRadius:0, fill:false, borderWidth:2 },
+              tension:.1, pointRadius:0, fill:false, borderWidth:3 },
           ],
         },
         options:{
@@ -731,7 +731,7 @@ tbody td{padding:8px 12px}
                 tension:.2, pointRadius:0, fill:true, borderWidth:1.5 },
               { label:'7d avg', data:avgData,
                 borderColor:'#EF9F27', backgroundColor:'transparent',
-                tension:.2, pointRadius:0, fill:false, borderWidth:2 },
+                tension:.2, pointRadius:0, fill:false, borderWidth:3 },
             ],
           },
           options:{
@@ -747,8 +747,8 @@ tbody td{padding:8px 12px}
           },
         });
       };
-      mkBB('bbPeakChart',   'peak',     '#10b981', 'Peak level (0–100)');
-      mkBB('bbDrawChart',   'drawdown', '#f59e0b', 'Points lost after peak');
+      mkBB('bbPeakChart',   'peak',     '#378ADD', 'Peak level (0–100)');
+      mkBB('bbDrawChart',   'drawdown', '#378ADD', 'Points lost after peak');
       mkBB('bbChargeChart', 'charged',  '#378ADD', 'Points charged overnight');
     } else {
       ['bbPeakChart','bbDrawChart','bbChargeChart'].forEach(id => {
