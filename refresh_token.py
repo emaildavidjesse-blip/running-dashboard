@@ -14,6 +14,7 @@ import base64
 import time
 from dataclasses import asdict
 from datetime import datetime
+from typing import Optional
 
 from dotenv import load_dotenv
 import garth
@@ -27,7 +28,7 @@ REPO      = 'running-dashboard'
 SECRET    = 'GARMIN_TOKENSTORE'
 
 
-def token_days_remaining() -> float | None:
+def token_days_remaining() -> Optional[float]:
     garth.resume(TOKEN_DIR)
     oauth2 = garth.client.oauth2_token
     if not oauth2:
