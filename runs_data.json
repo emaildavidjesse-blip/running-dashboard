@@ -4434,7 +4434,11 @@
     },
     {
       "date": "2026-05-12",
-      "rhr": 54
+      "rhr": 53
+    },
+    {
+      "date": "2026-05-13",
+      "rhr": 58
     }
   ],
   "bodyBattery": [
@@ -7782,8 +7786,14 @@
     {
       "date": "2026-05-12",
       "peak": 72,
-      "drawdown": 19,
-      "charged": 23
+      "drawdown": 38,
+      "charged": 37
+    },
+    {
+      "date": "2026-05-13",
+      "peak": 50,
+      "drawdown": 0,
+      "charged": 11
     }
   ],
   "trainingLoad": [
