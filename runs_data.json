@@ -4450,6 +4450,10 @@
     },
     {
       "date": "2026-05-16",
+      "rhr": 56
+    },
+    {
+      "date": "2026-05-17",
       "rhr": 57
     }
   ],
@@ -7821,9 +7825,15 @@
     },
     {
       "date": "2026-05-16",
-      "peak": 36,
+      "peak": 60,
+      "drawdown": 41,
+      "charged": 40
+    },
+    {
+      "date": "2026-05-17",
+      "peak": 49,
       "drawdown": 0,
-      "charged": 14
+      "charged": 30
     }
   ],
   "trainingLoad": [
