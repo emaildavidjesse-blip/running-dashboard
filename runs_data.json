@@ -7846,9 +7846,9 @@
     },
     {
       "date": "2026-06-04",
-      "peak": 10,
-      "drawdown": 0,
-      "charged": 4
+      "peak": 36,
+      "drawdown": 27,
+      "charged": 30
     }
   ],
   "trainingLoad": [
