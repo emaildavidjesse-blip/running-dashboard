@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-06-07",
+      "miles": 1.49,
+      "pace": 30.9,
+      "hr": 133,
+      "title": "Glenview Running",
+      "soccer": true
+    },
+    {
       "date": "2026-06-03",
       "miles": 3.52,
       "pace": 20.7,
@@ -4559,7 +4567,11 @@
     },
     {
       "date": "2026-06-07",
-      "rhr": 62
+      "rhr": 58
+    },
+    {
+      "date": "2026-06-08",
+      "rhr": 57
     }
   ],
   "bodyBattery": [
@@ -7876,9 +7888,15 @@
     },
     {
       "date": "2026-06-07",
-      "peak": 34,
+      "peak": 46,
+      "drawdown": 40,
+      "charged": 42
+    },
+    {
+      "date": "2026-06-08",
+      "peak": 25,
       "drawdown": 0,
-      "charged": 18
+      "charged": 7
     }
   ],
   "trainingLoad": [
@@ -8473,12 +8491,20 @@
       "tunnelMax": 396,
       "status": "Maintaining",
       "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-06-08",
+      "load": 195,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Unknown",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "21:06",
-    "10k": "45:36",
-    "half": "1:48:47",
-    "marathon": "4:08:10"
+    "5k": "21:07",
+    "10k": "45:45",
+    "half": "1:49:25",
+    "marathon": "4:08:43"
   }
 }
