@@ -1,6 +1,46 @@
 {
   "2026": [
     {
+      "date": "2026-06-14",
+      "miles": 3.4,
+      "pace": 8.96,
+      "hr": 136,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
+      "date": "2026-06-13",
+      "miles": 3.38,
+      "pace": 9.15,
+      "hr": 138,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
+      "date": "2026-06-10",
+      "miles": 1.83,
+      "pace": 19.9,
+      "hr": 115,
+      "title": "Wilmette Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-06-07",
+      "miles": 1.49,
+      "pace": 30.9,
+      "hr": 133,
+      "title": "Glenview Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-06-03",
+      "miles": 3.52,
+      "pace": 20.7,
+      "hr": 116,
+      "title": "Wilmette Running",
+      "soccer": true
+    },
+    {
       "date": "2026-05-20",
       "miles": 2.0,
       "pace": 9.18,
@@ -2458,6 +2498,11 @@
       "date": "2026-05-20",
       "vo2max": 52.7,
       "fitnessAge": 20
+    },
+    {
+      "date": "2026-06-14",
+      "vo2max": 52.6,
+      "fitnessAge": 20
     }
   ],
   "rhr": [
@@ -4504,6 +4549,82 @@
     {
       "date": "2026-05-26",
       "rhr": 57
+    },
+    {
+      "date": "2026-05-27",
+      "rhr": 53
+    },
+    {
+      "date": "2026-05-28",
+      "rhr": 56
+    },
+    {
+      "date": "2026-05-29",
+      "rhr": 56
+    },
+    {
+      "date": "2026-05-30",
+      "rhr": 55
+    },
+    {
+      "date": "2026-05-31",
+      "rhr": 60
+    },
+    {
+      "date": "2026-06-01",
+      "rhr": 52
+    },
+    {
+      "date": "2026-06-02",
+      "rhr": 57
+    },
+    {
+      "date": "2026-06-03",
+      "rhr": 57
+    },
+    {
+      "date": "2026-06-04",
+      "rhr": 62
+    },
+    {
+      "date": "2026-06-05",
+      "rhr": 60
+    },
+    {
+      "date": "2026-06-06",
+      "rhr": 60
+    },
+    {
+      "date": "2026-06-07",
+      "rhr": 58
+    },
+    {
+      "date": "2026-06-08",
+      "rhr": 51
+    },
+    {
+      "date": "2026-06-09",
+      "rhr": 50
+    },
+    {
+      "date": "2026-06-10",
+      "rhr": 50
+    },
+    {
+      "date": "2026-06-11",
+      "rhr": 55
+    },
+    {
+      "date": "2026-06-12",
+      "rhr": 57
+    },
+    {
+      "date": "2026-06-13",
+      "rhr": 56
+    },
+    {
+      "date": "2026-06-14",
+      "rhr": 50
     }
   ],
   "bodyBattery": [
@@ -7063,192 +7184,6 @@
       "drained": 45
     },
     {
-      "date": "2026-01-01",
-      "peak": 66,
-      "drawdown": 35,
-      "charged": 42
-    },
-    {
-      "date": "2026-01-02",
-      "peak": 59,
-      "drawdown": 37,
-      "charged": 32
-    },
-    {
-      "date": "2026-01-03",
-      "peak": 81,
-      "drawdown": 49,
-      "charged": 55
-    },
-    {
-      "date": "2026-01-04",
-      "peak": 78,
-      "drawdown": 40,
-      "charged": 54
-    },
-    {
-      "date": "2026-01-05",
-      "peak": 84,
-      "drawdown": 49,
-      "charged": 44
-    },
-    {
-      "date": "2026-01-06",
-      "peak": 85,
-      "drawdown": 63,
-      "charged": 53
-    },
-    {
-      "date": "2026-01-07",
-      "peak": 73,
-      "drawdown": 46,
-      "charged": 53
-    },
-    {
-      "date": "2026-01-08",
-      "peak": 58,
-      "drawdown": 29,
-      "charged": 40
-    },
-    {
-      "date": "2026-01-09",
-      "peak": 71,
-      "drawdown": 48,
-      "charged": 45
-    },
-    {
-      "date": "2026-01-10",
-      "peak": 63,
-      "drawdown": 43,
-      "charged": 47
-    },
-    {
-      "date": "2026-01-11",
-      "peak": 50,
-      "drawdown": 26,
-      "charged": 46
-    },
-    {
-      "date": "2026-01-12",
-      "peak": 68,
-      "drawdown": 38,
-      "charged": 45
-    },
-    {
-      "date": "2026-01-13",
-      "peak": 61,
-      "drawdown": 43,
-      "charged": 24
-    },
-    {
-      "date": "2026-01-14",
-      "peak": 81,
-      "drawdown": 41,
-      "charged": 65
-    },
-    {
-      "date": "2026-01-15",
-      "peak": 90,
-      "drawdown": 60,
-      "charged": 56
-    },
-    {
-      "date": "2026-01-16",
-      "peak": 94,
-      "drawdown": 66,
-      "charged": 55
-    },
-    {
-      "date": "2026-01-17",
-      "peak": 70,
-      "drawdown": 36,
-      "charged": 49
-    },
-    {
-      "date": "2026-01-18",
-      "peak": 79,
-      "drawdown": 46,
-      "charged": 53
-    },
-    {
-      "date": "2026-01-19",
-      "peak": 75,
-      "drawdown": 38,
-      "charged": 40
-    },
-    {
-      "date": "2026-01-20",
-      "peak": 90,
-      "drawdown": 65,
-      "charged": 52
-    },
-    {
-      "date": "2026-01-21",
-      "peak": 61,
-      "drawdown": 37,
-      "charged": 40
-    },
-    {
-      "date": "2026-01-22",
-      "peak": 56,
-      "drawdown": 38,
-      "charged": 41
-    },
-    {
-      "date": "2026-01-23",
-      "peak": 62,
-      "drawdown": 39,
-      "charged": 43
-    },
-    {
-      "date": "2026-01-24",
-      "peak": 59,
-      "drawdown": 32,
-      "charged": 43
-    },
-    {
-      "date": "2026-01-25",
-      "peak": 74,
-      "drawdown": 60,
-      "charged": 48
-    },
-    {
-      "date": "2026-01-26",
-      "peak": 46,
-      "drawdown": 34,
-      "charged": 26
-    },
-    {
-      "date": "2026-01-27",
-      "peak": 40,
-      "drawdown": 27,
-      "charged": 34
-    },
-    {
-      "date": "2026-01-28",
-      "peak": 62,
-      "drawdown": 26,
-      "charged": 64
-    },
-    {
-      "date": "2026-01-29",
-      "peak": 87,
-      "drawdown": 55,
-      "charged": 47
-    },
-    {
-      "date": "2026-01-30",
-      "peak": 71,
-      "drawdown": 42,
-      "charged": 42
-    },
-    {
-      "date": "2026-01-31",
-      "peak": 61,
-      "drawdown": 39,
-      "charged": 30
-    },
-    {
       "date": "2026-02-01",
       "peak": 93,
       "drawdown": 56,
@@ -7934,9 +7869,123 @@
     },
     {
       "date": "2026-05-26",
-      "peak": 36,
+      "peak": 48,
+      "drawdown": 38,
+      "charged": 28
+    },
+    {
+      "date": "2026-05-27",
+      "peak": 70,
+      "drawdown": 40,
+      "charged": 62
+    },
+    {
+      "date": "2026-05-28",
+      "peak": 63,
+      "drawdown": 34,
+      "charged": 40
+    },
+    {
+      "date": "2026-05-29",
+      "peak": 54,
+      "drawdown": 41,
+      "charged": 18
+    },
+    {
+      "date": "2026-05-30",
+      "peak": 56,
+      "drawdown": 44,
+      "charged": 44
+    },
+    {
+      "date": "2026-05-31",
+      "peak": 27,
+      "drawdown": 16,
+      "charged": 23
+    },
+    {
+      "date": "2026-06-01",
+      "peak": 43,
       "drawdown": 0,
-      "charged": 9
+      "charged": 56
+    },
+    {
+      "date": "2026-06-02",
+      "peak": 63,
+      "drawdown": 49,
+      "charged": 26
+    },
+    {
+      "date": "2026-06-03",
+      "peak": 57,
+      "drawdown": 50,
+      "charged": 37
+    },
+    {
+      "date": "2026-06-04",
+      "peak": 36,
+      "drawdown": 31,
+      "charged": 32
+    },
+    {
+      "date": "2026-06-05",
+      "peak": 38,
+      "drawdown": 29,
+      "charged": 33
+    },
+    {
+      "date": "2026-06-06",
+      "peak": 43,
+      "drawdown": 31,
+      "charged": 39
+    },
+    {
+      "date": "2026-06-07",
+      "peak": 46,
+      "drawdown": 40,
+      "charged": 42
+    },
+    {
+      "date": "2026-06-08",
+      "peak": 92,
+      "drawdown": 51,
+      "charged": 88
+    },
+    {
+      "date": "2026-06-09",
+      "peak": 100,
+      "drawdown": 72,
+      "charged": 49
+    },
+    {
+      "date": "2026-06-10",
+      "peak": 86,
+      "drawdown": 57,
+      "charged": 56
+    },
+    {
+      "date": "2026-06-11",
+      "peak": 70,
+      "drawdown": 51,
+      "charged": 46
+    },
+    {
+      "date": "2026-06-12",
+      "peak": 55,
+      "drawdown": 45,
+      "charged": 33
+    },
+    {
+      "date": "2026-06-13",
+      "peak": 53,
+      "drawdown": 30,
+      "charged": 48
+    },
+    {
+      "date": "2026-06-14",
+      "peak": 81,
+      "drawdown": 15,
+      "charged": 57
     }
   ],
   "trainingLoad": [
@@ -8523,12 +8572,28 @@
       "tunnelMax": 396,
       "status": "Maintaining",
       "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-06-01",
+      "load": 49,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-06-08",
+      "load": 195,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Unknown",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "20:56",
-    "10k": "44:47",
-    "half": "1:45:01",
-    "marathon": "4:03:03"
+    "5k": "21:02",
+    "10k": "46:04",
+    "half": "1:49:20",
+    "marathon": "4:08:35"
   }
 }
