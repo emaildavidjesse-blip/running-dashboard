@@ -42,6 +42,62 @@ To serve `index.html` as a public website:
 
 Go to **Actions → Sync Garmin & Deploy Dashboard → Run workflow** to run immediately without waiting for the daily schedule.
 
+Or, if you're viewing the dashboard locally on this Mac, just click **Refresh** in the dashboard header — see below.
+
+## Local Refresh button (no GitHub Actions round-trip)
+
+When you view `index.html` on the same Mac that runs the sync, clicking **Refresh**
+in the header triggers `run_sync.sh` directly instead of opening GitHub Actions:
+
+1. The button POSTs to `http://localhost:5050/sync`.
+2. While waiting, the button shows **Syncing...**.
+3. On success: **Synced! Refresh the page to see updates**, then the page
+   reloads automatically after 3 seconds.
+4. On failure (e.g. the local sync server isn't running): **Local sync server
+   not running — opening GitHub Actions instead**, and the GitHub Actions
+   page opens in a new tab — the same fallback behavior as before.
+
+This only works when the dashboard is opened from the same Mac that's running
+the sync server (`localhost`). If you open the dashboard from your phone or
+another device, the local POST will fail (nothing is listening on
+`localhost:5050` there) and it'll fall back to the GitHub Actions link.
+
+### Setting up the local sync server
+
+A small local server (`sync_server.py`) listens on `127.0.0.1:5050` and only
+accepts requests from localhost. `POST /sync` runs `run_sync.sh` as a
+subprocess and returns `{"success": true/false, "message": ...}`. Every
+trigger is logged to `~/running-dashboard-sync.log`, the same log `run_sync.sh`
+already writes to.
+
+Install it once as a launchd agent so it's always running in the background,
+starting automatically on login:
+
+```bash
+./install_sync_server.sh
+```
+
+Useful commands:
+
+```bash
+# Check it's running
+launchctl list | grep sync-server
+
+# Test it manually (runs a real sync!)
+curl -X POST http://localhost:5050/sync
+
+# Restart it
+launchctl kickstart -k gui/$(id -u)/com.davidjesse.sync-server
+
+# Uninstall
+launchctl unload ~/Library/LaunchAgents/com.davidjesse.sync-server.plist
+rm ~/Library/LaunchAgents/com.davidjesse.sync-server.plist
+```
+
+Logs:
+- `~/running-dashboard-sync.log` — sync triggers and `run_sync.sh` output (shared with the daily scheduled sync)
+- `~/running-dashboard-sync-server.log` — the server process's own stdout/stderr (startup, crashes)
+
 ## Running locally
 
 ```bash
@@ -103,3 +159,6 @@ const RUNS_DATA_PLACEHOLDER = null;
 | `index.html` | Built dashboard (auto-generated, committed by CI) |
 | `runs_data.json` | Parsed run records (auto-generated, committed by CI) |
 | `.github/workflows/sync.yml` | Daily sync workflow |
+| `sync_server.py` | Local-only HTTP server backing the dashboard's Refresh button |
+| `install_sync_server.sh` | Installs `sync_server.py` as a launchd background service |
+| `com.davidjesse.sync-server.plist` | launchd agent definition for the sync server |

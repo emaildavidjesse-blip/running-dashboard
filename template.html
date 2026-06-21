@@ -30,9 +30,10 @@ header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
 header p{font-size:.82rem;color:var(--muted);margin-top:2px}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
 .refresh-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);
-             border-radius:6px;padding:6px 14px;font-size:.8rem;cursor:pointer;
+             border-radius:6px;padding:6px 14px;font-size:.8rem;font-family:inherit;cursor:pointer;
              text-decoration:none;transition:background .15s,border-color .15s}
 .refresh-btn:hover{background:#1e2535;border-color:var(--blue)}
+.refresh-btn:disabled{cursor:default;opacity:.7}
 .sync-meta{font-size:.7rem;color:var(--muted);text-align:right;line-height:1.6}
 
 .tab-nav{display:flex;padding:0 28px;border-bottom:1px solid var(--border);
@@ -122,8 +123,8 @@ tbody td{padding:8px 12px}
     <p id="hdr-sub">Loading…</p>
   </div>
   <div class="hdr-right">
-    <a class="refresh-btn" href="https://github.com/emaildavidjesse-blip/running-dashboard/actions/workflows/sync.yml" target="_blank" rel="noopener">Refresh</a>
-    <div class="sync-meta">Opens GitHub Actions to trigger a sync<br><span id="last-sync"></span></div>
+    <button class="refresh-btn" id="refresh-btn">Refresh</button>
+    <div class="sync-meta"><span id="sync-status">Click to trigger a local sync</span><br><span id="last-sync"></span></div>
   </div>
 </header>
 
@@ -956,6 +957,34 @@ tbody td{padding:8px 12px}
   }
 
   showTab('overview');
+})();
+</script>
+
+<script>
+(function () {
+  const SYNC_URL       = 'http://localhost:5050/sync';
+  const GH_ACTIONS_URL = 'https://github.com/emaildavidjesse-blip/running-dashboard/actions/workflows/sync.yml';
+
+  const btn    = document.getElementById('refresh-btn');
+  const status = document.getElementById('sync-status');
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    status.textContent = 'Syncing...';
+
+    try {
+      const res = await fetch(SYNC_URL, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) throw new Error(data.message || `Sync failed (${res.status})`);
+
+      status.textContent = 'Synced! Refresh the page to see updates';
+      setTimeout(() => location.reload(), 3000);
+    } catch (err) {
+      status.textContent = 'Local sync server not running — opening GitHub Actions instead';
+      window.open(GH_ACTIONS_URL, '_blank', 'noopener');
+      btn.disabled = false;
+    }
+  });
 })();
 </script>
 </body>
