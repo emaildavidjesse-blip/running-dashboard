@@ -1,9 +1,19 @@
 #!/bin/bash
 # Daily Garmin dashboard sync — run by launchd, safe to run manually too.
+#
+# Usage: run_sync.sh [incremental]
+#   (no args)    full historical re-fetch — what the daily 6am launchd job uses
+#   incremental  fast incremental sync — what sync_server.py's Refresh button uses
 
 PROJECT_DIR="/Users/davidjesse/running-dashboard"
 PYTHON="/usr/bin/python3"
 LOG_FILE="$HOME/running-dashboard-sync.log"
+
+if [ "$1" = "incremental" ]; then
+    SYNC_ARGS=()
+else
+    SYNC_ARGS=(--full)
+fi
 
 # Redirect all output (including from Python subprocesses) to the log file.
 exec >> "$LOG_FILE" 2>&1
@@ -24,8 +34,8 @@ cd "$PROJECT_DIR" || fail "Could not cd to $PROJECT_DIR"
 log "--- refresh_token.py ---"
 "$PYTHON" refresh_token.py || log "WARNING: refresh_token.py exited non-zero (see above)"
 
-log "--- sync_garmin.py ---"
-"$PYTHON" sync_garmin.py || fail "sync_garmin.py exited non-zero"
+log "--- sync_garmin.py ${SYNC_ARGS[*]} ---"
+"$PYTHON" sync_garmin.py "${SYNC_ARGS[@]}" || fail "sync_garmin.py exited non-zero"
 
 log "--- build_dashboard.py ---"
 "$PYTHON" build_dashboard.py || fail "build_dashboard.py exited non-zero"

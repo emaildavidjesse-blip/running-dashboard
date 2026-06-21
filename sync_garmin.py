@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import os
 import sys
 import json
@@ -13,6 +14,9 @@ load_dotenv()
 
 TOKEN_DIR = os.path.expanduser('~/.garth')
 ACTIVITIES_URL = '/activitylist-service/activities/search/activities'
+DATA_FILE = 'runs_data.json'
+DEFAULT_START = date(2025, 1, 1)
+OVERLAP_DAYS = 5
 
 RUNNING_TYPE_KEYS = {
     'running', 'indoor_running', 'trail_running',
@@ -194,9 +198,17 @@ def parse_activity(act):
 # ── VO2 Max ───────────────────────────────────────────────────────────────────
 
 def fetch_vo2max():
+    """Always fetches the full 2025-01-01 → today range.
+
+    The weekly maxmet endpoint resamples its bucket boundaries based on the
+    queried date range — a short window returns different (and fewer)
+    calendarDates than the full range does, not a subset of the same dates.
+    So this can't be fetched incrementally; it's cheap (one HTTP call) and
+    always fully replaces the existing vo2max list rather than being merged.
+    """
     today = date.today().isoformat()
     data = garth.connectapi(
-        f'/metrics-service/metrics/maxmet/weekly/2025-01-01/{today}'
+        f'/metrics-service/metrics/maxmet/weekly/{DEFAULT_START.isoformat()}/{today}'
     )
     result = []
     for entry in (data or []):
@@ -214,13 +226,24 @@ def fetch_vo2max():
 
 # ── Resting HR ────────────────────────────────────────────────────────────────
 
-def fetch_rhr():
-    """Bulk-fetch daily RHR via userstats endpoint (2 calls for 2025+2026)."""
+def _year_ranges(start_date, end_date):
+    """Split [start_date, end_date] into per-calendar-year (start, end) pairs."""
+    ranges = []
+    d = start_date
+    while d <= end_date:
+        year_end = min(date(d.year, 12, 31), end_date)
+        ranges.append((d.isoformat(), year_end.isoformat()))
+        d = date(d.year + 1, 1, 1)
+    return ranges
+
+
+def fetch_rhr(start_date=None):
+    """Bulk-fetch daily RHR via userstats endpoint (1 call per calendar year touched)."""
     username = garth.client.username
-    today = date.today().isoformat()
+    today = date.today()
     result = []
 
-    for start, end in [('2025-01-01', '2025-12-31'), ('2026-01-01', today)]:
+    for start, end in _year_ranges(start_date or DEFAULT_START, today):
         try:
             r = garth.connectapi(f'/userstats-service/wellness/daily/{username}',
                                  params={'fromDate': start, 'untilDate': end})
@@ -242,35 +265,41 @@ def fetch_rhr():
 
 # ── Body Battery ──────────────────────────────────────────────────────────────
 
-def fetch_body_battery():
+def fetch_body_battery(start_date=None):
     """Fetch daily BB data:
     - 2026: peak+drawdown+charged from intraday reports/daily endpoint
       (month-by-month; endpoint has ~31-day range limit)
     - 2025: charged only from userstats bulk endpoint (intraday returns 400)
+
+    start_date limits how far back to fetch: 2025 userstats is skipped
+    entirely if start_date falls in 2026, and the 2026 month-by-month loop
+    only starts at start_date's month.
     """
     import calendar
     username = garth.client.username
     today_d  = date.today()
     today    = today_d.isoformat()
+    start    = start_date or DEFAULT_START
 
     # 2026 intraday — one request per calendar month
+    start_month = start.month if start.year >= 2026 else 1
     ranges = []
-    for month in range(1, today_d.month + 1):
-        start     = f'2026-{month:02d}-01'
+    for month in range(start_month, today_d.month + 1):
+        m_start   = f'2026-{month:02d}-01'
         last_day  = calendar.monthrange(2026, month)[1]
-        end       = min(date(2026, month, last_day), today_d).isoformat()
-        ranges.append((start, end))
+        m_end     = min(date(2026, month, last_day), today_d).isoformat()
+        ranges.append((m_start, m_end))
 
     result  = []
     skipped = 0
-    for start, end in ranges:
+    for m_start, m_end in ranges:
         try:
             data = garth.connectapi(
                 '/wellness-service/wellness/bodyBattery/reports/daily',
-                params={'startDate': start, 'endDate': end},
+                params={'startDate': m_start, 'endDate': m_end},
             )
         except Exception as exc:
-            print(f'  BB fetch error ({start}): {exc}')
+            print(f'  BB fetch error ({m_start}): {exc}')
             continue
 
         for day in (data or []):
@@ -292,37 +321,42 @@ def fetch_body_battery():
           + (f' ({skipped} skipped)' if skipped else ''))
 
     # 2025 charged + drained from userstats (intraday endpoint returns 400 for 2025)
-    try:
-        r = garth.connectapi(
-            f'/userstats-service/wellness/daily/{username}',
-            params={'fromDate': '2025-01-01', 'untilDate': '2025-12-31'},
-        )
-        metrics = (r or {}).get('allMetrics', {}).get('metricsMap', {})
+    if start.year <= 2025:
+        try:
+            r = garth.connectapi(
+                f'/userstats-service/wellness/daily/{username}',
+                params={'fromDate': '2025-01-01', 'untilDate': '2025-12-31'},
+            )
+            metrics = (r or {}).get('allMetrics', {}).get('metricsMap', {})
 
-        # WELLNESS_BODYBATTERY_DRAINED — daily total drain (different from intraday drawdown)
-        drained_by_date = {
-            e['calendarDate']: int(round(e['value']))
-            for e in metrics.get('WELLNESS_BODYBATTERY_DRAINED', [])
-            if e.get('value') is not None
-        }
-
-        charged_2025 = [
-            {
-                'date':     e['calendarDate'],
-                'peak':     None,
-                'drawdown': None,
-                'charged':  int(round(e['value'])),
-                'drained':  drained_by_date.get(e['calendarDate']),
+            # WELLNESS_BODYBATTERY_DRAINED — daily total drain (different from intraday drawdown)
+            drained_by_date = {
+                e['calendarDate']: int(round(e['value']))
+                for e in metrics.get('WELLNESS_BODYBATTERY_DRAINED', [])
+                if e.get('value') is not None
             }
-            for e in metrics.get('WELLNESS_BODYBATTERY_CHARGED', [])
-            if e.get('value') is not None
-        ]
-        result.extend(charged_2025)
-        drained_ct = len(drained_by_date)
-        print(f'  bodyBattery 2025: {len(charged_2025)} days charged, '
-              f'{drained_ct} days drained from userstats')
-    except Exception as exc:
-        print(f'  BB 2025 userstats fetch error: {exc}')
+
+            charged_2025 = [
+                {
+                    'date':     e['calendarDate'],
+                    'peak':     None,
+                    'drawdown': None,
+                    'charged':  int(round(e['value'])),
+                    'drained':  drained_by_date.get(e['calendarDate']),
+                }
+                for e in metrics.get('WELLNESS_BODYBATTERY_CHARGED', [])
+                if e.get('value') is not None
+            ]
+            result.extend(charged_2025)
+            drained_ct = len(drained_by_date)
+            print(f'  bodyBattery 2025: {len(charged_2025)} days charged, '
+                  f'{drained_ct} days drained from userstats')
+        except Exception as exc:
+            print(f'  BB 2025 userstats fetch error: {exc}')
+
+    # The intraday loop above fetches whole calendar months for API efficiency,
+    # which can include days before start_date — trim back to the exact window.
+    result = [e for e in result if e['date'] >= start.isoformat()]
 
     result.sort(key=lambda x: x['date'])
     print(f'  bodyBattery total: {len(result)} days')
@@ -339,15 +373,16 @@ _STATUS_MAP = {
 _TREND_MAP = {1: 'Improving', 2: 'Stable', 3: 'Declining'}
 
 
-def fetch_training_load():
-    """Poll trainingstatus/aggregated for every Monday 2025-01-06 → today.
-    ~69 sequential calls; no sleep needed as data endpoints are not rate-limited.
+def fetch_training_load(start_monday=None):
+    """Poll trainingstatus/aggregated for every Monday from start_monday
+    (default: 2025-01-06, the first Monday of 2025) → today.
+    start_monday must already be Monday-aligned (see main()).
     """
     today   = date.today()
     result  = []
     errors  = []
 
-    d = date(2025, 1, 6)           # first Monday of 2025
+    d = start_monday or date(2025, 1, 6)
     while d <= today:
         ds = d.isoformat()
         try:
@@ -408,19 +443,100 @@ def fetch_race_predictions():
     return preds
 
 
+# ── Incremental sync helpers ──────────────────────────────────────────────────
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--full', action='store_true',
+        help='Full historical re-fetch (2025-01-01 → today), replacing runs_data.json '
+             'entirely. Default: incremental sync, fetching only from 5 days before '
+             'the most recent existing data point forward to today.',
+    )
+    return parser.parse_args()
+
+
+def load_existing_data():
+    if not os.path.exists(DATA_FILE):
+        return None
+    with open(DATA_FILE) as f:
+        return json.load(f)
+
+
+def most_recent_start(entries):
+    """Most recent date in entries, minus an overlap window, for incremental fetch."""
+    if not entries:
+        return DEFAULT_START
+    most_recent = date.fromisoformat(max(e['date'] for e in entries))
+    return most_recent - timedelta(days=OVERLAP_DAYS)
+
+
+def merge_flat(existing_list, new_list, cutoff_date):
+    """Drop existing entries >= cutoff_date, append freshly fetched ones, re-sort ascending."""
+    cutoff = cutoff_date.isoformat()
+    kept = [e for e in existing_list if e['date'] < cutoff]
+    merged = kept + new_list
+    merged.sort(key=lambda e: e['date'])
+    return merged
+
+
+def merge_runs(existing_by_year, new_by_year, cutoff_date):
+    """Drop existing runs >= cutoff_date (across both years), add new ones, re-sort descending."""
+    cutoff = cutoff_date.isoformat()
+    merged = {}
+    for year in ['2026', '2025']:
+        kept = [r for r in existing_by_year.get(year, []) if r['date'] < cutoff]
+        combined = kept + new_by_year.get(year, [])
+        combined.sort(key=lambda r: r['date'], reverse=True)
+        merged[year] = combined
+    return merged
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
+    args = parse_args()
+    started = time.time()
     authenticate()
 
-    result = {'2026': [], '2025': []}
+    existing = None if args.full else load_existing_data()
+    full_mode = args.full or existing is None
+    today = date.today()
+
+    if full_mode:
+        print('FULL sync' + (' (--full)' if args.full else ' (no existing runs_data.json)'))
+        existing = {'2026': [], '2025': []}
+        runs_start = rhr_start = bb_start = DEFAULT_START
+        tl_start = date(2025, 1, 6)
+    else:
+        print('INCREMENTAL sync')
+        runs_start = most_recent_start(existing.get('2025', []) + existing.get('2026', []))
+        rhr_start  = most_recent_start(existing.get('rhr', []))
+        bb_start   = most_recent_start(existing.get('bodyBattery', []))
+        tl_recent  = most_recent_start(existing.get('trainingLoad', []))
+        tl_start   = max(tl_recent - timedelta(days=tl_recent.weekday()), date(2025, 1, 6))
+
+    # ── Activities ──
+    new_runs_by_year = {'2025': [], '2026': []}
     seen_ids = set()
 
-    for year in ['2025', '2026']:
-        activities = get_activities_by_date(f'{year}-01-01', f'{year}-12-31')
-        print(f'  {year}: fetched {len(activities)} activities from Garmin')
-
-        runs = []
+    if full_mode:
+        for year in ['2025', '2026']:
+            activities = get_activities_by_date(f'{year}-01-01', f'{year}-12-31')
+            print(f'  {year}: fetched {len(activities)} activities from Garmin')
+            for act in activities:
+                parsed = parse_activity(act)
+                if parsed is None:
+                    continue
+                act_id = parsed.pop('id')
+                if act_id in seen_ids:
+                    continue
+                seen_ids.add(act_id)
+                new_runs_by_year[year].append(parsed)
+            print(f'  {year}: {len(new_runs_by_year[year])} running activities kept')
+    else:
+        activities = get_activities_by_date(runs_start.isoformat(), today.isoformat())
+        print(f'  fetched {len(activities)} activities from Garmin ({runs_start} → {today})')
         for act in activities:
             parsed = parse_activity(act)
             if parsed is None:
@@ -429,22 +545,38 @@ def main():
             if act_id in seen_ids:
                 continue
             seen_ids.add(act_id)
-            runs.append(parsed)
+            new_runs_by_year.setdefault(parsed['date'][:4], []).append(parsed)
 
-        result[year] = runs
-        print(f'  {year}: {len(runs)} running activities kept')
+    if full_mode:
+        result = {'2026': new_runs_by_year['2026'], '2025': new_runs_by_year['2025']}
+    else:
+        result = merge_runs(existing, new_runs_by_year, runs_start)
 
-    result['vo2max']          = fetch_vo2max()
-    result['rhr']             = fetch_rhr()
-    result['bodyBattery']     = fetch_body_battery()
-    result['trainingLoad']    = fetch_training_load()
+    # ── Other metrics ──
+    # vo2max is always fully replaced (see fetch_vo2max docstring for why).
+    new_vo2max       = fetch_vo2max()
+    new_rhr          = fetch_rhr(None if full_mode else rhr_start)
+    new_bodyBattery  = fetch_body_battery(None if full_mode else bb_start)
+    new_trainingLoad = fetch_training_load(None if full_mode else tl_start)
+
+    result['vo2max'] = new_vo2max
+    if full_mode:
+        result['rhr']          = new_rhr
+        result['bodyBattery']  = new_bodyBattery
+        result['trainingLoad'] = new_trainingLoad
+    else:
+        result['rhr']          = merge_flat(existing.get('rhr', []), new_rhr, rhr_start)
+        result['bodyBattery']  = merge_flat(existing.get('bodyBattery', []), new_bodyBattery, bb_start)
+        result['trainingLoad'] = merge_flat(existing.get('trainingLoad', []), new_trainingLoad, tl_start)
+
     result['racePredictions'] = fetch_race_predictions()
 
-    with open('runs_data.json', 'w') as f:
+    with open(DATA_FILE, 'w') as f:
         json.dump(result, f, indent=2)
 
     run_total = sum(len(result[y]) for y in ['2025', '2026'])
-    print(f'\nSaved to runs_data.json:')
+    elapsed = time.time() - started
+    print(f'\nSaved to {DATA_FILE} ({elapsed:.1f}s):')
     print(f'  runs:        {run_total}  ({len(result["2026"])} in 2026, {len(result["2025"])} in 2025)')
     print(f'  vo2max:      {len(result["vo2max"])} weekly readings')
     print(f'  rhr:         {len(result["rhr"])} daily readings')

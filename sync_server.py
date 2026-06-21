@@ -67,7 +67,7 @@ class SyncHandler(BaseHTTPRequestHandler):
 
         try:
             result = subprocess.run(
-                ["/bin/bash", str(RUN_SYNC)],
+                ["/bin/bash", str(RUN_SYNC), "incremental"],
                 cwd=str(PROJECT_DIR),
                 capture_output=True,
                 text=True,
