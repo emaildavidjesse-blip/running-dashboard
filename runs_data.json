@@ -1,38 +1,6 @@
 {
   "2026": [
     {
-      "date": "2026-06-19",
-      "miles": 5.18,
-      "pace": 8.69,
-      "hr": 143,
-      "title": "Wilmette - Base",
-      "soccer": false
-    },
-    {
-      "date": "2026-06-18",
-      "miles": 3.33,
-      "pace": 9.06,
-      "hr": 135,
-      "title": "Wilmette Running",
-      "soccer": false
-    },
-    {
-      "date": "2026-06-16",
-      "miles": 2.0,
-      "pace": 9.64,
-      "hr": 127,
-      "title": "Wilmette - Recovery",
-      "soccer": false
-    },
-    {
-      "date": "2026-06-15",
-      "miles": 3.34,
-      "pace": 9.32,
-      "hr": 128,
-      "title": "Wilmette Running",
-      "soccer": false
-    },
-    {
       "date": "2026-06-14",
       "miles": 3.4,
       "pace": 8.96,
@@ -2532,13 +2500,8 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-06-16",
-      "vo2max": 52.5,
-      "fitnessAge": 20
-    },
-    {
-      "date": "2026-06-19",
-      "vo2max": 52.4,
+      "date": "2026-06-14",
+      "vo2max": 52.6,
       "fitnessAge": 20
     }
   ],
@@ -4662,30 +4625,6 @@
     {
       "date": "2026-06-14",
       "rhr": 50
-    },
-    {
-      "date": "2026-06-15",
-      "rhr": 50
-    },
-    {
-      "date": "2026-06-16",
-      "rhr": 55
-    },
-    {
-      "date": "2026-06-17",
-      "rhr": 50
-    },
-    {
-      "date": "2026-06-18",
-      "rhr": 57
-    },
-    {
-      "date": "2026-06-19",
-      "rhr": 51
-    },
-    {
-      "date": "2026-06-20",
-      "rhr": 52
     }
   ],
   "bodyBattery": [
@@ -8045,44 +7984,8 @@
     {
       "date": "2026-06-14",
       "peak": 81,
-      "drawdown": 45,
-      "charged": 59
-    },
-    {
-      "date": "2026-06-15",
-      "peak": 90,
-      "drawdown": 57,
-      "charged": 60
-    },
-    {
-      "date": "2026-06-16",
-      "peak": 67,
-      "drawdown": 39,
-      "charged": 28
-    },
-    {
-      "date": "2026-06-17",
-      "peak": 93,
-      "drawdown": 52,
-      "charged": 74
-    },
-    {
-      "date": "2026-06-18",
-      "peak": 67,
-      "drawdown": 32,
-      "charged": 35
-    },
-    {
-      "date": "2026-06-19",
-      "peak": 85,
-      "drawdown": 69,
-      "charged": 47
-    },
-    {
-      "date": "2026-06-20",
-      "peak": 81,
-      "drawdown": 31,
-      "charged": 60
+      "drawdown": 15,
+      "charged": 57
     }
   ],
   "trainingLoad": [
@@ -8685,20 +8588,12 @@
       "tunnelMax": 396,
       "status": "Unknown",
       "fitnessTrend": "Stable"
-    },
-    {
-      "date": "2026-06-15",
-      "load": 318,
-      "tunnelMin": 176,
-      "tunnelMax": 396,
-      "status": "Overreaching",
-      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "21:05",
-    "10k": "46:18",
-    "half": "1:49:48",
-    "marathon": "4:09:54"
+    "5k": "21:02",
+    "10k": "46:04",
+    "half": "1:49:20",
+    "marathon": "4:08:35"
   }
 }
