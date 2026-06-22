@@ -4698,6 +4698,10 @@
     {
       "date": "2026-06-21",
       "rhr": 54
+    },
+    {
+      "date": "2026-06-22",
+      "rhr": 54
     }
   ],
   "bodyBattery": [
@@ -8099,7 +8103,13 @@
     {
       "date": "2026-06-21",
       "peak": 80,
-      "drawdown": 37,
+      "drawdown": 46,
+      "charged": 49
+    },
+    {
+      "date": "2026-06-22",
+      "peak": 78,
+      "drawdown": 0,
       "charged": 37
     }
   ],
@@ -8711,12 +8721,20 @@
       "tunnelMax": 396,
       "status": "Overreaching",
       "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-06-22",
+      "load": 438,
+      "tunnelMin": 176,
+      "tunnelMax": 396,
+      "status": "Overreaching",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "21:01",
-    "10k": "45:53",
-    "half": "1:49:27",
-    "marathon": "4:09:08"
+    "5k": "21:04",
+    "10k": "46:05",
+    "half": "1:49:44",
+    "marathon": "4:09:46"
   }
 }
