@@ -8117,8 +8117,8 @@
     {
       "date": "2026-06-22",
       "peak": 81,
-      "drawdown": 16,
-      "charged": 40
+      "drawdown": 29,
+      "charged": 45
     }
   ],
   "trainingLoad": [
