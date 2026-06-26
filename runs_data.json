@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-06-25",
+      "miles": 3.34,
+      "pace": 8.98,
+      "hr": 138,
+      "title": "Kenilworth - Base",
+      "soccer": false
+    },
+    {
       "date": "2026-06-22",
       "miles": 3.28,
       "pace": 9.15,
@@ -2556,6 +2564,11 @@
       "date": "2026-06-22",
       "vo2max": 52.4,
       "fitnessAge": 20
+    },
+    {
+      "date": "2026-06-25",
+      "vo2max": 52.4,
+      "fitnessAge": 20
     }
   ],
   "rhr": [
@@ -4722,6 +4735,10 @@
     {
       "date": "2026-06-25",
       "rhr": 56
+    },
+    {
+      "date": "2026-06-26",
+      "rhr": 57
     }
   ],
   "bodyBattery": [
@@ -8146,9 +8163,15 @@
     },
     {
       "date": "2026-06-25",
-      "peak": 65,
+      "peak": 72,
+      "drawdown": 43,
+      "charged": 27
+    },
+    {
+      "date": "2026-06-26",
+      "peak": 52,
       "drawdown": 0,
-      "charged": 16
+      "charged": 23
     }
   ],
   "trainingLoad": [
@@ -8770,9 +8793,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "21:14",
-    "10k": "46:38",
-    "half": "1:50:37",
-    "marathon": "4:11:45"
+    "5k": "21:09",
+    "10k": "46:30",
+    "half": "1:50:13",
+    "marathon": "4:10:52"
   }
 }
