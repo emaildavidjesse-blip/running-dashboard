@@ -8216,8 +8216,8 @@
     {
       "date": "2026-06-29",
       "peak": 78,
-      "drawdown": 0,
-      "charged": 40
+      "drawdown": 47,
+      "charged": 46
     }
   ],
   "trainingLoad": [
@@ -8839,7 +8839,7 @@
     },
     {
       "date": "2026-06-29",
-      "load": 300,
+      "load": 318,
       "tunnelMin": 226,
       "tunnelMax": 484,
       "status": "Maintaining",
@@ -8848,8 +8848,8 @@
   ],
   "racePredictions": {
     "5k": "21:15",
-    "10k": "46:44",
-    "half": "1:50:38",
-    "marathon": "4:11:44"
+    "10k": "46:43",
+    "half": "1:50:36",
+    "marathon": "4:11:40"
   }
 }
