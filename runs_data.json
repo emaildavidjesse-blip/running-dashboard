@@ -1,6 +1,30 @@
 {
   "2026": [
     {
+      "date": "2026-07-01",
+      "miles": 0.26,
+      "pace": 9.86,
+      "hr": 147,
+      "title": "Kenilworth Running",
+      "soccer": false
+    },
+    {
+      "date": "2026-07-01",
+      "miles": 4.07,
+      "pace": 8.85,
+      "hr": 140,
+      "title": "Wilmette - Base",
+      "soccer": false
+    },
+    {
+      "date": "2026-06-30",
+      "miles": 4.5,
+      "pace": 8.91,
+      "hr": 141,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
       "date": "2026-06-28",
       "miles": 3.67,
       "pace": 8.99,
@@ -2582,8 +2606,13 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-06-28",
+      "date": "2026-06-30",
       "vo2max": 52.4,
+      "fitnessAge": 20
+    },
+    {
+      "date": "2026-07-01",
+      "vo2max": 52.3,
       "fitnessAge": 20
     }
   ],
@@ -4767,6 +4796,22 @@
     {
       "date": "2026-06-29",
       "rhr": 52
+    },
+    {
+      "date": "2026-06-30",
+      "rhr": 54
+    },
+    {
+      "date": "2026-07-01",
+      "rhr": 55
+    },
+    {
+      "date": "2026-07-02",
+      "rhr": 50
+    },
+    {
+      "date": "2026-07-03",
+      "rhr": 51
     }
   ],
   "bodyBattery": [
@@ -8048,8 +8093,32 @@
     {
       "date": "2026-06-29",
       "peak": 78,
-      "drawdown": 47,
+      "drawdown": 49,
       "charged": 46
+    },
+    {
+      "date": "2026-06-30",
+      "peak": 74,
+      "drawdown": 42,
+      "charged": 57
+    },
+    {
+      "date": "2026-07-01",
+      "peak": 64,
+      "drawdown": 36,
+      "charged": 39
+    },
+    {
+      "date": "2026-07-02",
+      "peak": 91,
+      "drawdown": 44,
+      "charged": 68
+    },
+    {
+      "date": "2026-07-03",
+      "peak": 83,
+      "drawdown": 0,
+      "charged": 34
     }
   ],
   "trainingLoad": [
@@ -8679,9 +8748,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "21:15",
-    "10k": "46:43",
-    "half": "1:50:36",
-    "marathon": "4:11:40"
+    "5k": "21:28",
+    "10k": "47:10",
+    "half": "1:51:41",
+    "marathon": "4:14:12"
   }
 }
