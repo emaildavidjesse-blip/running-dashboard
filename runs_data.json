@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-07-07",
+      "miles": 3.05,
+      "pace": 9.01,
+      "hr": 130,
+      "title": "Wilmette - Base",
+      "soccer": false
+    },
+    {
       "date": "2026-07-05",
       "miles": 3.8,
       "pace": 18.77,
@@ -2635,8 +2643,8 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-07-04",
-      "vo2max": 52.3,
+      "date": "2026-07-07",
+      "vo2max": 52.4,
       "fitnessAge": 20
     }
   ],
@@ -4851,7 +4859,7 @@
     },
     {
       "date": "2026-07-07",
-      "rhr": 56
+      "rhr": 52
     }
   ],
   "bodyBattery": [
@@ -8180,9 +8188,9 @@
     },
     {
       "date": "2026-07-07",
-      "peak": 45,
-      "drawdown": 0,
-      "charged": 1
+      "peak": 87,
+      "drawdown": 55,
+      "charged": 47
     }
   ],
   "trainingLoad": [
@@ -8820,9 +8828,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "21:24",
-    "10k": "47:00",
-    "half": "1:51:22",
-    "marathon": "4:13:25"
+    "5k": "21:16",
+    "10k": "46:43",
+    "half": "1:50:45",
+    "marathon": "4:12:05"
   }
 }
