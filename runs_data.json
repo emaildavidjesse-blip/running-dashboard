@@ -1,6 +1,38 @@
 {
   "2026": [
     {
+      "date": "2026-07-11",
+      "miles": 1.17,
+      "pace": 30.94,
+      "hr": 111,
+      "title": "Evanston Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-07-11",
+      "miles": 0.67,
+      "pace": 30.97,
+      "hr": 112,
+      "title": "Evanston Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-07-11",
+      "miles": 0.61,
+      "pace": 40.21,
+      "hr": 94,
+      "title": "Evanston Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-07-11",
+      "miles": 0.44,
+      "pace": 38.7,
+      "hr": 97,
+      "title": "Evanston Running",
+      "soccer": true
+    },
+    {
       "date": "2026-07-08",
       "miles": 1.83,
       "pace": 20.82,
@@ -8249,9 +8281,9 @@
     },
     {
       "date": "2026-07-11",
-      "peak": 50,
-      "drawdown": 0,
-      "charged": 19
+      "peak": 68,
+      "drawdown": 41,
+      "charged": 37
     }
   ],
   "trainingLoad": [
@@ -8889,9 +8921,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "21:15",
-    "10k": "46:32",
-    "half": "1:50:31",
-    "marathon": "4:11:28"
+    "5k": "21:10",
+    "10k": "46:22",
+    "half": "1:50:09",
+    "marathon": "4:10:40"
   }
 }
