@@ -5030,6 +5030,10 @@
     {
       "date": "2026-07-19",
       "rhr": 54
+    },
+    {
+      "date": "2026-07-20",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -8431,8 +8435,14 @@
     {
       "date": "2026-07-19",
       "peak": 73,
-      "drawdown": 15,
-      "charged": 48
+      "drawdown": 41,
+      "charged": 57
+    },
+    {
+      "date": "2026-07-20",
+      "peak": 62,
+      "drawdown": 0,
+      "charged": 22
     }
   ],
   "trainingLoad": [
@@ -9071,6 +9081,14 @@
     {
       "date": "2026-07-13",
       "load": 473,
+      "tunnelMin": 360,
+      "tunnelMax": 794,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-07-20",
+      "load": 516,
       "tunnelMin": 360,
       "tunnelMax": 794,
       "status": "Maintaining",
