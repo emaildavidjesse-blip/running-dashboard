@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-07-23",
+      "miles": 2.87,
+      "pace": 9.75,
+      "hr": 116,
+      "title": "Wilmette - Recovery",
+      "soccer": false
+    },
+    {
       "date": "2026-07-22",
       "miles": 3.71,
       "pace": 21.81,
@@ -5082,7 +5090,11 @@
     },
     {
       "date": "2026-07-23",
-      "rhr": 57
+      "rhr": 52
+    },
+    {
+      "date": "2026-07-24",
+      "rhr": 53
     }
   ],
   "bodyBattery": [
@@ -8507,9 +8519,15 @@
     },
     {
       "date": "2026-07-23",
-      "peak": 45,
+      "peak": 79,
+      "drawdown": 33,
+      "charged": 57
+    },
+    {
+      "date": "2026-07-24",
+      "peak": 87,
       "drawdown": 0,
-      "charged": 13
+      "charged": 37
     }
   ],
   "trainingLoad": [
@@ -9163,9 +9181,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "20:38",
-    "10k": "44:28",
-    "half": "1:45:50",
-    "marathon": "4:04:08"
+    "5k": "20:37",
+    "10k": "44:25",
+    "half": "1:45:44",
+    "marathon": "4:03:56"
   }
 }
