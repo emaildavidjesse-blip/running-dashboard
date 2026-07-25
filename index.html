@@ -971,19 +971,51 @@ tbody td{padding:8px 12px}
   btn.addEventListener('click', async () => {
     btn.disabled = true;
     status.textContent = 'Syncing...';
+    console.log('[refresh] click — page origin:', location.origin, '| SYNC_URL:', SYNC_URL);
 
+    let res;
     try {
-      const res = await fetch(SYNC_URL, { method: 'POST' });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) throw new Error(data.message || `Sync failed (${res.status})`);
-
-      status.textContent = 'Synced! Refresh the page to see updates';
-      setTimeout(() => location.reload(), 3000);
+      console.log('[refresh] fetch start');
+      res = await fetch(SYNC_URL, { method: 'POST' });
+      console.log('[refresh] fetch resolved — status:', res.status, res.ok ? '(ok)' : '(not ok)');
     } catch (err) {
-      status.textContent = 'Local sync server not running — opening GitHub Actions instead';
+      // fetch() rejects (rather than resolving with a bad status) when the
+      // request never reached the network — e.g. mixed content blocked by
+      // the browser (this page is https, SYNC_URL is http://localhost) or
+      // the local sync server isn't running. Either way the browser gives
+      // no further detail than a generic TypeError.
+      console.error('[refresh] fetch rejected before reaching the server:', err);
+      status.textContent = location.protocol === 'https:'
+        ? 'Could not reach local sync server (blocked as mixed content on this HTTPS page, or server not running) — opening GitHub Actions instead'
+        : 'Local sync server not running — opening GitHub Actions instead';
       window.open(GH_ACTIONS_URL, '_blank', 'noopener');
       btn.disabled = false;
+      return;
     }
+
+    let data;
+    try {
+      data = await res.json();
+      console.log('[refresh] response JSON:', data);
+    } catch (err) {
+      console.error('[refresh] response was not valid JSON:', err);
+      data = {};
+    }
+
+    if (!res.ok || !data.success) {
+      console.warn('[refresh] sync reported failure — res.ok:', res.ok, 'data:', data);
+      status.textContent = data.message || `Sync failed (${res.status}) — opening GitHub Actions instead`;
+      window.open(GH_ACTIONS_URL, '_blank', 'noopener');
+      btn.disabled = false;
+      return;
+    }
+
+    console.log('[refresh] success branch — scheduling reload in 3s');
+    status.textContent = 'Synced! Refresh the page to see updates';
+    setTimeout(() => {
+      console.log('[refresh] calling location.reload() now');
+      location.reload();
+    }, 3000);
   });
 })();
 </script>
