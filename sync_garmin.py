@@ -510,7 +510,12 @@ def main():
         tl_start = date(2025, 1, 6)
     else:
         print('INCREMENTAL sync')
-        runs_start = most_recent_start(existing.get('2025', []) + existing.get('2026', []))
+        all_runs = existing.get('2025', []) + existing.get('2026', [])
+        most_recent_run_date = max((e['date'] for e in all_runs), default=None)
+        runs_start = most_recent_start(all_runs)
+        print(f'  most recent stored run: {most_recent_run_date or "(none)"} — '
+              f'fetching runs from {runs_start} (= most recent - {OVERLAP_DAYS}d overlap) '
+              f'through {today}')
         rhr_start  = most_recent_start(existing.get('rhr', []))
         bb_start   = most_recent_start(existing.get('bodyBattery', []))
         tl_recent  = most_recent_start(existing.get('trainingLoad', []))
