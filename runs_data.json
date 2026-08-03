@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-08-02",
+      "miles": 5.26,
+      "pace": 8.69,
+      "hr": 128,
+      "title": "Minneapolis Running",
+      "soccer": false
+    },
+    {
       "date": "2026-08-01",
       "miles": 5.01,
       "pace": 8.74,
@@ -2879,7 +2887,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-08-01",
+      "date": "2026-08-02",
       "vo2max": 53.2,
       "fitnessAge": 20
     }
@@ -5199,7 +5207,7 @@
     },
     {
       "date": "2026-08-02",
-      "rhr": 54
+      "rhr": 51
     }
   ],
   "bodyBattery": [
@@ -8498,9 +8506,9 @@
     },
     {
       "date": "2026-08-02",
-      "peak": 60,
-      "drawdown": 0,
-      "charged": 23
+      "peak": 88,
+      "drawdown": 52,
+      "charged": 53
     }
   ],
   "trainingLoad": [
@@ -9162,9 +9170,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "20:07",
-    "10k": "43:06",
-    "half": "1:42:50",
-    "marathon": "3:58:06"
+    "5k": "20:02",
+    "10k": "42:58",
+    "half": "1:42:33",
+    "marathon": "3:57:23"
   }
 }
