@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-08-04",
+      "miles": 3.0,
+      "pace": 9.7,
+      "hr": 134,
+      "title": "Minneapolis - Recovery",
+      "soccer": false
+    },
+    {
       "date": "2026-08-03",
       "miles": 4.76,
       "pace": 8.83,
@@ -5223,7 +5231,11 @@
     },
     {
       "date": "2026-08-04",
-      "rhr": 55
+      "rhr": 52
+    },
+    {
+      "date": "2026-08-05",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -8534,9 +8546,15 @@
     },
     {
       "date": "2026-08-04",
-      "peak": 30,
+      "peak": 82,
+      "drawdown": 53,
+      "charged": 58
+    },
+    {
+      "date": "2026-08-05",
+      "peak": 42,
       "drawdown": 0,
-      "charged": 0
+      "charged": 7
     }
   ],
   "trainingLoad": [
@@ -9206,9 +9224,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "19:59",
-    "10k": "42:50",
-    "half": "1:42:14",
-    "marathon": "3:56:42"
+    "5k": "19:57",
+    "10k": "42:44",
+    "half": "1:42:03",
+    "marathon": "3:56:16"
   }
 }
