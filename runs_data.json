@@ -1,6 +1,22 @@
 {
   "2026": [
     {
+      "date": "2026-08-09",
+      "miles": 2.59,
+      "pace": 17.51,
+      "hr": 154,
+      "title": "Lemont Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-08-09",
+      "miles": 1.6,
+      "pace": 28.5,
+      "hr": 122,
+      "title": "Lemont Running",
+      "soccer": true
+    },
+    {
       "date": "2026-08-08",
       "miles": 5.24,
       "pace": 8.29,
@@ -5285,6 +5301,10 @@
     {
       "date": "2026-08-08",
       "rhr": 50
+    },
+    {
+      "date": "2026-08-09",
+      "rhr": 50
     }
   ],
   "bodyBattery": [
@@ -8621,7 +8641,13 @@
       "date": "2026-08-08",
       "peak": 90,
       "drawdown": 71,
-      "charged": 56
+      "charged": 62
+    },
+    {
+      "date": "2026-08-09",
+      "peak": 84,
+      "drawdown": 35,
+      "charged": 59
     }
   ],
   "trainingLoad": [
@@ -9291,9 +9317,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "19:45",
-    "10k": "42:18",
-    "half": "1:40:43",
-    "marathon": "3:53:10"
+    "5k": "19:42",
+    "10k": "42:13",
+    "half": "1:39:57",
+    "marathon": "3:51:26"
   }
 }
