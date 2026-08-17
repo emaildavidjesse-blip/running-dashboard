@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-08-17",
+      "miles": 3.3,
+      "pace": 9.86,
+      "hr": 116,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
       "date": "2026-08-16",
       "miles": 5.01,
       "pace": 8.55,
@@ -8779,7 +8787,7 @@
     {
       "date": "2026-08-17",
       "peak": 99,
-      "drawdown": 0,
+      "drawdown": 9,
       "charged": 47
     }
   ],
@@ -9458,7 +9466,7 @@
     },
     {
       "date": "2026-08-17",
-      "load": 615,
+      "load": 655,
       "tunnelMin": 446,
       "tunnelMax": 988,
       "status": "Maintaining",
@@ -9467,8 +9475,8 @@
   ],
   "racePredictions": {
     "5k": "19:39",
-    "10k": "41:44",
-    "half": "1:37:54",
-    "marathon": "3:47:10"
+    "10k": "41:41",
+    "half": "1:37:48",
+    "marathon": "3:46:58"
   }
 }
