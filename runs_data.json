@@ -8815,7 +8815,7 @@
     {
       "date": "2026-09-01",
       "peak": 44,
-      "drawdown": 0,
+      "drawdown": 4,
       "charged": 30
     }
   ],
