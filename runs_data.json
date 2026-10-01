@@ -5868,6 +5868,10 @@
     {
       "date": "2026-09-30",
       "rhr": 55
+    },
+    {
+      "date": "2026-10-01",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -8427,192 +8431,6 @@
       "drained": 45
     },
     {
-      "date": "2026-05-01",
-      "peak": 62,
-      "drawdown": 35,
-      "charged": 21
-    },
-    {
-      "date": "2026-05-02",
-      "peak": 47,
-      "drawdown": 29,
-      "charged": 34
-    },
-    {
-      "date": "2026-05-03",
-      "peak": 52,
-      "drawdown": 22,
-      "charged": 37
-    },
-    {
-      "date": "2026-05-04",
-      "peak": 76,
-      "drawdown": 42,
-      "charged": 41
-    },
-    {
-      "date": "2026-05-05",
-      "peak": 60,
-      "drawdown": 38,
-      "charged": 30
-    },
-    {
-      "date": "2026-05-06",
-      "peak": 56,
-      "drawdown": 21,
-      "charged": 39
-    },
-    {
-      "date": "2026-05-07",
-      "peak": 79,
-      "drawdown": 43,
-      "charged": 51
-    },
-    {
-      "date": "2026-05-08",
-      "peak": 61,
-      "drawdown": 50,
-      "charged": 19
-    },
-    {
-      "date": "2026-05-09",
-      "peak": 49,
-      "drawdown": 31,
-      "charged": 46
-    },
-    {
-      "date": "2026-05-10",
-      "peak": 72,
-      "drawdown": 39,
-      "charged": 64
-    },
-    {
-      "date": "2026-05-11",
-      "peak": 78,
-      "drawdown": 32,
-      "charged": 50
-    },
-    {
-      "date": "2026-05-12",
-      "peak": 72,
-      "drawdown": 38,
-      "charged": 37
-    },
-    {
-      "date": "2026-05-13",
-      "peak": 96,
-      "drawdown": 70,
-      "charged": 57
-    },
-    {
-      "date": "2026-05-14",
-      "peak": 57,
-      "drawdown": 24,
-      "charged": 45
-    },
-    {
-      "date": "2026-05-15",
-      "peak": 58,
-      "drawdown": 40,
-      "charged": 25
-    },
-    {
-      "date": "2026-05-16",
-      "peak": 60,
-      "drawdown": 41,
-      "charged": 40
-    },
-    {
-      "date": "2026-05-17",
-      "peak": 74,
-      "drawdown": 45,
-      "charged": 57
-    },
-    {
-      "date": "2026-05-18",
-      "peak": 74,
-      "drawdown": 61,
-      "charged": 45
-    },
-    {
-      "date": "2026-05-19",
-      "peak": 52,
-      "drawdown": 41,
-      "charged": 47
-    },
-    {
-      "date": "2026-05-20",
-      "peak": 60,
-      "drawdown": 35,
-      "charged": 51
-    },
-    {
-      "date": "2026-05-21",
-      "peak": 93,
-      "drawdown": 61,
-      "charged": 66
-    },
-    {
-      "date": "2026-05-22",
-      "peak": 55,
-      "drawdown": 25,
-      "charged": 40
-    },
-    {
-      "date": "2026-05-23",
-      "peak": 69,
-      "drawdown": 24,
-      "charged": 42
-    },
-    {
-      "date": "2026-05-24",
-      "peak": 93,
-      "drawdown": 52,
-      "charged": 52
-    },
-    {
-      "date": "2026-05-25",
-      "peak": 66,
-      "drawdown": 47,
-      "charged": 27
-    },
-    {
-      "date": "2026-05-26",
-      "peak": 48,
-      "drawdown": 38,
-      "charged": 28
-    },
-    {
-      "date": "2026-05-27",
-      "peak": 70,
-      "drawdown": 40,
-      "charged": 62
-    },
-    {
-      "date": "2026-05-28",
-      "peak": 63,
-      "drawdown": 34,
-      "charged": 40
-    },
-    {
-      "date": "2026-05-29",
-      "peak": 54,
-      "drawdown": 41,
-      "charged": 18
-    },
-    {
-      "date": "2026-05-30",
-      "peak": 56,
-      "drawdown": 44,
-      "charged": 44
-    },
-    {
-      "date": "2026-05-31",
-      "peak": 27,
-      "drawdown": 16,
-      "charged": 23
-    },
-    {
       "date": "2026-06-01",
       "peak": 43,
       "drawdown": 0,
@@ -9341,8 +9159,14 @@
     {
       "date": "2026-09-30",
       "peak": 58,
-      "drawdown": 12,
-      "charged": 22
+      "drawdown": 25,
+      "charged": 45
+    },
+    {
+      "date": "2026-10-01",
+      "peak": 62,
+      "drawdown": 0,
+      "charged": 20
     }
   ],
   "trainingLoad": [
@@ -10077,8 +9901,8 @@
   ],
   "racePredictions": {
     "5k": "19:46",
-    "10k": "42:06",
-    "half": "1:38:57",
-    "marathon": "3:48:32"
+    "10k": "42:08",
+    "half": "1:39:01",
+    "marathon": "3:48:42"
   }
 }
