@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-10-14",
+      "miles": 3.08,
+      "pace": 9.95,
+      "hr": 121,
+      "title": "Boston Running",
+      "soccer": false
+    },
+    {
       "date": "2026-10-12",
       "miles": 5.51,
       "pace": 8.88,
@@ -6009,7 +6017,11 @@
     },
     {
       "date": "2026-10-13",
-      "rhr": 54
+      "rhr": 50
+    },
+    {
+      "date": "2026-10-14",
+      "rhr": 53
     }
   ],
   "bodyBattery": [
@@ -6744,6 +6756,90 @@
       "peak": 58,
       "drawdown": 25,
       "charged": 45
+    },
+    {
+      "date": "2026-10-01",
+      "peak": 82,
+      "drawdown": 61,
+      "charged": 48
+    },
+    {
+      "date": "2026-10-02",
+      "peak": 41,
+      "drawdown": 27,
+      "charged": 14
+    },
+    {
+      "date": "2026-10-03",
+      "peak": 74,
+      "drawdown": 43,
+      "charged": 65
+    },
+    {
+      "date": "2026-10-04",
+      "peak": 70,
+      "drawdown": 46,
+      "charged": 45
+    },
+    {
+      "date": "2026-10-05",
+      "peak": 89,
+      "drawdown": 54,
+      "charged": 60
+    },
+    {
+      "date": "2026-10-06",
+      "peak": 83,
+      "drawdown": 65,
+      "charged": 50
+    },
+    {
+      "date": "2026-10-07",
+      "peak": 62,
+      "drawdown": 43,
+      "charged": 43
+    },
+    {
+      "date": "2026-10-08",
+      "peak": 50,
+      "drawdown": 23,
+      "charged": 47
+    },
+    {
+      "date": "2026-10-09",
+      "peak": 76,
+      "drawdown": 57,
+      "charged": 50
+    },
+    {
+      "date": "2026-10-10",
+      "peak": 56,
+      "drawdown": 24,
+      "charged": 47
+    },
+    {
+      "date": "2026-10-11",
+      "peak": 80,
+      "drawdown": 47,
+      "charged": 55
+    },
+    {
+      "date": "2026-10-12",
+      "peak": 88,
+      "drawdown": 64,
+      "charged": 58
+    },
+    {
+      "date": "2026-10-13",
+      "peak": 71,
+      "drawdown": 46,
+      "charged": 59
+    },
+    {
+      "date": "2026-10-14",
+      "peak": 72,
+      "drawdown": 25,
+      "charged": 39
     }
   ],
   "trainingLoad": [
@@ -7238,8 +7334,8 @@
   ],
   "racePredictions": {
     "5k": "19:43",
-    "10k": "41:52",
-    "half": "1:38:18",
-    "marathon": "3:48:01"
+    "10k": "41:54",
+    "half": "1:38:21",
+    "marathon": "3:48:07"
   }
 }
