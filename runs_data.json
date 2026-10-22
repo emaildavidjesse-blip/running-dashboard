@@ -2,6 +2,14 @@
   "2026": [
     {
       "date": "2026-10-21",
+      "miles": 3.91,
+      "pace": 19.78,
+      "hr": 104,
+      "title": "Wilmette Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-10-21",
       "miles": 5.75,
       "pace": 8.51,
       "hr": 136,
@@ -9545,7 +9553,7 @@
     {
       "date": "2026-10-21",
       "peak": 90,
-      "drawdown": 21,
+      "drawdown": 55,
       "charged": 57
     }
   ],
@@ -10305,8 +10313,8 @@
   ],
   "racePredictions": {
     "5k": "19:39",
-    "10k": "41:42",
-    "half": "1:37:53",
-    "marathon": "3:46:59"
+    "10k": "41:32",
+    "half": "1:37:17",
+    "marathon": "3:46:46"
   }
 }
