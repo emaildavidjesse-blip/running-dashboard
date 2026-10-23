@@ -6143,6 +6143,10 @@
     },
     {
       "date": "2026-10-22",
+      "rhr": 55
+    },
+    {
+      "date": "2026-10-23",
       "rhr": 57
     }
   ],
@@ -9562,9 +9566,15 @@
     },
     {
       "date": "2026-10-22",
-      "peak": 36,
+      "peak": 60,
+      "drawdown": 33,
+      "charged": 33
+    },
+    {
+      "date": "2026-10-23",
+      "peak": 58,
       "drawdown": 0,
-      "charged": 3
+      "charged": 32
     }
   ],
   "trainingLoad": [
