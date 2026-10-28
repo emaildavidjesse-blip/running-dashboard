@@ -9661,8 +9661,8 @@
     {
       "date": "2026-10-27",
       "peak": 93,
-      "drawdown": 26,
-      "charged": 47
+      "drawdown": 54,
+      "charged": 51
     }
   ],
   "trainingLoad": [
