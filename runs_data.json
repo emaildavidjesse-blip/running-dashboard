@@ -6261,6 +6261,10 @@
     {
       "date": "2026-10-30",
       "rhr": 54
+    },
+    {
+      "date": "2026-10-31",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -9728,8 +9732,14 @@
     {
       "date": "2026-10-30",
       "peak": 80,
-      "drawdown": 19,
-      "charged": 38
+      "drawdown": 42,
+      "charged": 50
+    },
+    {
+      "date": "2026-10-31",
+      "peak": 49,
+      "drawdown": 0,
+      "charged": 2
     }
   ],
   "trainingLoad": [
@@ -10497,7 +10507,7 @@
   "racePredictions": {
     "5k": "19:36",
     "10k": "41:24",
-    "half": "1:35:46",
-    "marathon": "3:43:33"
+    "half": "1:35:53",
+    "marathon": "3:43:48"
   }
 }
