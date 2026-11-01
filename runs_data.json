@@ -1,6 +1,22 @@
 {
   "2026": [
     {
+      "date": "2026-11-01",
+      "miles": 2.92,
+      "pace": 15.48,
+      "hr": 140,
+      "title": "Lake County Running",
+      "soccer": true
+    },
+    {
+      "date": "2026-11-01",
+      "miles": 2.29,
+      "pace": 19.75,
+      "hr": 131,
+      "title": "Lake County Running",
+      "soccer": true
+    },
+    {
       "date": "2026-10-31",
       "miles": 6.25,
       "pace": 8.07,
@@ -6276,7 +6292,7 @@
     },
     {
       "date": "2026-11-01",
-      "rhr": 56
+      "rhr": 53
     }
   ],
   "bodyBattery": [
@@ -9575,9 +9591,9 @@
     },
     {
       "date": "2026-11-01",
-      "peak": 47,
-      "drawdown": 0,
-      "charged": 12
+      "peak": 76,
+      "drawdown": 44,
+      "charged": 41
     }
   ],
   "trainingLoad": [
@@ -10345,7 +10361,7 @@
   "racePredictions": {
     "5k": "19:36",
     "10k": "41:24",
-    "half": "1:35:45",
-    "marathon": "3:43:37"
+    "half": "1:35:36",
+    "marathon": "3:43:18"
   }
 }
