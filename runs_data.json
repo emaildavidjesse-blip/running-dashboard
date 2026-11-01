@@ -6273,6 +6273,10 @@
     {
       "date": "2026-10-31",
       "rhr": 49
+    },
+    {
+      "date": "2026-11-01",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -8832,186 +8836,6 @@
       "drained": 45
     },
     {
-      "date": "2026-06-01",
-      "peak": 43,
-      "drawdown": 0,
-      "charged": 56
-    },
-    {
-      "date": "2026-06-02",
-      "peak": 63,
-      "drawdown": 49,
-      "charged": 26
-    },
-    {
-      "date": "2026-06-03",
-      "peak": 57,
-      "drawdown": 50,
-      "charged": 37
-    },
-    {
-      "date": "2026-06-04",
-      "peak": 36,
-      "drawdown": 31,
-      "charged": 32
-    },
-    {
-      "date": "2026-06-05",
-      "peak": 38,
-      "drawdown": 29,
-      "charged": 33
-    },
-    {
-      "date": "2026-06-06",
-      "peak": 43,
-      "drawdown": 31,
-      "charged": 39
-    },
-    {
-      "date": "2026-06-07",
-      "peak": 46,
-      "drawdown": 40,
-      "charged": 42
-    },
-    {
-      "date": "2026-06-08",
-      "peak": 92,
-      "drawdown": 51,
-      "charged": 88
-    },
-    {
-      "date": "2026-06-09",
-      "peak": 100,
-      "drawdown": 72,
-      "charged": 49
-    },
-    {
-      "date": "2026-06-10",
-      "peak": 86,
-      "drawdown": 57,
-      "charged": 56
-    },
-    {
-      "date": "2026-06-11",
-      "peak": 70,
-      "drawdown": 51,
-      "charged": 46
-    },
-    {
-      "date": "2026-06-12",
-      "peak": 55,
-      "drawdown": 45,
-      "charged": 33
-    },
-    {
-      "date": "2026-06-13",
-      "peak": 53,
-      "drawdown": 30,
-      "charged": 48
-    },
-    {
-      "date": "2026-06-14",
-      "peak": 81,
-      "drawdown": 45,
-      "charged": 59
-    },
-    {
-      "date": "2026-06-15",
-      "peak": 90,
-      "drawdown": 57,
-      "charged": 60
-    },
-    {
-      "date": "2026-06-16",
-      "peak": 67,
-      "drawdown": 39,
-      "charged": 28
-    },
-    {
-      "date": "2026-06-17",
-      "peak": 93,
-      "drawdown": 52,
-      "charged": 74
-    },
-    {
-      "date": "2026-06-18",
-      "peak": 67,
-      "drawdown": 32,
-      "charged": 35
-    },
-    {
-      "date": "2026-06-19",
-      "peak": 85,
-      "drawdown": 69,
-      "charged": 47
-    },
-    {
-      "date": "2026-06-20",
-      "peak": 81,
-      "drawdown": 40,
-      "charged": 63
-    },
-    {
-      "date": "2026-06-21",
-      "peak": 80,
-      "drawdown": 46,
-      "charged": 49
-    },
-    {
-      "date": "2026-06-22",
-      "peak": 81,
-      "drawdown": 33,
-      "charged": 53
-    },
-    {
-      "date": "2026-06-23",
-      "peak": 92,
-      "drawdown": 66,
-      "charged": 45
-    },
-    {
-      "date": "2026-06-24",
-      "peak": 74,
-      "drawdown": 26,
-      "charged": 53
-    },
-    {
-      "date": "2026-06-25",
-      "peak": 72,
-      "drawdown": 43,
-      "charged": 27
-    },
-    {
-      "date": "2026-06-26",
-      "peak": 52,
-      "drawdown": 25,
-      "charged": 34
-    },
-    {
-      "date": "2026-06-27",
-      "peak": 94,
-      "drawdown": 63,
-      "charged": 67
-    },
-    {
-      "date": "2026-06-28",
-      "peak": 87,
-      "drawdown": 54,
-      "charged": 59
-    },
-    {
-      "date": "2026-06-29",
-      "peak": 78,
-      "drawdown": 49,
-      "charged": 46
-    },
-    {
-      "date": "2026-06-30",
-      "peak": 74,
-      "drawdown": 42,
-      "charged": 57
-    },
-    {
       "date": "2026-07-01",
       "peak": 64,
       "drawdown": 36,
@@ -9746,8 +9570,14 @@
     {
       "date": "2026-10-31",
       "peak": 90,
-      "drawdown": 23,
-      "charged": 43
+      "drawdown": 54,
+      "charged": 47
+    },
+    {
+      "date": "2026-11-01",
+      "peak": 47,
+      "drawdown": 0,
+      "charged": 12
     }
   ],
   "trainingLoad": [
@@ -10515,7 +10345,7 @@
   "racePredictions": {
     "5k": "19:36",
     "10k": "41:24",
-    "half": "1:35:38",
-    "marathon": "3:43:21"
+    "half": "1:35:45",
+    "marathon": "3:43:37"
   }
 }
