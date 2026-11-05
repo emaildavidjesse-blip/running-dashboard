@@ -1,6 +1,22 @@
 {
   "2026": [
     {
+      "date": "2026-11-05",
+      "miles": 4.5,
+      "pace": 9.38,
+      "hr": 129,
+      "title": "San Bruno - Base",
+      "soccer": false
+    },
+    {
+      "date": "2026-11-04",
+      "miles": 4.5,
+      "pace": 9.34,
+      "hr": 129,
+      "title": "San Bruno - Base",
+      "soccer": false
+    },
+    {
       "date": "2026-11-01",
       "miles": 2.92,
       "pace": 15.48,
@@ -3611,6 +3627,11 @@
       "date": "2026-10-31",
       "vo2max": 53.6,
       "fitnessAge": 20
+    },
+    {
+      "date": "2026-11-05",
+      "vo2max": 53.6,
+      "fitnessAge": 20
     }
   ],
   "rhr": [
@@ -6304,7 +6325,11 @@
     },
     {
       "date": "2026-11-04",
-      "rhr": 56
+      "rhr": 53
+    },
+    {
+      "date": "2026-11-05",
+      "rhr": 52
     }
   ],
   "bodyBattery": [
@@ -9621,9 +9646,15 @@
     },
     {
       "date": "2026-11-04",
-      "peak": 36,
-      "drawdown": 0,
-      "charged": 6
+      "peak": 70,
+      "drawdown": 41,
+      "charged": 47
+    },
+    {
+      "date": "2026-11-05",
+      "peak": 87,
+      "drawdown": 11,
+      "charged": 54
     }
   ],
   "trainingLoad": [
@@ -10398,8 +10429,8 @@
   ],
   "racePredictions": {
     "5k": "19:36",
-    "10k": "41:24",
-    "half": "1:35:53",
-    "marathon": "3:43:55"
+    "10k": "41:26",
+    "half": "1:35:54",
+    "marathon": "3:43:27"
   }
 }
