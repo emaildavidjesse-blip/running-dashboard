@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-06",
+      "miles": 8.25,
+      "pace": 8.82,
+      "hr": 139,
+      "title": "San Bruno Running",
+      "soccer": false
+    },
+    {
       "date": "2026-11-05",
       "miles": 4.5,
       "pace": 9.38,
@@ -9653,7 +9661,7 @@
     {
       "date": "2026-11-05",
       "peak": 87,
-      "drawdown": 11,
+      "drawdown": 17,
       "charged": 54
     }
   ],
