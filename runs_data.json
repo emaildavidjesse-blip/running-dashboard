@@ -3637,7 +3637,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-05",
+      "date": "2026-11-06",
       "vo2max": 53.6,
       "fitnessAge": 20
     }
@@ -6338,6 +6338,14 @@
     {
       "date": "2026-11-05",
       "rhr": 52
+    },
+    {
+      "date": "2026-11-06",
+      "rhr": 54
+    },
+    {
+      "date": "2026-11-07",
+      "rhr": 57
     }
   ],
   "bodyBattery": [
@@ -9661,8 +9669,20 @@
     {
       "date": "2026-11-05",
       "peak": 87,
-      "drawdown": 17,
-      "charged": 54
+      "drawdown": 55,
+      "charged": 56
+    },
+    {
+      "date": "2026-11-06",
+      "peak": 63,
+      "drawdown": 55,
+      "charged": 37
+    },
+    {
+      "date": "2026-11-07",
+      "peak": 28,
+      "drawdown": 0,
+      "charged": 18
     }
   ],
   "trainingLoad": [
@@ -10436,9 +10456,9 @@
     }
   ],
   "racePredictions": {
-    "5k": "19:36",
-    "10k": "41:26",
-    "half": "1:35:54",
-    "marathon": "3:43:27"
+    "5k": "19:38",
+    "10k": "41:28",
+    "half": "1:35:58",
+    "marathon": "3:43:38"
   }
 }
