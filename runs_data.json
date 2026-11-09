@@ -9690,9 +9690,9 @@
     },
     {
       "date": "2026-11-08",
-      "peak": 30,
-      "drawdown": 0,
-      "charged": 10
+      "peak": 44,
+      "drawdown": 25,
+      "charged": 24
     }
   ],
   "trainingLoad": [
