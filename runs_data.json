@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-12",
+      "miles": 5.01,
+      "pace": 8.64,
+      "hr": 147,
+      "title": "Wilmette Running",
+      "soccer": false
+    },
+    {
       "date": "2026-11-11",
       "miles": 6.25,
       "pace": 8.85,
@@ -3658,7 +3666,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-11",
+      "date": "2026-11-12",
       "vo2max": 53.7,
       "fitnessAge": 20
     }
@@ -6386,7 +6394,7 @@
     },
     {
       "date": "2026-11-12",
-      "rhr": 61
+      "rhr": 58
     }
   ],
   "bodyBattery": [
@@ -9751,9 +9759,9 @@
     },
     {
       "date": "2026-11-12",
-      "peak": 43,
-      "drawdown": 0,
-      "charged": 8
+      "peak": 59,
+      "drawdown": 12,
+      "charged": 24
     }
   ],
   "trainingLoad": [
