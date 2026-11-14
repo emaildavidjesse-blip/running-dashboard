@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-14",
+      "miles": 3.5,
+      "pace": 9.11,
+      "hr": 137,
+      "title": "Bloomington - Base",
+      "soccer": false
+    },
+    {
       "date": "2026-11-13",
       "miles": 4.75,
       "pace": 8.96,
@@ -3674,7 +3682,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-13",
+      "date": "2026-11-14",
       "vo2max": 53.6,
       "fitnessAge": 20
     }
@@ -6410,7 +6418,7 @@
     },
     {
       "date": "2026-11-14",
-      "rhr": 63
+      "rhr": 57
     }
   ],
   "bodyBattery": [
@@ -9787,9 +9795,9 @@
     },
     {
       "date": "2026-11-14",
-      "peak": 19,
+      "peak": 50,
       "drawdown": 0,
-      "charged": 4
+      "charged": 35
     }
   ],
   "trainingLoad": [
