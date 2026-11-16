@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-16",
+      "miles": 3.5,
+      "pace": 9.02,
+      "hr": 135,
+      "title": "Wilmette - Recovery",
+      "soccer": false
+    },
+    {
       "date": "2026-11-15",
       "miles": 3.5,
       "pace": 9.87,
@@ -3690,7 +3698,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-15",
+      "date": "2026-11-16",
       "vo2max": 53.6,
       "fitnessAge": 20
     }
@@ -6434,7 +6442,7 @@
     },
     {
       "date": "2026-11-16",
-      "rhr": 60
+      "rhr": 52
     }
   ],
   "bodyBattery": [
@@ -9823,9 +9831,9 @@
     },
     {
       "date": "2026-11-16",
-      "peak": 57,
-      "drawdown": 0,
-      "charged": 6
+      "peak": 83,
+      "drawdown": 14,
+      "charged": 32
     }
   ],
   "trainingLoad": [
@@ -10607,7 +10615,7 @@
     },
     {
       "date": "2026-11-16",
-      "load": 659,
+      "load": 741,
       "tunnelMin": 446,
       "tunnelMax": 988,
       "status": "Maintaining",
