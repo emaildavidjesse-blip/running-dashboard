@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-17",
+      "miles": 3.5,
+      "pace": 9.44,
+      "hr": 137,
+      "title": "Wilmette - Recovery",
+      "soccer": false
+    },
+    {
       "date": "2026-11-16",
       "miles": 3.5,
       "pace": 9.02,
@@ -3698,7 +3706,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-16",
+      "date": "2026-11-17",
       "vo2max": 53.6,
       "fitnessAge": 20
     }
@@ -9842,8 +9850,8 @@
     {
       "date": "2026-11-17",
       "peak": 57,
-      "drawdown": 0,
-      "charged": 22
+      "drawdown": 11,
+      "charged": 23
     }
   ],
   "trainingLoad": [
@@ -10635,7 +10643,7 @@
   "racePredictions": {
     "5k": "19:38",
     "10k": "41:30",
-    "half": "1:35:59",
-    "marathon": "3:43:42"
+    "half": "1:35:51",
+    "marathon": "3:43:25"
   }
 }
