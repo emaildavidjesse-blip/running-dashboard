@@ -3717,6 +3717,11 @@
       "date": "2026-11-17",
       "vo2max": 53.6,
       "fitnessAge": 20
+    },
+    {
+      "date": "2026-11-18",
+      "vo2max": 53.6,
+      "fitnessAge": 20
     }
   ],
   "rhr": [
@@ -6463,6 +6468,10 @@
     {
       "date": "2026-11-17",
       "rhr": 59
+    },
+    {
+      "date": "2026-11-18",
+      "rhr": 52
     }
   ],
   "bodyBattery": [
@@ -9860,6 +9869,12 @@
       "peak": 57,
       "drawdown": 47,
       "charged": 23
+    },
+    {
+      "date": "2026-11-18",
+      "peak": 61,
+      "drawdown": 8,
+      "charged": 51
     }
   ],
   "trainingLoad": [
