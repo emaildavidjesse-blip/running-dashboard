@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-24",
+      "miles": 6.1,
+      "pace": 8.55,
+      "hr": 138,
+      "title": "Minneapolis Running",
+      "soccer": false
+    },
+    {
       "date": "2026-11-22",
       "miles": 6.01,
       "pace": 8.51,
@@ -3743,7 +3751,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-22",
+      "date": "2026-11-24",
       "vo2max": 53.7,
       "fitnessAge": 20
     }
@@ -6512,6 +6520,14 @@
     {
       "date": "2026-11-22",
       "rhr": 52
+    },
+    {
+      "date": "2026-11-23",
+      "rhr": 53
+    },
+    {
+      "date": "2026-11-24",
+      "rhr": 56
     }
   ],
   "bodyBattery": [
@@ -9937,8 +9953,20 @@
     {
       "date": "2026-11-22",
       "peak": 78,
-      "drawdown": 47,
-      "charged": 67
+      "drawdown": 54,
+      "charged": 71
+    },
+    {
+      "date": "2026-11-23",
+      "peak": 72,
+      "drawdown": 37,
+      "charged": 48
+    },
+    {
+      "date": "2026-11-24",
+      "peak": 71,
+      "drawdown": 15,
+      "charged": 31
     }
   ],
   "trainingLoad": [
@@ -10725,12 +10753,20 @@
       "tunnelMax": 988,
       "status": "Maintaining",
       "fitnessTrend": "Stable"
+    },
+    {
+      "date": "2026-11-23",
+      "load": 549,
+      "tunnelMin": 446,
+      "tunnelMax": 988,
+      "status": "Maintaining",
+      "fitnessTrend": "Stable"
     }
   ],
   "racePredictions": {
-    "5k": "19:36",
+    "5k": "19:34",
     "10k": "41:25",
-    "half": "1:35:55",
-    "marathon": "3:43:29"
+    "half": "1:35:48",
+    "marathon": "3:43:17"
   }
 }
