@@ -1,6 +1,14 @@
 {
   "2026": [
     {
+      "date": "2026-11-28",
+      "miles": 5.5,
+      "pace": 8.22,
+      "hr": 149,
+      "title": "Minneapolis - Base",
+      "soccer": false
+    },
+    {
       "date": "2026-11-26",
       "miles": 3.18,
       "pace": 7.41,
@@ -3772,7 +3780,7 @@
       "fitnessAge": 20
     },
     {
-      "date": "2026-11-26",
+      "date": "2026-11-28",
       "vo2max": 53.8,
       "fitnessAge": 20
     }
@@ -10025,9 +10033,9 @@
     },
     {
       "date": "2026-11-28",
-      "peak": 34,
-      "drawdown": 0,
-      "charged": 10
+      "peak": 81,
+      "drawdown": 21,
+      "charged": 57
     }
   ],
   "trainingLoad": [
